@@ -16,7 +16,16 @@ public class AccountController {
     private AccountRepository repository;
 
     @PostMapping("accounts")
-    public @ResponseBody Account addCustomer(@RequestBody Account account){
+    public @ResponseBody Account addAccount(@RequestBody Account account){
+        repository.save(account);
+
+        return account;
+    }
+
+    @PutMapping("account/{id}")
+    public @ResponseBody Account updateAccount(@PathVariable("id") String id, @RequestBody Account updatedAccount){
+        Account account = repository.findById(id);
+        account.balance = updatedAccount.balance;
         repository.save(account);
 
         return account;
@@ -27,7 +36,7 @@ public class AccountController {
         return repository.findAll();
     }
 
-    @GetMapping("accounts/{id}")
+    @GetMapping("account/{id}")
     public @ResponseBody
     Account getCustomer(@PathVariable("id") String id){
         return repository.findById(id);

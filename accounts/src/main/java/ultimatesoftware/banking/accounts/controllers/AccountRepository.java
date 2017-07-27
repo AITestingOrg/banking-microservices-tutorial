@@ -9,7 +9,5 @@ import java.util.List;
 @EnableMongoRepositories
 public interface AccountRepository extends MongoRepository<Account, String> {
 
-    public Account findByFirstName(String firstName);
-    public List<Account> findByLastName(String lastName);
     Account findById(String id);
 }
