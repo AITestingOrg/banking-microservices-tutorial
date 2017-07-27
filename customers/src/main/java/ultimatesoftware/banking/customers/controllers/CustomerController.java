@@ -32,7 +32,7 @@ public class CustomerController {
         return repository.findById(id);
     }
 
-    @GetMapping("customers/{id}")
+    @DeleteMapping("customers/{id}")
     public @ResponseBody void deleteCustomer(@PathVariable("id") String id){
         repository.delete(id);
     }

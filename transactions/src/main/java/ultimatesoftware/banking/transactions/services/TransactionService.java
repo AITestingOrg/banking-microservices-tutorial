@@ -66,6 +66,7 @@ public class TransactionService extends RestService {
             return new ErrorResult("Insufficient balance on account.");
         }
 
+        account.setBalance(account.getBalance() - amount);
         boolean success = updateAccount(account.getId(), account);
         if(!success) {
             return new ErrorResult(String.format("An error occurred when attempting to withdraw funds, transaction cancelled."));
