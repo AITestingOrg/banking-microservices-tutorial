@@ -24,3 +24,14 @@ This service performs and stores the following transactions: withdraw, deposit, 
 
 ## Compile Jar
 * Double click 'jar' from the Gradle pane
+
+## Build Docker Image
+* Compile the jar
+* Excute the following
+```bash
+docker build -t transaction-server .
+```
+
+## Run Docker Image
+```bash
+docker run -d -p 8085:8085 transaction-server

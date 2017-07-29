@@ -1,19 +1,19 @@
 eureka-server:
   build: eureka/
   expose:
-    - 80
+    - 8761
 
 customer-server:
   build: customers/
   expose:
-    - 80
+    - 8081
 
 account-server:
   build: accounts/
   expose:
-    - 80
+    - 8084
 
 transaction-server:
   build: transactions/
   expose:
-    - 80
+    - 8085
