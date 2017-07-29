@@ -1,29 +1,27 @@
-eureka:
-  build: eureka/
-  hostname: eureka
-  ports:
-    - "8761:8761"
+version: '3'
+services:
+  eureka-server:
+    build: eureka/
+    ports:
+      - "8761:8761"
 
-customer-server:
-  build: customers/
-  hostname: customers
-  links:
-    - eureka
-  ports:
-    - "8081:8081"
+  customer-server:
+    build: customers/
+    depends_on:
+      - eureka-server
+    ports:
+      - "8081:8081"
 
-account-server:
-  build: accounts/
-  hostname: accounts
-  links:
-    - eureka
-  ports:
-    - "8084:8084"
+  account-server:
+    build: accounts/
+    depends_on:
+      - eureka-server
+    ports:
+      - "8084:8084"
 
-transaction-server:
-  build: transactions/
-  hostname: transactions
-  links:
-    - eureka
-  ports:
-    - "8085:8085"
+  transaction-server:
+    build: transactions/
+    depends_on:
+      - eureka-server
+    ports:
+      - "8085:8085"
