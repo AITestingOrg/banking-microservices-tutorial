@@ -5,8 +5,15 @@ All services are built with Spring Boot, the configuration files are under /src/
 
 ## Requirements
 See each services readme for detailed requirement information
+### Compose
+* https://docs.docker.com/compose/install/
 
 ## Unleash the Swarm
 ```bash
+docker-compose up
+```
 
+## Stop the Containers
+```bash
+docker-compose stop
 ```
