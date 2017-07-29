@@ -9,6 +9,7 @@ See each services readme for detailed requirement information
 * https://docs.docker.com/compose/install/
 
 ## Unleash the Swarm
+Start the Eureka Service then
 ```bash
 docker-compose up
 ```
@@ -16,4 +17,9 @@ docker-compose up
 ## Stop the Containers
 ```bash
 docker-compose stop
+```
+
+## Rebuild Containers
+```bash
+docker-compose build
 ```

@@ -1,19 +1,29 @@
-eureka-server:
+eureka:
   build: eureka/
-  expose:
-    - 8761
+  hostname: eureka
+  ports:
+    - "8761:8761"
 
 customer-server:
   build: customers/
-  expose:
-    - 8081
+  hostname: customers
+  links:
+    - eureka
+  ports:
+    - "8081:8081"
 
 account-server:
   build: accounts/
-  expose:
-    - 8084
+  hostname: accounts
+  links:
+    - eureka
+  ports:
+    - "8084:8084"
 
 transaction-server:
   build: transactions/
-  expose:
-    - 8085
+  hostname: transactions
+  links:
+    - eureka
+  ports:
+    - "8085:8085"
