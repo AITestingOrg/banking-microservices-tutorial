@@ -24,3 +24,14 @@ This service acts as the repository for the bank accounts. It depends on the cus
 
 ## Compile Jar
 * Double click 'jar' from the Gradle pane
+
+## Build Docker Image
+* Compile the jar
+* Excute the following
+```bash
+docker build -t customer-server .
+```
+
+## Run Docker Image
+```bash
+docker run -d -p 8081:8081 customer-server

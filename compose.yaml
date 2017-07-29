@@ -1,0 +1,19 @@
+eureka-server:
+  build: eureka/
+  expose:
+    - 80
+
+customer-server:
+  build: customers/
+  expose:
+    - 80
+
+account-server:
+  build: accounts/
+  expose:
+    - 80
+
+transaction-server:
+  build: transactions/
+  expose:
+    - 80
