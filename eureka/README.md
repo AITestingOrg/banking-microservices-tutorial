@@ -21,3 +21,14 @@ This service acts as the discovery service hub, this should be the first microse
 
 ## Compile Jar
 * Double click 'jar' from the Gradle pane
+
+## Build Docker Image
+* Compile the jar
+* Excute the following
+```bash
+docker build -t eureka-server .
+```
+
+## Run Docker Image
+```bash
+docker run -d -p 8761:8761 eureka-server

@@ -1,6 +1,6 @@
-FROM java:8
+FROM frolvlad/alpine-oraclejdk8:slim
 VOLUME /tmp
-ADD build/libs/eureka-server-0.1.0.jar app.jar
-RUN bash -c 'touch /app.jar'
+ADD build/libs/eureka-0.0.1-SNAPSHOT.jar app.jar
+ENV JAVA_OPTS=""
 EXPOSE 8761
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]

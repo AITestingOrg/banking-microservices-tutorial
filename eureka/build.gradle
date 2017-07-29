@@ -39,20 +39,3 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
-
-jar {
-    baseName = 'eureka-server'
-    version =  '0.1.0'
-    doFirst {
-        from {
-            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-        }
-    }
-    manifest {
-        attributes(
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': 'ultimatesoftware.banking.eureka.EurekaApplication'
-        )
-    }
-    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
-}
