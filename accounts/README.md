@@ -24,3 +24,14 @@ This service acts as the repository for customer information. It depends on the 
 
 ## Compile Jar
 * Double click 'jar' from the Gradle pane
+
+## Build Docker Image
+* Compile the jar
+* Excute the following
+```bash
+docker build -t account-server .
+```
+
+## Run Docker Image
+```bash
+docker run -d -p 8084:8084 account-server
