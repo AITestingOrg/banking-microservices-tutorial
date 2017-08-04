@@ -7,9 +7,10 @@ All services are built with Spring Boot, the configuration files are under /src/
 See each services readme for detailed requirement information
 ### Compose
 * https://docs.docker.com/compose/install/
+* /data/db directory created and accessible to "everyone"
 
 ## Unleash the Swarm
-Start the Eureka Service then
+** Build JARs for each project (You will need to build a JAR anytime changes are made to a project, then rebuild either the container or all containers)
 ```bash
 docker-compose up
 ```
