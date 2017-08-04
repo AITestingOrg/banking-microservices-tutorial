@@ -9,6 +9,7 @@ services:
     build: customers/
     depends_on:
       - eureka-server
+      - mongo
     ports:
       - "8081:8081"
 
@@ -16,6 +17,7 @@ services:
     build: accounts/
     depends_on:
       - eureka-server
+      - mongo
     ports:
       - "8084:8084"
 
@@ -23,5 +25,14 @@ services:
     build: transactions/
     depends_on:
       - eureka-server
+      - mongo
     ports:
       - "8085:8085"
+  mongo:
+    image: 'mongo:3.4.1'
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/db'
+volumes:
+  mongo:
