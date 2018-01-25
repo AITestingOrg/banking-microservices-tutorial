@@ -1,6 +1,6 @@
 package ultimatesoftware.banking.transactions.models;
 
-public class ActionResult {
+public abstract class ActionResult {
     private final String message;
 
     public ActionResult(String message) {
