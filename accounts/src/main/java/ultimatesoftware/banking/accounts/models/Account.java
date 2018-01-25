@@ -9,8 +9,7 @@ public class Account {
     public String customerId;
     public float balance;
 
-    public Account(){
-    }
+    public Account(){}
 
     public Account(String customerId, float balance){
         this.customerId = customerId;
