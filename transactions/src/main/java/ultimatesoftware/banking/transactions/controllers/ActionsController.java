@@ -18,7 +18,7 @@ public class ActionsController {
 
     @RequestMapping("/withdraw")
     public @ResponseBody String withdraw(@RequestHeader double amount, @RequestHeader String accountId, @RequestHeader String customerId) {
-        return transactionService.withdraw(accountId, customerId, amount).toString();
+        return transactionService.withdraw(customerId, accountId, amount).toString();
     }
 
     @RequestMapping("/deposit")
