@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: banking-customer
+  rabbitmq:
+      host: rabbitmq
+      port: 5672
+      username: guest
+      password: guest
+
+server:
+  port: 8081
+
+axon:
+  events-base-package: ultimatesoftware.banking.customers.domain.events
+  eventstore:
+    mongo:
+      connections:
+        default:
+          uri: mongodb://mongodb:27017/customers
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8080/eureka/v2/
+  instance:
+    hostname: ${spring.application.name}

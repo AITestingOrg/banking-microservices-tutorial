@@ -1,10 +1,10 @@
-package ultimatesoftware.banking.customers.controllers;
+package ultimatesoftware.banking.customers.service.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ultimatesoftware.banking.customers.models.Customer;
+import ultimatesoftware.banking.customers.domain.models.Customer;
 
 import java.util.List;
 
