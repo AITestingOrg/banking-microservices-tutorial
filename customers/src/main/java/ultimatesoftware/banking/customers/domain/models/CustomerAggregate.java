@@ -6,6 +6,7 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import ultimatesoftware.banking.customers.domain.commands.CreateCustomerCommand;
 import ultimatesoftware.banking.customers.domain.events.CustomerCreatedEvent;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
@@ -14,8 +15,10 @@ public class CustomerAggregate {
 
     @AggregateIdentifier
     private UUID id;
-    private String firstName = "";
-    private String lastName = "";
+    @NotNull
+    private String firstName;
+    @NotNull
+    private String lastName;
 
     @CommandHandler
     public CustomerAggregate(CreateCustomerCommand createCustomerCommand) {

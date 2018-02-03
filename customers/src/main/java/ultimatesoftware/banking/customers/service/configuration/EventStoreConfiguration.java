@@ -1,15 +1,22 @@
 package ultimatesoftware.banking.customers.service.configuration;
 
 import com.mongodb.MongoClient;
+import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
+import org.axonframework.eventsourcing.EventSourcingRepository;
+import org.axonframework.eventsourcing.eventstore.EmbeddedEventStore;
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
+import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.axonframework.mongo.DefaultMongoTemplate;
 import org.axonframework.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ultimatesoftware.banking.customers.domain.commands.CustomerCommandHandler;
+import ultimatesoftware.banking.customers.domain.eventhandlers.EventHandler;
+import ultimatesoftware.banking.customers.domain.models.CustomerAggregate;
 
 import java.net.UnknownHostException;
 
@@ -32,12 +39,33 @@ public class EventStoreConfiguration {
     }
 
     @Bean
-    public EventStorageEngine eventStore(MongoClient mongoClient) {
-        return new MongoEventStorageEngine(new DefaultMongoTemplate(mongoClient, database));
+    public EventStore eventStore(MongoClient mongoClient) {
+        EventStorageEngine eventStorageEngine = new MongoEventStorageEngine(new DefaultMongoTemplate(mongoClient, database));
+        return new EmbeddedEventStore(eventStorageEngine);
     }
 
     @Bean
-    public CommandGateway commandGateway() {
-        return new DefaultCommandGateway(new SimpleCommandBus());
+    public EventSourcingRepository<CustomerAggregate> eventRepository(EventStore eventStore) {
+        return new EventSourcingRepository<>(CustomerAggregate.class, eventStore);
+    }
+
+    @Bean
+    public CommandBus commandBus() {
+        return new SimpleCommandBus();
+    }
+
+    @Bean
+    public CommandGateway commandGateway(CommandBus commandBus) {
+        return new DefaultCommandGateway(commandBus);
+    }
+
+    @Bean
+    public CustomerCommandHandler bankAccountCommandHandler(EventSourcingRepository eventSourcingRepository, CommandBus commandBus) {
+        return new CustomerCommandHandler(eventSourcingRepository, commandBus);
+    }
+
+    @Bean
+    public EventHandler eventHandler(EventStore eventStore) {
+        return new EventHandler(eventStore);
     }
 }

@@ -1,11 +1,14 @@
 package ultimatesoftware.banking.customers.service.controllers;
 
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ultimatesoftware.banking.customers.domain.commands.CreateCustomerCommand;
 import ultimatesoftware.banking.customers.domain.models.CustomerAggregate;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -15,10 +18,13 @@ public class CustomerController {
     @Autowired
     private CustomerRepository repository;
 
+    @Autowired
+    private CommandGateway commandGateway;
+
     @PostMapping("customers")
     public @ResponseBody
-    CustomerAggregate addCustomer(@RequestBody CustomerAggregate customer){
-        repository.save(customer);
+    CustomerAggregate addCustomer(@Valid @RequestBody CustomerAggregate customer){
+        commandGateway.send(new CreateCustomerCommand(customer.getFirstName(), customer.getFirstName()));
 
         return customer;
     }

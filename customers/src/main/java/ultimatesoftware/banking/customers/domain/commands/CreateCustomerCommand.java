@@ -10,8 +10,8 @@ public class CreateCustomerCommand {
     private String firstName = "";
     private String lastName = "";
 
-    public CreateCustomerCommand(UUID id, String firstName, String lastName) {
-        this.id = id;
+    public CreateCustomerCommand(String firstName, String lastName) {
+        this.id = UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
     }
