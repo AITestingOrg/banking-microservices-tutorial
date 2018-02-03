@@ -1,16 +1,16 @@
-package ultimatesoftware.banking.customers.domain.events;
+package ultimatesoftware.banking.customers.domain.commands;
 
-import javax.validation.constraints.NotNull;
+import org.axonframework.commandhandling.TargetAggregateIdentifier;
+
 import java.util.UUID;
 
-public class CustomerCreatedEvent {
-    @NotNull
+public class CreateCustomerCommand {
+    @TargetAggregateIdentifier
     private UUID id;
-
     private String firstName = "";
     private String lastName = "";
 
-    public CustomerCreatedEvent(UUID id, String firstName, String lastName) {
+    public CreateCustomerCommand(UUID id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

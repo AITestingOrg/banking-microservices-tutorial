@@ -31,13 +31,10 @@ ext {
 
 dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
-	compile('org.mongojack:mongojack:2.7.0')
 	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile("org.axonframework:axon-core:${axonVersion}")
-	compile("org.axonframework:axon-amqp:${axonVersion}")
-    compile("org.axonframework:axon-spring-boot-starter:${axonVersion}")
-    compile("org.axonframework:eventsourcing:${axonVersion}")
+	compile("org.axonframework:axon-mongo:${axonVersion}")
 	testCompile("org.axonframework:axon-test:${axonVersion}")
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ultimatesoftware.banking.customers.domain.models.Customer;
+import ultimatesoftware.banking.customers.domain.models.CustomerAggregate;
 
 import java.util.List;
 
@@ -16,19 +16,21 @@ public class CustomerController {
     private CustomerRepository repository;
 
     @PostMapping("customers")
-    public @ResponseBody Customer addCustomer(@RequestBody Customer customer){
+    public @ResponseBody
+    CustomerAggregate addCustomer(@RequestBody CustomerAggregate customer){
         repository.save(customer);
 
         return customer;
     }
 
     @GetMapping("customers")
-    public @ResponseBody List<Customer> getCustomers(){
+    public @ResponseBody List<CustomerAggregate> getCustomers(){
         return repository.findAll();
     }
 
     @GetMapping("customers/{id}")
-    public @ResponseBody Customer getCustomer(@PathVariable("id") String id){
+    public @ResponseBody
+    CustomerAggregate getCustomer(@PathVariable("id") String id){
         return repository.findById(id);
     }
 
