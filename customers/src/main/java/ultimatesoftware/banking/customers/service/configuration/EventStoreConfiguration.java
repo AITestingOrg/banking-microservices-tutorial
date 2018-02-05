@@ -9,8 +9,10 @@ import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventsourcing.eventstore.EmbeddedEventStore;
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.axonframework.eventsourcing.eventstore.EventStore;
+import org.axonframework.messaging.interceptors.CorrelationDataInterceptor;
 import org.axonframework.mongo.DefaultMongoTemplate;
 import org.axonframework.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
+import org.axonframework.spring.config.AxonConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,8 +52,10 @@ public class EventStoreConfiguration {
     }
 
     @Bean
-    public CommandBus commandBus() {
-        return new SimpleCommandBus();
+    public CommandBus commandBus(AxonConfiguration axonConfiguration) {
+        SimpleCommandBus commandBus = new SimpleCommandBus();
+        commandBus.registerHandlerInterceptor(new CorrelationDataInterceptor<>(axonConfiguration.correlationDataProviders()));
+        return commandBus;
     }
 
     @Bean
