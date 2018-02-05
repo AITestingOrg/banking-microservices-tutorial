@@ -36,9 +36,8 @@ axon:
           aggregates:
             - CustomerAggregate
 amqp:
-    commands:
-      exchange-name: cmdBus
     events:
-      exchange-name: eventBus
-      queue-name: eventQueue
+      host: localhost
+      exchange-name: eventBus-${spring.application.name}
+      queue-name: eventQueue-${spring.application.name}
 

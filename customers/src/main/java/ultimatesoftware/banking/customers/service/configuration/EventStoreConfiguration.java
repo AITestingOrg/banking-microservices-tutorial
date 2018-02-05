@@ -1,6 +1,7 @@
 package ultimatesoftware.banking.customers.service.configuration;
 
 import com.mongodb.MongoClient;
+import org.axonframework.amqp.eventhandling.spring.SpringAMQPPublisher;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -12,12 +13,13 @@ import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.axonframework.messaging.interceptors.CorrelationDataInterceptor;
 import org.axonframework.mongo.DefaultMongoTemplate;
 import org.axonframework.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
+import org.axonframework.serialization.Serializer;
 import org.axonframework.spring.config.AxonConfiguration;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ultimatesoftware.banking.customers.domain.commands.CustomerCommandHandler;
-import ultimatesoftware.banking.customers.domain.eventhandlers.EventHandler;
 import ultimatesoftware.banking.customers.domain.models.CustomerAggregate;
 
 import java.net.UnknownHostException;
@@ -34,6 +36,8 @@ public class EventStoreConfiguration {
     private String database;
     @Value("${spring.data.mongodb.password}")
     private String password;
+    @Value("${amqp.events.exchange-name}")
+    protected String exchangeName;
 
     @Bean
     public MongoClient mongo() throws UnknownHostException {
@@ -69,7 +73,11 @@ public class EventStoreConfiguration {
     }
 
     @Bean
-    public EventHandler eventHandler(EventStore eventStore) {
-        return new EventHandler(eventStore);
+    public SpringAMQPPublisher springAMQPPublisher(EventStore eventStore, ConnectionFactory connectionFactory, Serializer serializer) {
+        SpringAMQPPublisher springAMQPPublisher = new SpringAMQPPublisher(eventStore);
+        springAMQPPublisher.setConnectionFactory(connectionFactory);
+        springAMQPPublisher.setExchangeName(exchangeName);
+        springAMQPPublisher.start();
+        return springAMQPPublisher;
     }
 }
