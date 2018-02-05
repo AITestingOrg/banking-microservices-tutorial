@@ -1,6 +1,7 @@
-package ultimatesoftware.banking.customers.service.configuration;
+package com.ultimatesoftware.banking.eventsourcing.configurations;
 
 import com.mongodb.MongoClient;
+import com.ultimatesoftware.banking.eventsourcing.handlers.CommandHandler;
 import org.axonframework.amqp.eventhandling.spring.SpringAMQPPublisher;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
@@ -18,14 +19,10 @@ import org.axonframework.spring.config.AxonConfiguration;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import ultimatesoftware.banking.customers.domain.commands.CustomerCommandHandler;
-import ultimatesoftware.banking.customers.domain.models.CustomerAggregate;
 
 import java.net.UnknownHostException;
 
-@Configuration
-public class EventStoreConfiguration {
+public abstract class EventStoreConfiguration<T, K extends CommandHandler<T>> {
     @Value("${spring.data.mongodb.host}")
     private String host;
     @Value("${spring.data.mongodb.port}")
@@ -39,6 +36,9 @@ public class EventStoreConfiguration {
     @Value("${amqp.events.exchange-name}")
     protected String exchangeName;
 
+    // todo: replace this with something more elgant
+    protected Class<T> type;
+
     @Bean
     public MongoClient mongo() throws UnknownHostException {
         return new MongoClient(host, port);
@@ -51,8 +51,8 @@ public class EventStoreConfiguration {
     }
 
     @Bean
-    public EventSourcingRepository<CustomerAggregate> eventRepository(EventStore eventStore) {
-        return new EventSourcingRepository<>(CustomerAggregate.class, eventStore);
+    public EventSourcingRepository<T> eventRepository(EventStore eventStore) {
+        return new EventSourcingRepository<>(type, eventStore);
     }
 
     @Bean
@@ -68,9 +68,7 @@ public class EventStoreConfiguration {
     }
 
     @Bean
-    public CustomerCommandHandler bankAccountCommandHandler(EventSourcingRepository eventSourcingRepository, CommandBus commandBus) {
-        return new CustomerCommandHandler(eventSourcingRepository, commandBus);
-    }
+    public abstract K commandHandler(EventSourcingRepository eventSourcingRepository, CommandBus commandBus);
 
     @Bean
     public SpringAMQPPublisher springAMQPPublisher(EventStore eventStore, ConnectionFactory connectionFactory, Serializer serializer) {

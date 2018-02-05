@@ -1,4 +1,3 @@
-
 dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
 	compile('org.mongojack:mongojack:2.7.0')

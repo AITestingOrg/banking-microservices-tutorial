@@ -16,7 +16,7 @@ allprojects {
 	}
 
     apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
+	apply plugin: 'org.springframework.boot'
 
 	ext {
 		springCloudVersion = 'Dalston.SR1'
