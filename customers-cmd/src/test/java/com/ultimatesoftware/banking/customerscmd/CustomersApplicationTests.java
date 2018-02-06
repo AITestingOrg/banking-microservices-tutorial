@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.customers;
+package com.ultimatesoftware.banking.customerscmd;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

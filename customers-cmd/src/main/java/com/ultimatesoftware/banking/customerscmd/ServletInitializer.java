@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.customers;
+package com.ultimatesoftware.banking.customerscmd;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
