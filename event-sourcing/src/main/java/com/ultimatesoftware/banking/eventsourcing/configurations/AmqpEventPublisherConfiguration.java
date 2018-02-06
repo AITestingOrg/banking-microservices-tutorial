@@ -21,35 +21,22 @@ import org.springframework.context.annotation.Bean;
 
 import java.net.UnknownHostException;
 
-public abstract class EventStoreConfiguration<T, K extends CustomCommandHandler<T>> {
-    @Value("${spring.data.mongodb.host}")
-    protected String host;
-    @Value("${spring.data.mongodb.port}")
-    protected Integer port;
-    @Value("${spring.data.mongodb.username}")
-    protected String username;
-    @Value("${spring.data.mongodb.database}")
-    protected String database;
-    @Value("${spring.data.mongodb.password}")
-    protected String password;
-    @Value("${amqp.events.exchange-name}")
-    protected String exchangeName;
-
+public abstract class AmqpEventPublisherConfiguration<T, K extends CustomCommandHandler<T>> extends AmqpConfiguration {
     // todo: replace this with something more elegant
     protected Class<T> type;
 
-    public EventStoreConfiguration(Class<T> type) {
+    public AmqpEventPublisherConfiguration(Class<T> type) {
         this.type = type;
     }
 
     @Bean
-    public MongoClient mongo() throws UnknownHostException {
-        return new MongoClient(host, port);
+    public EventStorageEngine eventStorageEngine(PropertiesConfiguration properties) {
+        MongoClient mongoClient = new MongoClient(properties.getEventStoreHost(), properties.getEventStorePort());
+        return new MongoEventStorageEngine(new DefaultMongoTemplate(mongoClient, properties.getEventStoreDatabase()));
     }
 
     @Bean
-    public EventStore eventStore(MongoClient mongoClient) {
-        EventStorageEngine eventStorageEngine = new MongoEventStorageEngine(new DefaultMongoTemplate(mongoClient, database));
+    public EventStore eventStore(EventStorageEngine eventStorageEngine) {
         return new EmbeddedEventStore(eventStorageEngine);
     }
 
@@ -74,10 +61,10 @@ public abstract class EventStoreConfiguration<T, K extends CustomCommandHandler<
     public abstract K commandHandler(EventSourcingRepository eventSourcingRepository, CommandBus commandBus);
 
     @Bean
-    public SpringAMQPPublisher springAMQPPublisher(EventStore eventStore, ConnectionFactory connectionFactory) {
+    public SpringAMQPPublisher springAMQPPublisher(EventStore eventStore, ConnectionFactory connectionFactory, PropertiesConfiguration properties) {
         SpringAMQPPublisher springAMQPPublisher = new SpringAMQPPublisher(eventStore);
         springAMQPPublisher.setConnectionFactory(connectionFactory);
-        springAMQPPublisher.setExchangeName(exchangeName);
+        springAMQPPublisher.setExchangeName(properties.getExchangeName());
         springAMQPPublisher.start();
         return springAMQPPublisher;
     }

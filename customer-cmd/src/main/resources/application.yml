@@ -37,4 +37,5 @@ amqp:
       host: localhost
       exchange-name: eventBus-customer
       queue-name: eventQueue-customer
+      handlers:
 
