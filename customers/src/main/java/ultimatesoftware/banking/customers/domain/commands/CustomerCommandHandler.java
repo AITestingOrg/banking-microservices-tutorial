@@ -1,7 +1,6 @@
 package ultimatesoftware.banking.customers.domain.commands;
 
 import com.ultimatesoftware.banking.eventsourcing.handlers.CommandHandler;
-import org.axonframework.commandhandling.AggregateAnnotationCommandHandler;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import ultimatesoftware.banking.customers.domain.models.CustomerAggregate;

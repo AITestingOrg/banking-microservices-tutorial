@@ -22,6 +22,8 @@ public class AmqpEventConfiguration {
     protected String exchangeName;
     @Value("${amqp.events.queue-name}")
     protected String queueName;
+    @Value("${amqp.events.handlers")
+    protected String eventHandlerPackage;
 
     @Bean
     public AmqpAdmin eventAdmin(ConnectionFactory connectionFactory) {
@@ -38,7 +40,7 @@ public class AmqpEventConfiguration {
     }
 
     @Bean
-    FanoutExchange eventExchange() {
+    public FanoutExchange eventExchange() {
 
         LOG.debug("EventExchange() <- getAmqpEventsInExchangeName={}", exchangeName);
 
@@ -56,7 +58,7 @@ public class AmqpEventConfiguration {
     }
 
     @Bean
-    Binding eventBinding() {
+    public Binding eventBinding() {
 
         LOG.debug("EventBinding() <- queueName={}, exchangeName={}",
                 exchangeName, exchangeName);
@@ -79,6 +81,6 @@ public class AmqpEventConfiguration {
 
     @Autowired
     public void registerEventProcessors(EventHandlingConfiguration config, SpringAMQPMessageSource source) {
-        config.registerSubscribingEventProcessor("ultimatesoftware.banking.customers.domain.eventhandlers", c -> source);
+        config.registerSubscribingEventProcessor(eventHandlerPackage, c -> source);
     }
 }

@@ -14,7 +14,6 @@ import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.axonframework.messaging.interceptors.CorrelationDataInterceptor;
 import org.axonframework.mongo.DefaultMongoTemplate;
 import org.axonframework.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
-import org.axonframework.serialization.Serializer;
 import org.axonframework.spring.config.AxonConfiguration;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,20 +23,24 @@ import java.net.UnknownHostException;
 
 public abstract class EventStoreConfiguration<T, K extends CommandHandler<T>> {
     @Value("${spring.data.mongodb.host}")
-    private String host;
+    protected String host;
     @Value("${spring.data.mongodb.port}")
-    private Integer port;
+    protected Integer port;
     @Value("${spring.data.mongodb.username}")
-    private String username;
+    protected String username;
     @Value("${spring.data.mongodb.database}")
-    private String database;
+    protected String database;
     @Value("${spring.data.mongodb.password}")
-    private String password;
+    protected String password;
     @Value("${amqp.events.exchange-name}")
     protected String exchangeName;
 
-    // todo: replace this with something more elgant
+    // todo: replace this with something more elegant
     protected Class<T> type;
+
+    public EventStoreConfiguration(Class<T> type) {
+        this.type = type;
+    }
 
     @Bean
     public MongoClient mongo() throws UnknownHostException {
@@ -71,7 +74,7 @@ public abstract class EventStoreConfiguration<T, K extends CommandHandler<T>> {
     public abstract K commandHandler(EventSourcingRepository eventSourcingRepository, CommandBus commandBus);
 
     @Bean
-    public SpringAMQPPublisher springAMQPPublisher(EventStore eventStore, ConnectionFactory connectionFactory, Serializer serializer) {
+    public SpringAMQPPublisher springAMQPPublisher(EventStore eventStore, ConnectionFactory connectionFactory) {
         SpringAMQPPublisher springAMQPPublisher = new SpringAMQPPublisher(eventStore);
         springAMQPPublisher.setConnectionFactory(connectionFactory);
         springAMQPPublisher.setExchangeName(exchangeName);

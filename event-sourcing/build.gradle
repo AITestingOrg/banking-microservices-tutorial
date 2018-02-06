@@ -1,3 +1,16 @@
+buildscript {
+    ext {
+        depManagementVersion = '1.0.4.RELEASE'
+    }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:${depManagementVersion}"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-amqp')
@@ -9,4 +22,10 @@ dependencies {
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     testCompile("org.axonframework:axon-test:${axonVersion}")
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+    }
 }

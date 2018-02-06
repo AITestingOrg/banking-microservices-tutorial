@@ -40,4 +40,5 @@ amqp:
       host: localhost
       exchange-name: eventBus-${spring.application.name}
       queue-name: eventQueue-${spring.application.name}
+      handlers: ultimatesoftware.banking.customers.domain.eventhandlers
 
