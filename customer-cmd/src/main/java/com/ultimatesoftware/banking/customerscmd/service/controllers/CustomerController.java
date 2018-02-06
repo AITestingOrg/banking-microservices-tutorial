@@ -30,17 +30,6 @@ public class CustomerController {
         commandGateway.send(new UpdateCustomerCommand(customer.getId(), customer.getFirstName(), customer.getLastName()));
     }
 
-    @GetMapping("customers")
-    public @ResponseBody List<Customer> getCustomers(){
-        return new ArrayList<>();
-    }
-
-    @GetMapping("customers/{id}")
-    public @ResponseBody
-    Customer getCustomer(@PathVariable("id") String id){
-        return new Customer();
-    }
-
     @DeleteMapping("customers/{id}")
     public @ResponseBody void deleteCustomer(@PathVariable("id") UUID id){
         commandGateway.send(new DeleteCustomerCommand(id));

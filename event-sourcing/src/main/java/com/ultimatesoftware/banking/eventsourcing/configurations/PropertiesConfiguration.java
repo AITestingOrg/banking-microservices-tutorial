@@ -1,5 +1,8 @@
 package com.ultimatesoftware.banking.eventsourcing.configurations;
 
+/**
+ * Stores the current configuration in constants for use with annotation expressions.
+ */
 public class PropertiesConfiguration {
     private final String eventStoreHost;
     private final Integer eventStorePort;
@@ -19,34 +22,65 @@ public class PropertiesConfiguration {
         this.amqpHost = amqpHost;
     }
 
+    /**
+     * Returns the EventStore Database host
+     * @return the EventStore Database host
+     */
     public String getEventStoreHost() {
         return eventStoreHost;
     }
 
+    /**
+     * Returns the EventStore Database port
+     * @return the EventStore Database port
+     */
     public Integer getEventStorePort() {
         return eventStorePort;
     }
 
+    /**
+     * Returns the EventStore Database name
+     * @return the EventStore Database name
+     */
     public String getEventStoreDatabase() {
         return eventStoreDatabase;
     }
 
+    /**
+     * Returns the EventBus exchange name
+     * @return the EventBus exchange name
+     */
     public String getExchangeName() {
         return exchangeName;
     }
 
+    /**
+     * Returns the EventBus queue name
+     * @return the EventBus queue name
+     */
     public String getQueueName() {
         return queueName;
     }
 
+    /**
+     * Returns the package containing the event handlers
+     * @return the package containing the event handlers
+     */
     public String getEventHandlerPackage() {
         return eventHandlerPackage;
     }
 
+    /**
+     * Returns the RabbitMQ host
+     * @return the RabbitMQ host
+     */
     public String getAmqpHost() {
         return amqpHost;
     }
 
+    /**
+     * Builder for creating PropertyConfigurations.
+     */
     public static class PropertiesBuilder {
         private String eventStoreHost;
         private Integer eventStorePort;

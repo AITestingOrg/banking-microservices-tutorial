@@ -16,15 +16,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
+/**
+ * The AMQP Event Subscription Configuration binds the event handlers to an AMQP event queue for a configured
+ * exchange.
+ */
 public class AmqpEventSubscriptionConfiguration extends AmqpConfiguration {
 
     protected static final Logger LOG = LoggerFactory.getLogger(AmqpEventSubscriptionConfiguration.class);
 
+    /**
+     * Configures the AMQPAdmin or portable administration options for RabbitMQ.
+     * @param connectionFactory Provided ConnectionFactory
+     * @param properties Provided PropertiesConfiguration
+     * @return the configured AMQPAdmin
+     */
     @Bean
     public AmqpAdmin eventAdmin(ConnectionFactory connectionFactory, PropertiesConfiguration properties) {
         LOG.debug("eventAdmin(connectionFactory={})", connectionFactory);
-        RabbitAdmin admin;
-        admin = new RabbitAdmin(connectionFactory);
+        RabbitAdmin admin = new RabbitAdmin(connectionFactory);
         admin.setAutoStartup(true);
         admin.declareExchange(eventExchange(properties));
         admin.declareQueue(eventQueue(properties));
@@ -32,6 +41,11 @@ public class AmqpEventSubscriptionConfiguration extends AmqpConfiguration {
         return admin;
     }
 
+    /**
+     * Configures a fanout Exchange so that all events received are sent to all known queues.
+     * @param properties Provided PropertiesConfiguration
+     * @return configured fanout Exchange
+     */
     @Bean
     public FanoutExchange eventExchange(PropertiesConfiguration properties) {
 
@@ -41,6 +55,11 @@ public class AmqpEventSubscriptionConfiguration extends AmqpConfiguration {
         return exchange;
     }
 
+    /**
+     * Configures the event queue.
+     * @param properties Provided PropertiesConfiguration
+     * @return The configured event queue.
+     */
     @Bean
     public Queue eventQueue(PropertiesConfiguration properties) {
 
@@ -50,6 +69,11 @@ public class AmqpEventSubscriptionConfiguration extends AmqpConfiguration {
         return queue;
     }
 
+    /**
+     * Binds the queue to the exchange.
+     * @param properties PropertiesConfiguration
+     * @return Binding for AMQP
+     */
     @Bean
     public Binding eventBinding(PropertiesConfiguration properties) {
 
@@ -61,6 +85,14 @@ public class AmqpEventSubscriptionConfiguration extends AmqpConfiguration {
         return binding;
     }
 
+    /**
+     * Configures the event lister for the provided queue. The SpringAMQPMessageSource
+     * will forward events to whatever the EventHandlingConfiguration dictates.
+     * @param serializer Provided serializer, defaults to Jackson
+     * @return returns the configured SpringAMQPMessageSource
+     * todo: if the expression can be implemented differently on the RabbitMQ listener then
+     * the PropertiesConfiguration class can be removed.
+     */
     @Bean
     public SpringAMQPMessageSource eventMessageSource(Serializer serializer) {
         return  new SpringAMQPMessageSource(serializer) {
@@ -72,6 +104,13 @@ public class AmqpEventSubscriptionConfiguration extends AmqpConfiguration {
         };
     }
 
+    /**
+     * Registers the event handler's package name for scanning @EventHandler annotations to be bound
+     * to the SpringAMQPMessageSource.
+     * @param config Provided EventHandlingConfiguration
+     * @param source Configured SpringAMQPMessageSource
+     * @param properties Provided PropertiesConfiguration
+     */
     @Autowired
     public void registerEventProcessors(EventHandlingConfiguration config, SpringAMQPMessageSource source, PropertiesConfiguration properties) {
         config.registerSubscribingEventProcessor(properties.getEventHandlerPackage(), c -> source);
