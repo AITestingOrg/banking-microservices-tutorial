@@ -1,7 +1,7 @@
 package com.ultimatesoftware.banking.eventsourcing.configurations;
 
 import com.mongodb.MongoClient;
-import com.ultimatesoftware.banking.eventsourcing.handlers.CommandHandler;
+import com.ultimatesoftware.banking.eventsourcing.handlers.CustomCommandHandler;
 import org.axonframework.amqp.eventhandling.spring.SpringAMQPPublisher;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.net.UnknownHostException;
 
-public abstract class EventStoreConfiguration<T, K extends CommandHandler<T>> {
+public abstract class EventStoreConfiguration<T, K extends CustomCommandHandler<T>> {
     @Value("${spring.data.mongodb.host}")
     protected String host;
     @Value("${spring.data.mongodb.port}")

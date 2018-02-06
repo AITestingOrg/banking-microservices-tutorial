@@ -4,14 +4,14 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class CreateCustomerCommand {
+public class UpdateCustomerCommand {
     @TargetAggregateIdentifier
     private UUID id;
     private String firstName;
     private String lastName;
 
-    public CreateCustomerCommand(String firstName, String lastName) {
-        this.id = UUID.randomUUID();
+    public UpdateCustomerCommand(UUID id, String firstName, String lastName) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }

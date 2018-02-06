@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ultimatesoftware.banking.customers.domain.commands.CreateCustomerCommand;
 import ultimatesoftware.banking.customers.domain.events.CustomerCreatedEvent;
-import ultimatesoftware.banking.customers.domain.models.CustomerAggregate;
+import ultimatesoftware.banking.customers.domain.aggregates.Customer;
 
 import java.util.UUID;
 
@@ -17,11 +17,11 @@ import java.util.UUID;
 @SpringBootTest
 public class CommandConfigurationTest {
 
-    private FixtureConfiguration<CustomerAggregate> fixture;
+    private FixtureConfiguration<Customer> fixture;
 
     @Before
     public void setUp() throws Exception {
-        fixture = new AggregateTestFixture<CustomerAggregate>(CustomerAggregate.class);
+        fixture = new AggregateTestFixture<Customer>(Customer.class);
     }
 
     @Test

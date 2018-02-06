@@ -1,8 +1,9 @@
-package ultimatesoftware.banking.customers.domain.models;
+package ultimatesoftware.banking.customers.domain.aggregates;
 
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.spring.stereotype.Aggregate;
 import ultimatesoftware.banking.customers.domain.commands.CreateCustomerCommand;
 import ultimatesoftware.banking.customers.domain.events.CustomerCreatedEvent;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
+@Aggregate
 public class CustomerAggregate {
 
     @AggregateIdentifier

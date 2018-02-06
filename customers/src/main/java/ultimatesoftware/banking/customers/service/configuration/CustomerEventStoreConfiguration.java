@@ -5,14 +5,14 @@ import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ultimatesoftware.banking.customers.domain.commands.CustomerCommandHandler;
-import ultimatesoftware.banking.customers.domain.models.CustomerAggregate;
+import ultimatesoftware.banking.customers.domain.CustomerCommandHandler;
+import ultimatesoftware.banking.customers.domain.aggregates.Customer;
 
 
 @Configuration
-public class CustomerEventStoreConfiguration extends EventStoreConfiguration<CustomerAggregate, CustomerCommandHandler> {
+public class CustomerEventStoreConfiguration extends EventStoreConfiguration<Customer, CustomerCommandHandler> {
     public CustomerEventStoreConfiguration() {
-        super(CustomerAggregate.class);
+        super(Customer.class);
     }
 
     @Override

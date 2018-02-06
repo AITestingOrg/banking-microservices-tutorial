@@ -4,11 +4,11 @@ import org.axonframework.commandhandling.AggregateAnnotationCommandHandler;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 
-public abstract class CommandHandler<T> {
+public abstract class CustomCommandHandler<T> {
     protected AggregateAnnotationCommandHandler<T> handler;
     protected CommandBus commandBus;
 
-    public CommandHandler(EventSourcingRepository repository, CommandBus commandBus, Class<T> type) {
+    public CustomCommandHandler(EventSourcingRepository repository, CommandBus commandBus, Class<T> type) {
          handler = new AggregateAnnotationCommandHandler<T>(type, repository);
          this.commandBus = commandBus;
     }
