@@ -1,5 +1,8 @@
-package ultimatesoftware.banking.customers.commands;
+package com.ultimatesoftware.banking.customerscmd.commands;
 
+import com.ultimatesoftware.banking.customerscmd.domain.aggregates.Customer;
+import com.ultimatesoftware.banking.customerscmd.domain.commands.CreateCustomerCommand;
+import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerCreatedEvent;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.Before;
@@ -7,9 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import ultimatesoftware.banking.customers.domain.commands.CreateCustomerCommand;
-import ultimatesoftware.banking.customers.domain.events.CustomerCreatedEvent;
-import ultimatesoftware.banking.customers.domain.aggregates.Customer;
 
 import java.util.UUID;
 

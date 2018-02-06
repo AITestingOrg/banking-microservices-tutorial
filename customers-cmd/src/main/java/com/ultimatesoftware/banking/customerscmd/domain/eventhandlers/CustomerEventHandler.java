@@ -1,13 +1,13 @@
-package ultimatesoftware.banking.customers.domain.eventhandlers;
+package com.ultimatesoftware.banking.customerscmd.domain.eventhandlers;
 
+import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerCreatedEvent;
+import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerDeletedEvent;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ultimatesoftware.banking.customers.domain.events.CustomerCreatedEvent;
-import ultimatesoftware.banking.customers.domain.events.CustomerDeletedEvent;
-import ultimatesoftware.banking.customers.domain.events.CustomerUpdatedEvent;
-import ultimatesoftware.banking.customers.service.configuration.CustomerAmqpEventConfiguration;
+import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerUpdatedEvent;
+import com.ultimatesoftware.banking.customerscmd.service.configuration.CustomerAmqpEventConfiguration;
 
 @Component
 public class CustomerEventHandler {

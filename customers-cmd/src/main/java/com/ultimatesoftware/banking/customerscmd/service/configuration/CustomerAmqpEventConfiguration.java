@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.customers.service.configuration;
+package com.ultimatesoftware.banking.customerscmd.service.configuration;
 
 import com.ultimatesoftware.banking.eventsourcing.configurations.AmqpEventConfiguration;
 import org.springframework.context.annotation.Configuration;

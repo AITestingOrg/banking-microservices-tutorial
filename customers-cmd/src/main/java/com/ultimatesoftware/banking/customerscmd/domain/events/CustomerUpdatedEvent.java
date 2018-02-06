@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.customers.domain.events;
+package com.ultimatesoftware.banking.customerscmd.domain.events;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;

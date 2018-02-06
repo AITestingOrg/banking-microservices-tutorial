@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.customers.domain.commands;
+package com.ultimatesoftware.banking.customerscmd.domain.commands;
 
 import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
