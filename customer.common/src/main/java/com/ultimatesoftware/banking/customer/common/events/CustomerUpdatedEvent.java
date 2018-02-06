@@ -1,16 +1,14 @@
-package com.ultimatesoftware.banking.customerscmd.domain.events;
+package com.ultimatesoftware.banking.customer.common.events;
 
-import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-public class CustomerCreatedEvent {
-    @NotNull
+public class CustomerUpdatedEvent {
     private UUID id;
 
     private String firstName = "";
     private String lastName = "";
 
-    public CustomerCreatedEvent(UUID id, String firstName, String lastName) {
+    public CustomerUpdatedEvent(UUID id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

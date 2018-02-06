@@ -5,8 +5,6 @@ spring:
       database: customersquery
       host: localhost
       port: 27017
-      username:
-      password:
   application:
     name: customers-query
   rabbitmq:
@@ -26,7 +24,7 @@ eureka:
 amqp:
     events:
       host: localhost
-      exchange-name: eventBus-customers
-      queue-name: eventQueue-customers
+      exchange-name: eventBus-customer
+      queue-name: eventQueue-customer
       handlers: com.ultimatesoftware.banking.customerquery.domain.eventhandlers
 

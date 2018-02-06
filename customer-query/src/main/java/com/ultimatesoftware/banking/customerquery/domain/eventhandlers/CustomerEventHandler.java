@@ -1,8 +1,9 @@
 package com.ultimatesoftware.banking.customerquery.domain.eventhandlers;
 
-import com.ultimatesoftware.banking.customerquery.domain.events.CustomerCreatedEvent;
-import com.ultimatesoftware.banking.customerquery.domain.events.CustomerDeletedEvent;
-import com.ultimatesoftware.banking.customerquery.domain.events.CustomerUpdatedEvent;
+import com.ultimatesoftware.banking.customer.common.events.CustomerCreatedEvent;
+import com.ultimatesoftware.banking.customer.common.events.CustomerDeletedEvent;
+import com.ultimatesoftware.banking.customer.common.events.CustomerUpdatedEvent;
+import com.ultimatesoftware.banking.customerquery.domain.models.Customer;
 import com.ultimatesoftware.banking.customerquery.service.repositories.CustomerRepository;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
@@ -20,15 +21,18 @@ public class CustomerEventHandler {
     @EventHandler
     public void handle(CustomerCreatedEvent event) {
         LOG.info(String.format("Customer Created: %s %s ID: %s", event.getFirstName(), event.getLastName(), event.getId()));
+        customerRepository.save(new Customer(event.getId(), event.getFirstName(), event.getLastName()));
     }
 
     @EventHandler
     public void handle(CustomerUpdatedEvent event) {
         LOG.info(String.format("Customer Updated: %s %s ID: %s", event.getFirstName(), event.getLastName(), event.getId()));
+       customerRepository.save(new Customer(event.getId(), event.getFirstName(), event.getLastName()));
     }
 
     @EventHandler
     public void handle(CustomerDeletedEvent event) {
         LOG.info(String.format("Customer Deleted %s", event.getId()));
+        customerRepository.delete(event.getId().toString());
     }
 }

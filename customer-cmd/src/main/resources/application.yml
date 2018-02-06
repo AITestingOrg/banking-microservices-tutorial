@@ -35,6 +35,6 @@ axon:
 amqp:
     events:
       host: localhost
-      exchange-name: eventBus-customers
-      queue-name: eventQueue-customers
+      exchange-name: eventBus-customer
+      queue-name: eventQueue-customer
 

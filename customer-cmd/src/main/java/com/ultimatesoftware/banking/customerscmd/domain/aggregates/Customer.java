@@ -1,15 +1,15 @@
 package com.ultimatesoftware.banking.customerscmd.domain.aggregates;
 
+import com.ultimatesoftware.banking.customer.common.events.CustomerCreatedEvent;
+import com.ultimatesoftware.banking.customer.common.events.CustomerDeletedEvent;
+import com.ultimatesoftware.banking.customer.common.events.CustomerUpdatedEvent;
 import com.ultimatesoftware.banking.customerscmd.domain.commands.UpdateCustomerCommand;
-import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerCreatedEvent;
-import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerDeletedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 import com.ultimatesoftware.banking.customerscmd.domain.commands.CreateCustomerCommand;
 import com.ultimatesoftware.banking.customerscmd.domain.commands.DeleteCustomerCommand;
-import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerUpdatedEvent;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;

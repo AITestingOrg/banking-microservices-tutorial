@@ -22,7 +22,7 @@ public class AmqpEventConfiguration {
     protected String exchangeName;
     @Value("${amqp.events.queue-name}")
     protected String queueName;
-    @Value("${amqp.events.handlers")
+    @Value("${amqp.events.handlers}")
     protected String eventHandlerPackage;
 
     @Bean
@@ -71,7 +71,7 @@ public class AmqpEventConfiguration {
     @Bean
     public SpringAMQPMessageSource eventMessageSource(Serializer serializer) {
         return  new SpringAMQPMessageSource(serializer) {
-            @RabbitListener(queues = "eventQueue-customers")
+            @RabbitListener(queues = "eventQueue-customer")
             @Override
             public void onMessage(Message message, Channel channel) throws Exception {
                 super.onMessage(message, channel);

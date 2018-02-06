@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class Customer {
     @Id
-    private final UUID id;
+    private UUID id;
     @NotNull
     private final String firstName;
     @NotNull
@@ -18,6 +18,7 @@ public class Customer {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
 
     public UUID getId() {
         return id;

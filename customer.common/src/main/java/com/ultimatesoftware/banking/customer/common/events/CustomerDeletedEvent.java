@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customerquery.domain.events;
+package com.ultimatesoftware.banking.customer.common.events;
 
 import java.util.UUID;
 
