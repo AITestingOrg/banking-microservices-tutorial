@@ -1,17 +1,21 @@
-package com.ultimatesoftware.banking.customerscmd.domain.eventhandlers;
+package com.ultimatesoftware.banking.customerquery.domain.eventhandlers;
 
-import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerCreatedEvent;
-import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerDeletedEvent;
+import com.ultimatesoftware.banking.customerquery.domain.events.CustomerCreatedEvent;
+import com.ultimatesoftware.banking.customerquery.domain.events.CustomerDeletedEvent;
+import com.ultimatesoftware.banking.customerquery.domain.events.CustomerUpdatedEvent;
+import com.ultimatesoftware.banking.customerquery.service.repositories.CustomerRepository;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.ultimatesoftware.banking.customerscmd.domain.events.CustomerUpdatedEvent;
-import com.ultimatesoftware.banking.customerscmd.service.configuration.CustomerAmqpEventConfiguration;
 
 @Component
 public class CustomerEventHandler {
-    protected static final Logger LOG = LoggerFactory.getLogger(CustomerAmqpEventConfiguration.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(CustomerEventHandler.class);
+
+    @Autowired
+    CustomerRepository customerRepository;
 
     @EventHandler
     public void handle(CustomerCreatedEvent event) {

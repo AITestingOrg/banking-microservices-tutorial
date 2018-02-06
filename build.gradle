@@ -3,9 +3,10 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project('customers')
+    compile project('customer-cmd')
     compile project('accounts')
     compile project('transactions')
+    compile project('customer-query')
 }
 
 allprojects {

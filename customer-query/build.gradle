@@ -1,13 +1,28 @@
-version 'unspecified'
+apply plugin: 'org.springframework.boot'
 
-apply plugin: 'java'
+ext {
+	springCloudVersion = 'Dalston.SR1'
+}
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
+configurations {
+	providedRuntime
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+dependencies {
+	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile project(":event-sourcing")
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 //@EnableEurekaClient
-public class CustomersApplication {
+public class CustomercmdApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CustomersApplication.class, args);
+		SpringApplication.run(CustomercmdApplication.class, args);
 	}
 }
