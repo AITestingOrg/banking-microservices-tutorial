@@ -5,15 +5,20 @@ import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 import ultimatesoftware.banking.customers.domain.commands.CreateCustomerCommand;
+import ultimatesoftware.banking.customers.domain.commands.DeleteCustomerCommand;
+import ultimatesoftware.banking.customers.domain.commands.UpdateCustomerCommand;
 import ultimatesoftware.banking.customers.domain.events.CustomerCreatedEvent;
+import ultimatesoftware.banking.customers.domain.events.CustomerDeletedEvent;
+import ultimatesoftware.banking.customers.domain.events.CustomerUpdatedEvent;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
+import static org.axonframework.commandhandling.model.AggregateLifecycle.markDeleted;
 
 @Aggregate
-public class CustomerAggregate {
+public class Customer {
 
     @AggregateIdentifier
     private UUID id;
@@ -23,7 +28,7 @@ public class CustomerAggregate {
     private String lastName;
 
     @CommandHandler
-    public CustomerAggregate(CreateCustomerCommand createCustomerCommand) {
+    public Customer(CreateCustomerCommand createCustomerCommand) {
         apply(new CustomerCreatedEvent(createCustomerCommand.getId(), createCustomerCommand.getFirstName(), createCustomerCommand.getLastName()));
     }
 
@@ -34,13 +39,13 @@ public class CustomerAggregate {
         lastName = event.getLastName();
     }
 
-    public CustomerAggregate(UUID id, String firstName, String lastName) {
+    public Customer(UUID id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public CustomerAggregate() {}
+    public Customer() {}
 
     public UUID getId() {
         return id;
@@ -52,5 +57,26 @@ public class CustomerAggregate {
 
     public String getLastName() {
         return lastName;
+    }
+
+    @CommandHandler
+    public void on(DeleteCustomerCommand command) {
+        apply(new CustomerDeletedEvent(id));
+    }
+
+    @CommandHandler
+    public void on(UpdateCustomerCommand command) {
+        apply(new CustomerUpdatedEvent(command.getId(), command.getFirstName(), command.getLastName()));
+    }
+
+    @EventSourcingHandler
+    public void on(CustomerDeletedEvent event) {
+        markDeleted();
+    }
+
+    @EventSourcingHandler
+    public void on(CustomerUpdatedEvent event) {
+        firstName = event.getFirstName();
+        lastName = event.getLastName();
     }
 }
