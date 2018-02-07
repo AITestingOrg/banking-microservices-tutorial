@@ -19,7 +19,6 @@ public class Customer {
         this.lastName = lastName;
     }
 
-
     public UUID getId() {
         return id;
     }

@@ -25,5 +25,6 @@ dependencies {
 	compile project(":event-sourcing")
 	compile project(":customer.common")
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	testCompile("org.axonframework:axon-test:${axonVersion}")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

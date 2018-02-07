@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.ultimatesoftware.banking.customerscmd.domain.aggregates.Customer;
 
-
 @Configuration
 public class CustomerEventStoreConfiguration extends AmqpEventPublisherConfiguration<Customer, CustomerCommandHandler> {
     public CustomerEventStoreConfiguration() {
