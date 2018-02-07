@@ -5,13 +5,21 @@ services:
     ports:
       - "8761:8761"
 
-  customer-server:
-    build: customers/
+  customer-query:
+    build: customers-query/
     depends_on:
       - eureka-server
       - mongo
     ports:
-      - "8081:8081"
+      - "8082:8082"
+
+  customer-cmd:
+      build: customers-cmd/
+      depends_on:
+        - eureka-server
+        - mongo
+      ports:
+        - "8081:8081"
 
   account-server:
     build: accounts/
@@ -34,5 +42,10 @@ services:
       - '27017:27017'
     volumes:
       - 'mongo:/data/db'
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 volumes:
   mongo:

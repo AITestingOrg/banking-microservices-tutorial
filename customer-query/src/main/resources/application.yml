@@ -1,0 +1,30 @@
+# Mongo config
+spring:
+  data:
+    mongodb:
+      database: customersquery
+      host: localhost
+      port: 27017
+  application:
+    name: customers-query
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+
+server:
+  port: 8082
+
+# Service Discovery Config
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://eureka-server:8761/eureka}
+  instance:
+    preferIpAddress: true
+
+amqp:
+    events:
+      host: localhost
+      exchange-name: eventBus-customer
+      queue-name: eventQueue-customer
+      handlers: com.ultimatesoftware.banking.customerquery.domain.eventhandlers
+

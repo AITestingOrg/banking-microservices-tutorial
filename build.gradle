@@ -1,0 +1,29 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project('customer-cmd')
+    compile project('accounts')
+    compile project('transactions')
+    compile project('customer-query')
+}
+
+allprojects {
+	repositories {
+		mavenCentral()
+	}
+
+    apply plugin: 'java'
+}
+
+buildscript {
+	ext {
+		springBootVersion = '1.5.4.RELEASE'
+		axonVersion = '3.1.2'
+	}
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}

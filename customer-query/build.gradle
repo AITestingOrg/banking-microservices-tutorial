@@ -20,9 +20,11 @@ dependencyManagement {
 
 dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
-	compile('org.mongojack:mongojack:2.7.0')
 	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile project(":event-sourcing")
+	compile project(":customer.common")
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	testCompile("org.axonframework:axon-test:${axonVersion}")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
