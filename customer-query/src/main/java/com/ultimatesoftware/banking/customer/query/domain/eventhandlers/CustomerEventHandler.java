@@ -1,10 +1,10 @@
-package com.ultimatesoftware.banking.customerquery.domain.eventhandlers;
+package com.ultimatesoftware.banking.customer.query.domain.eventhandlers;
 
 import com.ultimatesoftware.banking.customer.common.events.CustomerCreatedEvent;
 import com.ultimatesoftware.banking.customer.common.events.CustomerDeletedEvent;
 import com.ultimatesoftware.banking.customer.common.events.CustomerUpdatedEvent;
-import com.ultimatesoftware.banking.customerquery.domain.models.Customer;
-import com.ultimatesoftware.banking.customerquery.service.repositories.CustomerRepository;
+import com.ultimatesoftware.banking.customer.query.domain.models.Customer;
+import com.ultimatesoftware.banking.customer.query.service.repositories.CustomerRepository;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

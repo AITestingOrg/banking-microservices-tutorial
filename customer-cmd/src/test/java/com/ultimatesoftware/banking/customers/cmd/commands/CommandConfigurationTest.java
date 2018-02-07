@@ -1,13 +1,12 @@
-package com.ultimatesoftware.banking.customerscmd.commands;
+package com.ultimatesoftware.banking.customers.cmd.commands;
 
-import com.rabbitmq.client.Command;
 import com.ultimatesoftware.banking.customer.common.events.CustomerCreatedEvent;
 import com.ultimatesoftware.banking.customer.common.events.CustomerDeletedEvent;
 import com.ultimatesoftware.banking.customer.common.events.CustomerUpdatedEvent;
-import com.ultimatesoftware.banking.customerscmd.domain.aggregates.Customer;
-import com.ultimatesoftware.banking.customerscmd.domain.commands.CreateCustomerCommand;
-import com.ultimatesoftware.banking.customerscmd.domain.commands.DeleteCustomerCommand;
-import com.ultimatesoftware.banking.customerscmd.domain.commands.UpdateCustomerCommand;
+import com.ultimatesoftware.banking.customers.cmd.domain.aggregates.Customer;
+import com.ultimatesoftware.banking.customers.cmd.domain.commands.DeleteCustomerCommand;
+import com.ultimatesoftware.banking.customers.cmd.domain.commands.UpdateCustomerCommand;
+import com.ultimatesoftware.banking.customers.cmd.domain.commands.CreateCustomerCommand;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.Before;

@@ -1,17 +1,15 @@
-package com.ultimatesoftware.banking.customerscmd.service.controllers;
+package com.ultimatesoftware.banking.customers.cmd.service.controllers;
 
+import com.ultimatesoftware.banking.customers.cmd.domain.aggregates.Customer;
+import com.ultimatesoftware.banking.customers.cmd.domain.commands.DeleteCustomerCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.ultimatesoftware.banking.customerscmd.domain.commands.CreateCustomerCommand;
-import com.ultimatesoftware.banking.customerscmd.domain.aggregates.Customer;
-import com.ultimatesoftware.banking.customerscmd.domain.commands.DeleteCustomerCommand;
-import com.ultimatesoftware.banking.customerscmd.domain.commands.UpdateCustomerCommand;
+import com.ultimatesoftware.banking.customers.cmd.domain.commands.CreateCustomerCommand;
+import com.ultimatesoftware.banking.customers.cmd.domain.commands.UpdateCustomerCommand;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Controller

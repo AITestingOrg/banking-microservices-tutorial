@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customerquery.domain.models;
+package com.ultimatesoftware.banking.customer.query.domain.models;
 
 import org.springframework.data.annotation.Id;
 

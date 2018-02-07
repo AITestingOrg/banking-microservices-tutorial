@@ -1,12 +1,12 @@
-package com.ultimatesoftware.banking.customerscmd.service.configuration;
+package com.ultimatesoftware.banking.customers.cmd.service.configuration;
 
-import com.ultimatesoftware.banking.customerscmd.domain.CustomerCommandHandler;
+import com.ultimatesoftware.banking.customers.cmd.domain.aggregates.Customer;
+import com.ultimatesoftware.banking.customers.cmd.domain.CustomerCommandHandler;
 import com.ultimatesoftware.banking.eventsourcing.configurations.AmqpEventPublisherConfiguration;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.ultimatesoftware.banking.customerscmd.domain.aggregates.Customer;
 
 @Configuration
 public class CustomerEventStoreConfiguration extends AmqpEventPublisherConfiguration<Customer, CustomerCommandHandler> {
