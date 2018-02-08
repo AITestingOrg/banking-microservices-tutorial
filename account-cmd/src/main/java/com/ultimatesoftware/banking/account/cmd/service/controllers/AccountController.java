@@ -1,49 +1,52 @@
-package com.ultimatesoftware.banking.account.cmd.controllers;
+package com.ultimatesoftware.banking.account.cmd.service.controllers;
 
+import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
+import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
+import com.ultimatesoftware.banking.account.cmd.domain.models.Debit;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.ultimatesoftware.banking.account.cmd.models.Account;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("api")
-@EnableMongoRepositories
 public class AccountController {
     @Autowired
-    private AccountRepository repository;
+    private CommandGateway commandGateway;
 
     @PostMapping("accounts")
-    public @ResponseBody Account addAccount(@RequestBody Account account){
-        repository.save(account);
-
-        return account;
+    public void addAccount(@RequestBody Account account){
+        commandGateway.send(new CreateAccountCommand(account.getCustomerId()));
     }
 
-    @PutMapping("account/{id}")
-    public @ResponseBody Account updateAccount(@PathVariable("id") String id, @RequestBody Account updatedAccount){
-        Account account = repository.findById(id);
-        account.balance = updatedAccount.balance;
-        repository.save(account);
+    @PutMapping("account/debit/{id}")
+    public void debitAccount(@PathVariable("id") String id, @RequestBody Debit debit){
+        commandGateway.send(new DebitAccountCommand(debit.getAccountId(), debit.getDebitAmount()));
+        commandGateway.send(new OverDraftAccountCommand(debit.getAccountId(), debit.getDebitAmount()));
+    }
 
-        return account;
+    @PutMapping("account/credit/{id}")
+    public void creditAccount(@PathVariable("id") String id, @RequestBody Account updatedAccount){
+        commandGateway.send(new CreditAccountCommand(updatedAccount.getId(), updatedAccount.getBalance()));
     }
 
     @GetMapping("accounts")
     public @ResponseBody List<Account> getCustomers(){
-        return repository.findAll();
+        return new ArrayList<>();
     }
 
     @GetMapping("account/{id}")
     public @ResponseBody
     Account getCustomer(@PathVariable("id") String id){
-        return repository.findById(id);
+        return null;
     }
 
-    @GetMapping("accounts/{id}")
-    public @ResponseBody void deleteCustomer(@PathVariable("id") String id){
-        repository.delete(id);
+    @DeleteMapping("accounts/{id}")
+    public void deleteCustomer(@PathVariable("id") UUID id){
+        commandGateway.send(new DeleteAccountCommand(id));
     }
 }
