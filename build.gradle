@@ -2,10 +2,12 @@ apply plugin: 'java'
 
 dependencies {
     compile project('customer-cmd')
-    compile project('accounts')
-    compile project('transactions')
     compile project('customer-query')
+    compile project('account-cmd')
+    compile project('transactions')
 }
+
+assemble.dependsOn(clean)
 
 allprojects {
 	repositories {
@@ -13,6 +15,7 @@ allprojects {
 	}
 
     apply plugin: 'java'
+    apply plugin: 'checkstyle'
 }
 
 buildscript {
