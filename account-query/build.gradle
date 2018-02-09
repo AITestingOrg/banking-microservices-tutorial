@@ -1,13 +1,34 @@
-version '0.0.1'
+apply plugin: 'org.springframework.boot'
 
-apply plugin: 'java'
+ext {
+	springCloudVersion = 'Dalston.SR1'
+}
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
+configurations {
+	providedRuntime
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+dependencies {
+	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	compile project(":event-sourcing")
+	compile project(":account.common")
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+group = 'com.ultimatesoftware.banking'
+version = '0.0.1'
+sourceCompatibility = 1.8
+

@@ -11,6 +11,7 @@ import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import javax.validation.constraints.Min;
 import java.util.UUID;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
@@ -37,6 +38,14 @@ public class Account {
         this.active = active;
     }
 
+    public Account(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public Account() {
+
+    }
+
     public UUID getId() {
         return id;
     }
@@ -58,11 +67,11 @@ public class Account {
         if(!active) {
             throw new AccountInactiveException(id);
         }
-        if(!AccountRules.eligableForDebit(this, debitAccountCommand.getAmount())) {
+        if(!AccountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
-        apply(new AccountDebittedEvent(debitAccountCommand.getId(), newBalance));
+        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance));
     }
 
     @CommandHandler
@@ -71,7 +80,7 @@ public class Account {
             throw new AccountInactiveException(id);
         }
         double newBalance = balance + creditAccountCommand.getAmount();
-        apply(new AccountCredittedEvent(creditAccountCommand.getId(), newBalance));
+        apply(new AccountCreditedEvent(creditAccountCommand.getId(), newBalance));
     }
 
     @CommandHandler
@@ -106,13 +115,13 @@ public class Account {
     }
 
     @EventSourcingHandler
-    public void on(AccountDebittedEvent accountDebittedEvent) {
-        balance = accountDebittedEvent.getBalance();
+    public void on(AccountDebitedEvent accountDebitedEvent) {
+        balance = accountDebitedEvent.getBalance();
     }
 
     @EventSourcingHandler
-    public void on(AccountCredittedEvent accountCredittedEvent) {
-        balance = accountCredittedEvent.getBalance();
+    public void on(AccountCreditedEvent accountCreditedEvent) {
+        balance = accountCreditedEvent.getBalance();
     }
 
     @EventSourcingHandler

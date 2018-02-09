@@ -6,7 +6,9 @@ import com.ultimatesoftware.banking.eventsourcing.configurations.AmqpEventPublis
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class AccountsEventStoreConfiguration extends AmqpEventPublisherConfiguration<Account, AccountCommandHandler> {
     public AccountsEventStoreConfiguration() {
         super(Account.class);

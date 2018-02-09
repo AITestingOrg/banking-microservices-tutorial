@@ -2,11 +2,11 @@ package com.ultimatesoftware.banking.account.common.events;
 
 import java.util.UUID;
 
-public class AccountCredittedEvent {
+public class AccountDebitedEvent {
     private UUID id;
     private double balance;
 
-    public AccountCredittedEvent(UUID id, double balance) {
+    public AccountDebitedEvent(UUID id, double balance) {
         this.id = id;
         this.balance = balance;
     }
