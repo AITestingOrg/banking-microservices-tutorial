@@ -13,22 +13,22 @@ import javax.validation.Valid;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("api")
+@RequestMapping("api/v1")
 public class CustomerController {
     @Autowired
     private CommandGateway commandGateway;
 
-    @PostMapping("customers")
+    @PostMapping("customer")
     public @ResponseBody void addCustomer(@Valid @RequestBody Customer customer){
         commandGateway.send(new CreateCustomerCommand(customer.getFirstName(), customer.getFirstName()));
     }
 
-    @PutMapping("customers")
+    @PutMapping("customer")
     public @ResponseBody void deleteCustomer(@Valid @RequestBody Customer customer){
         commandGateway.send(new UpdateCustomerCommand(customer.getId(), customer.getFirstName(), customer.getLastName()));
     }
 
-    @DeleteMapping("customers/{id}")
+    @DeleteMapping("customer/{id}")
     public @ResponseBody void deleteCustomer(@PathVariable("id") UUID id){
         commandGateway.send(new DeleteCustomerCommand(id));
     }

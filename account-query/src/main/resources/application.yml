@@ -1,0 +1,29 @@
+# Mongo config
+spring:
+  data:
+    mongodb:
+      database: accountquery
+      host: localhost
+      port: 27017
+  application:
+    name: account-cmd
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+
+server:
+  port: 8084
+
+# Service Discovery Config
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://eureka-server:8761/eureka}
+  instance:
+    preferIpAddress: true
+
+amqp:
+    events:
+      host: localhost
+      exchange-name: eventBus-account
+      queue-name: eventQueue-account
+      handlers: com.ultimatesoftware.banking.account.query.domain.eventhandlers

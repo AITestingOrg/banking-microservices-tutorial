@@ -33,6 +33,6 @@ public class CustomerEventHandler {
     @EventHandler
     public void handle(CustomerDeletedEvent event) {
         LOG.info(String.format("Customer Deleted %s", event.getId()));
-        customerRepository.delete(event.getId().toString());
+        customerRepository.delete(event.getId());
     }
 }

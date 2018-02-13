@@ -8,7 +8,7 @@ public class CustomerDeletedEvent {
         this.id = id;
     }
 
-    public Object getId() {
+    public UUID getId() {
         return id;
     }
 }

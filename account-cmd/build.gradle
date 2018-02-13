@@ -1,0 +1,29 @@
+apply plugin: 'org.springframework.boot'
+
+ext {
+	springCloudVersion = 'Dalston.SR1'
+}
+
+configurations {
+	providedRuntime
+}
+
+dependencies {
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+dependencies {
+	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile project(":event-sourcing")
+	compile project(":account.common")
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	compile("org.axonframework:axon-test:${axonVersion}")
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}

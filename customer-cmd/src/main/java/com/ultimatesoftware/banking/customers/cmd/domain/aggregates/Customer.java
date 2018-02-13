@@ -12,6 +12,7 @@ import org.axonframework.spring.stereotype.Aggregate;
 import com.ultimatesoftware.banking.customers.cmd.domain.commands.CreateCustomerCommand;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.UUID;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
@@ -22,9 +23,9 @@ public class Customer {
 
     @AggregateIdentifier
     private UUID id;
-    @NotNull
+    @Size(min=2, max=30)
     private String firstName;
-    @NotNull
+    @Size(min=2, max=30)
     private String lastName;
 
     @CommandHandler
