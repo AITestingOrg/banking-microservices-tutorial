@@ -16,6 +16,10 @@ allprojects {
 
     apply plugin: 'java'
     apply plugin: 'checkstyle'
+
+    checkstyle {
+        configFile = new File(rootDir, "checkstyles.xml")
+    }
 }
 
 buildscript {

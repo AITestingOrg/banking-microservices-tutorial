@@ -11,6 +11,6 @@ public class AccountNotEligibleForDeleteException extends Exception {
     }
 
     public String getMessage() {
-        return String.format("Account %s not eligible for deletion: balance = %d, active = %s", id, balance, active);
+        return String.format("Account %s not eligible for deletion: balance = %f, active = %s", id, balance, active);
     }
 }

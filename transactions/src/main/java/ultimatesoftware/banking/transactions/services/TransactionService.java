@@ -23,27 +23,27 @@ public class TransactionService extends RestService {
     public ActionResult transfer(String ownerId, String accountId, String destAccountId, double amount) {
         BankAccount account = getAccount(accountId);
         BankAccount destAccount = getAccount(destAccountId);
-        if(account == null) {
+        if (account == null) {
             return new ErrorResult(String.format("No account with id %s exists", accountId));
         }
 
-        if(destAccount == null) {
+        if (destAccount == null) {
             return new ErrorResult(String.format("No destination account with id %s exists", accountId));
         }
 
-        if(account.getBalance() < amount) {
+        if (account.getBalance() < amount) {
             return new ErrorResult("Insufficient balance on account.");
         }
         account.setBalance(account.getBalance() - amount);
         destAccount.setBalance(destAccount.getBalance() + amount);
         boolean success = updateAccount(account.getId(), account);
-        if(!success) {
-            return new ErrorResult(String.format("An error occurred when attempting to transfer funds, transaction cancelled."));
+        if (!success) {
+            return new ErrorResult(String.format("An error occurred when attempting to transfer funds on account %s, transaction cancelled.", accountId));
         }
         success = updateAccount(destAccount.getId(), destAccount);
-        if(!success) {
+        if (!success) {
             updateAccount(account.getId(), account);
-            return new ErrorResult(String.format("An error occurred when attempting to transfer funds, transaction cancelled.", accountId));
+            return new ErrorResult(String.format("An error occurred when attempting to transfer funds on account %s, transaction cancelled.", accountId));
         }
         BankTransaction transaction = new BankTransaction.BankTransactionBuilder()
                 .setAccount(accountId)
@@ -58,18 +58,18 @@ public class TransactionService extends RestService {
 
     public ActionResult withdraw(String ownerId, String accountId, double amount) {
         BankAccount account = getAccount(accountId);
-        if(account == null) {
+        if (account == null) {
             return new ErrorResult(String.format("No account with id %s exists", accountId));
         }
 
-        if(account.getBalance() < amount) {
+        if (account.getBalance() < amount) {
             return new ErrorResult("Insufficient balance on account.");
         }
 
         account.setBalance(account.getBalance() - amount);
         boolean success = updateAccount(account.getId(), account);
-        if(!success) {
-            return new ErrorResult(String.format("An error occurred when attempting to withdraw funds, transaction cancelled."));
+        if (!success) {
+            return new ErrorResult(String.format("An error occurred when attempting to withdraw funds on account %s, transaction cancelled.", accountId));
         }
         BankTransaction transaction = new BankTransaction.BankTransactionBuilder()
                 .setAccount(accountId)
@@ -83,13 +83,13 @@ public class TransactionService extends RestService {
 
     public ActionResult deposit(String ownerId, String accountId, double amount) {
         BankAccount account = getAccount(accountId);
-        if(account == null) {
+        if (account == null) {
             return new ErrorResult(String.format("No account with id %s exists", accountId));
         }
 
         boolean success = updateAccount(account.getId(), account);
-        if(!success) {
-            return new ErrorResult(String.format("An error occurred when attempting to deposit funds, transaction cancelled."));
+        if (!success) {
+            return new ErrorResult(String.format("An error occurred when attempting to deposit funds to account %s, transaction cancelled.", accountId));
         }
         BankTransaction transaction = new BankTransaction.BankTransactionBuilder()
                 .setAccount(accountId)
