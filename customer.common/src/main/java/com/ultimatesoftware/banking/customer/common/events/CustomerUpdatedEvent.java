@@ -5,8 +5,8 @@ import java.util.UUID;
 public class CustomerUpdatedEvent {
     private UUID id;
 
-    private String firstName = "";
-    private String lastName = "";
+    private String firstName;
+    private String lastName;
 
     public CustomerUpdatedEvent(UUID id, String firstName, String lastName) {
         this.id = id;

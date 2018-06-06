@@ -12,6 +12,6 @@ public class AccountNotEligibleForDebitException extends Exception {
     }
 
     public String getMessage() {
-        return String.format("Account %s not eligible for debit: balance = %d.", id, balance);
+        return String.format("Account %s not eligible for debit: balance = %f.", id, balance);
     }
 }

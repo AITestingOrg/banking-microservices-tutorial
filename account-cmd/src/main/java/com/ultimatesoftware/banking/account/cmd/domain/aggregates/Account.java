@@ -5,13 +5,16 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountInactiv
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.account.common.events.AccountCreatedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountCreditedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountDebitedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountDeletedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountOverdraftedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 
-import javax.validation.constraints.Min;
 import java.util.UUID;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
@@ -64,10 +67,10 @@ public class Account {
 
     @CommandHandler
     public void on(DebitAccountCommand debitAccountCommand) throws AccountNotEligibleForDebitException, AccountInactiveException {
-        if(!active) {
+        if (!active) {
             throw new AccountInactiveException(id);
         }
-        if(!AccountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
+        if (!AccountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
@@ -76,7 +79,7 @@ public class Account {
 
     @CommandHandler
     public void on(CreditAccountCommand creditAccountCommand) throws AccountInactiveException {
-        if(!active) {
+        if (!active) {
             throw new AccountInactiveException(id);
         }
         double newBalance = balance + creditAccountCommand.getAmount();
@@ -85,10 +88,10 @@ public class Account {
 
     @CommandHandler
     public void on(DeleteAccountCommand deleteAccountCommand) throws AccountNotEligibleForDeleteException, AccountInactiveException {
-        if(!active) {
+        if (!active) {
             throw new AccountInactiveException(id);
         }
-        if(AccountRules.eligibleForDelete(this)) {
+        if (AccountRules.eligibleForDelete(this)) {
             apply(new AccountDeletedEvent(deleteAccountCommand.getId(), deleteAccountCommand.isActive()));
         }
         throw new AccountNotEligibleForDeleteException(id, balance, active);
@@ -96,11 +99,11 @@ public class Account {
 
     @CommandHandler
     public void on(OverDraftAccountCommand overDraftAccountCommand) throws AccountInactiveException {
-        if(!active) {
+        if (!active) {
             throw new AccountInactiveException(id);
         }
 
-        if(AccountRules.eligibleForDebitOverdraft(balance, overDraftAccountCommand.getDebitAmount())) {
+        if (AccountRules.eligibleForDebitOverdraft(balance, overDraftAccountCommand.getDebitAmount())) {
             double newBalance = balance - overdraftFee;
             apply(new AccountOverdraftedEvent(id, newBalance, overDraftAccountCommand.getDebitAmount()));
         }

@@ -13,14 +13,14 @@ import org.springframework.web.client.RestTemplate;
 public abstract class RestService<T> {
     @Bean
     @LoadBalanced
-    RestTemplate restTemplate(){
+    RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
     @Autowired
     protected RestTemplate restTemplate;
 
-    protected <T> T get(String appName, String path, Class<T> type) throws IllegalAccessException, InstantiationException {
+    protected T get(String appName, String path, Class<T> type) throws IllegalAccessException, InstantiationException {
         return restTemplate.getForObject("http://" + appName + path, type);
     }
 

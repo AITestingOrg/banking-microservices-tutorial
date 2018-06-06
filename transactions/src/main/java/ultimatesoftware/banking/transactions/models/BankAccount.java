@@ -5,7 +5,7 @@ public class BankAccount {
     private double balance;
     private String customerId;
 
-    public BankAccount(){
+    public BankAccount() {
 
     }
 

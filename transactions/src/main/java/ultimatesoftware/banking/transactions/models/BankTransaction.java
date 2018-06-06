@@ -11,7 +11,7 @@ public class BankTransaction {
     private double amount;
     private String destinationAccount;
 
-    public BankTransaction(){}
+    public BankTransaction() {}
 
     public BankTransaction(String id, TransactionType type, String customerId, String account, double amount, String destinationAccount) {
         this.id = id;

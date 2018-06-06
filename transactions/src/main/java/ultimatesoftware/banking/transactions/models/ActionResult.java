@@ -6,6 +6,7 @@ public abstract class ActionResult {
     public ActionResult(String message) {
         this.message = message;
     }
+    
     public String getMessage() {
         return message;
     }

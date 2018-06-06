@@ -7,11 +7,13 @@ import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 public class AccountEventHandler {
-    protected static final Logger LOG = LoggerFactory.getLogger(AccountEventHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandler.class);
 
     @Autowired
     private AccountRepository accountRepository;
