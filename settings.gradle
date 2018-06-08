@@ -1,12 +1,4 @@
 rootProject.name = 'com.ultimatesoftware.banking'
 
-include 'customer-cmd'
-include 'account-cmd'
-include 'customer-query'
-include 'account-query'
-include 'transactions'
-include 'event-sourcing'
-include 'customer.common'
-include 'account.common'
-
+include ':customer-cmd', ':account-cmd', ':customer-query', ':account-query', ':transactions', ':event-sourcing', ':customer.common', ':account.common'
 

@@ -1,25 +1,19 @@
 buildscript {
-    ext {
-        depManagementVersion = '1.0.4.RELEASE'
-    }
     repositories {
+        mavenCentral()
         jcenter()
-    }
-    dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:${depManagementVersion}"
     }
 }
 
 apply plugin: "io.spring.dependency-management"
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-amqp')
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '1.5.4.RELEASE'
     compile("org.axonframework:axon-core:${axonVersion}")
     compile("org.axonframework:axon-mongo:${axonVersion}")
     compile("org.axonframework:axon-spring-boot-starter:${axonVersion}")
     compile("org.axonframework:axon-spring-boot-autoconfigure:${axonVersion}")
     compile("org.axonframework:axon-amqp:${axonVersion}")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     testCompile("org.axonframework:axon-test:${axonVersion}")
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
@@ -29,3 +23,7 @@ dependencyManagement {
         mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
     }
 }
+
+group = 'com.ultimatesoftware.banking'
+version = '0.0.1'
+sourceCompatibility = 1.8

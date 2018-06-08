@@ -3,12 +3,15 @@ spring:
   data:
     mongodb:
       database: customersquery
-      host: localhost
+      host: ${MONGO_HOST:localhost}
       port: 27017
   application:
     name: customers-query
   rabbitmq:
     host: ${RABBIT_HOST:localhost}
+    port: 5672
+    username: guest
+    password: guest
 
 server:
   port: 8082
@@ -17,14 +20,14 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://eureka-server:8761/eureka}
+      defaultZone: ${EUREKA_URI:http://eurekaserver:8761/eureka}
   instance:
     preferIpAddress: true
 
 amqp:
-    events:
-      host: localhost
-      exchange-name: eventBus-customer
-      queue-name: eventQueue-customer
-      handlers: com.ultimatesoftware.banking.customerquery.domain.eventhandlers
+  events:
+    host: ${RABBIT_HOST:localhost}
+    exchange-name: eventBus-customer
+    queue-name: eventQueue-customer
+    handlers: com.ultimatesoftware.banking.customer.query.domain.eventhandlers
 
