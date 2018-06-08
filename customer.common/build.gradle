@@ -11,3 +11,6 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+group = 'com.ultimatesoftware.banking'
+version = '0.0.1'

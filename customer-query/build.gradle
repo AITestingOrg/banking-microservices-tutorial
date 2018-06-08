@@ -19,8 +19,8 @@ dependencyManagement {
 }
 
 dependencies {
-	compile('org.springframework.cloud:spring-cloud-starter-eureka')
-	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	compile ("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudStarter}")
+	compile("org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}")
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile project(":event-sourcing")
 	compile project(":customer.common")
@@ -28,3 +28,7 @@ dependencies {
 	testCompile("org.axonframework:axon-test:${axonVersion}")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+group = 'com.ultimatesoftware.banking'
+version = '0.0.1'
+sourceCompatibility = 1.8

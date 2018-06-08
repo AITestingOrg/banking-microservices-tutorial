@@ -3,10 +3,8 @@ spring:
   data:
     mongodb:
       database: customercmd
-      host: localhost
+      host: ${MONGO_HOST:localhost}
       port: 27017
-      username:
-      password:
   application:
     name: customer-cmd
   rabbitmq:
@@ -19,7 +17,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://eureka-server:8761/eureka}
+      defaultZone: ${EUREKA_URI:http://eurekaserver:8761/eureka}
   instance:
     preferIpAddress: true
 

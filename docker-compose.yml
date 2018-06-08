@@ -1,0 +1,76 @@
+version: '3'
+services:
+  eurekaserver:
+    image: springcloud/eureka
+    ports:
+      - "8761:8761"
+
+  customerquery:
+    build: customer-query/
+    depends_on:
+      - eurekaserver
+      - mongo
+      - rabbitmq
+    ports:
+      - "8082:8082"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - MONGO_HOST=mongo
+  customercmd:
+    build: customer-cmd/
+    depends_on:
+      - eurekaserver
+      - mongo
+      - rabbitmq
+    ports:
+      - "8079:8081"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - MONGO_HOST=mongo
+
+  accountcmd:
+    build: account-cmd/
+    depends_on:
+      - eurekaserver
+      - mongo
+      - rabbitmq
+    ports:
+      - "8083:8083"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - MONGO_HOST=mongo
+
+  accountquery:
+    build: account-query/
+    depends_on:
+      - eurekaserver
+      - mongo
+      - rabbitmq
+    ports:
+      - "8084:8084"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - MONGO_HOST=mongo
+
+  transactionserver:
+    build: transactions/
+    depends_on:
+      - eurekaserver
+      - mongo
+    ports:
+      - "8085:8085"
+    environment:
+      - MONGO_HOST=mongo
+  mongo:
+    image: 'mongo:3.4.1'
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/db'
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+volumes:
+  mongo:
