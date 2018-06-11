@@ -1,15 +1,39 @@
+buildscript {
+    ext {
+        springCloudVersion = 'Edgware.SR3'
+        springCloudStarter = '1.4.4.RELEASE'
+        springBootVersion = '1.5.13.RELEASE'
+        axonVersion = '3.1.2'
+    }
+}
+
+plugins {
+    id "io.spring.dependency-management" version "1.0.5.RELEASE"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+    }
+}
+
 apply plugin: 'java'
 
 dependencies {
     compile project('customer-cmd')
     compile project('customer-query')
     compile project('account-cmd')
+    compile project('account-query')
     compile project('transactions')
 }
 
 assemble.dependsOn(clean)
 
 allprojects {
+    group = 'com.ultimatesoftware.banking'
+    sourceCompatibility = 1.8
+
 	repositories {
 		mavenCentral()
 	}
@@ -21,16 +45,8 @@ allprojects {
     }
 }
 
-buildscript {
-    ext {
-        springCloudStarter = '1.4.4.RELEASE'
-        springBootVersion = '1.5.4.RELEASE'
-        axonVersion = '3.1.2'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.8'
 }
+
+assemble.dependsOn(clean)

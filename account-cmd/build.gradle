@@ -1,26 +1,23 @@
-apply plugin: 'org.springframework.boot'
-
-ext {
-	springCloudVersion = 'Dalston.SR1'
+plugins {
+    id "org.springframework.boot" version "1.5.13.RELEASE"
 }
 
 configurations {
-	providedRuntime
+    providedRuntime
 }
 
-dependencies {
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-}
+apply plugin: 'io.spring.dependency-management'
 
 dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 dependencies {
-	compile ("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-	compile ("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudStarter}")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-web")
+	compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 	compile project(":event-sourcing")
 	compile project(":account.common")
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
@@ -28,6 +25,4 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-group = 'com.ultimatesoftware.banking'
 version = '0.0.1'
-sourceCompatibility = 1.8
