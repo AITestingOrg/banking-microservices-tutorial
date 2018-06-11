@@ -9,6 +9,8 @@ buildscript {
 
 plugins {
     id "io.spring.dependency-management" version "1.0.5.RELEASE"
+    //do not enable boot here, it is enabled on the corresponding spring projects
+    id "org.springframework.boot" version "1.5.13.RELEASE" apply false
 }
 
 dependencyManagement {
@@ -30,6 +32,11 @@ dependencies {
 
 assemble.dependsOn(clean)
 
+def springProjects = subprojects.findAll { project -> project.name.indexOf('cmd') != -1}
+def queryProjects = subprojects.findAll { project -> project.name.indexOf('query') != -1}
+springProjects.addAll(queryProjects)
+springProjects.add(project('transactions'))
+
 allprojects {
     group = 'com.ultimatesoftware.banking'
     sourceCompatibility = 1.8
@@ -45,8 +52,30 @@ allprojects {
     }
 }
 
+configure(springProjects) {
+    apply plugin: 'org.springframework.boot'
+
+    configurations {
+        providedRuntime
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+    dependencies {
+        testCompile 'junit:junit:4.12'
+        testCompile('org.springframework.boot:spring-boot-starter-test')
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '4.8'
+}
+
+task printProj {
+    println 'Projects: ' + springProjects
 }
 
 assemble.dependsOn(clean)

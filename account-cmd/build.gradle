@@ -1,28 +1,12 @@
-plugins {
-    id "org.springframework.boot" version "1.5.13.RELEASE"
-}
-
-configurations {
-    providedRuntime
-}
-
-apply plugin: 'io.spring.dependency-management'
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
-
 dependencies {
+    compile project(":event-sourcing")
+    compile project(":account.common")
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-web")
-	compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
-	compile project(":event-sourcing")
-	compile project(":account.common")
-	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-	compile("org.axonframework:axon-test:${axonVersion}")
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+    compile("org.axonframework:axon-test:${axonVersion}")
 }
 
 version = '0.0.1'
