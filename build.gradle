@@ -1,15 +1,46 @@
+buildscript {
+    ext {
+        springCloudVersion = 'Edgware.SR3'
+        springCloudStarter = '1.4.4.RELEASE'
+        springBootVersion = '1.5.13.RELEASE'
+        axonVersion = '3.1.2'
+    }
+}
+
+plugins {
+    id "io.spring.dependency-management" version "1.0.5.RELEASE"
+    //do not enable boot here, it is enabled on the corresponding spring projects
+    id "org.springframework.boot" version "1.5.13.RELEASE" apply false
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+    }
+}
+
 apply plugin: 'java'
 
 dependencies {
     compile project('customer-cmd')
     compile project('customer-query')
     compile project('account-cmd')
+    compile project('account-query')
     compile project('transactions')
 }
 
 assemble.dependsOn(clean)
 
+def springProjects = subprojects.findAll { project -> project.name.indexOf('cmd') != -1}
+def queryProjects = subprojects.findAll { project -> project.name.indexOf('query') != -1}
+springProjects.addAll(queryProjects)
+springProjects.add(project('transactions'))
+
 allprojects {
+    group = 'com.ultimatesoftware.banking'
+    sourceCompatibility = 1.8
+
 	repositories {
 		mavenCentral()
 	}
@@ -21,16 +52,30 @@ allprojects {
     }
 }
 
-buildscript {
-    ext {
-        springCloudStarter = '1.4.4.RELEASE'
-        springBootVersion = '1.5.4.RELEASE'
-        axonVersion = '3.1.2'
+configure(springProjects) {
+    apply plugin: 'org.springframework.boot'
+
+    configurations {
+        providedRuntime
     }
-    repositories {
-        mavenCentral()
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        testCompile 'junit:junit:4.12'
+        testCompile('org.springframework.boot:spring-boot-starter-test')
     }
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.8'
+}
+
+task printProj {
+    println 'Projects: ' + springProjects
+}
+
+assemble.dependsOn(clean)

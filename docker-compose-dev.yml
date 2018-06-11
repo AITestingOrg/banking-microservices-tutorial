@@ -4,13 +4,6 @@ services:
     image: springcloud/eureka
     ports:
       - "8761:8761"
-  transaction-server:
-    build: transactions/
-    depends_on:
-      - eurekaserver
-      - mongo
-    ports:
-      - "8085:8085"
   mongo:
     image: 'mongo:3.4.1'
     ports:

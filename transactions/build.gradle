@@ -1,31 +1,9 @@
-apply plugin: 'org.springframework.boot'
-
-ext {
-	springCloudVersion = 'Dalston.SR1'
-}
-
-configurations {
-	providedRuntime
-}
-
 dependencies {
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+    compile("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
+    compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter')
 }
 
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
-}
-
-dependencies {
-	compile ("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudStarter}")
-	compile ("org.springframework.cloud:spring-cloud-starter-netflix-ribbon:${springCloudStarter}")
-	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-}
-
-group = 'com.ultimatesoftware.banking'
 version = '0.0.1'
-sourceCompatibility = 1.8
