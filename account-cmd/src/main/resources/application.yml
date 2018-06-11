@@ -36,3 +36,11 @@ amqp:
     exchange-name: eventBus-account
     queue-name: eventQueue-account
     handlers:
+
+endpoints:
+  health:
+    sensitive:  false
+
+management:
+  security:
+    enabled: false

@@ -37,3 +37,10 @@ amqp:
       queue-name: eventQueue-customer
       handlers:
 
+endpoints:
+  health:
+    sensitive:  false
+
+management:
+  security:
+    enabled: false
