@@ -19,7 +19,7 @@ public class AccountRules {
     }
 
     public static boolean eligibleForDebit(Account account, double debitAmount) {
-        if (account.getBalance() - debitAmount > 0.0) {
+        if (account.getBalance() - debitAmount >= 0.0) {
             return true;
         }
         return false;

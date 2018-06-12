@@ -18,17 +18,24 @@ public class CustomerController {
     private CommandGateway commandGateway;
 
     @PostMapping("customer")
-    public void addCustomer(@Valid @RequestBody Customer customer) {
-        commandGateway.send(new CreateCustomerCommand(customer.getFirstName(), customer.getFirstName()));
+    public CreateCustomerCommand addCustomer(@Valid @RequestBody Customer customer) {
+        CreateCustomerCommand command = new CreateCustomerCommand(customer.getFirstName(), customer.getFirstName());
+        commandGateway.send(command);
+        return command;
     }
 
     @PutMapping("customer")
-    public void updateCustomer(@Valid @RequestBody Customer customer) {
-        commandGateway.send(new UpdateCustomerCommand(customer.getId(), customer.getFirstName(), customer.getLastName()));
+    public UpdateCustomerCommand updateCustomer(@Valid @RequestBody Customer customer) {
+        UpdateCustomerCommand command = new UpdateCustomerCommand(customer.getId(),
+                                                                  customer.getFirstName(), customer.getLastName());
+        commandGateway.send(command);
+        return command;
     }
 
     @DeleteMapping("customer/{id}")
-    public void deleteCustomer(@PathVariable("id") UUID id) {
-        commandGateway.send(new DeleteCustomerCommand(id));
+    public DeleteCustomerCommand deleteCustomer(@PathVariable("id") UUID id) {
+        DeleteCustomerCommand command = new DeleteCustomerCommand(id);
+        commandGateway.send(command);
+        return command;
     }
 }

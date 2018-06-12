@@ -5,11 +5,7 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountInactiv
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
-import com.ultimatesoftware.banking.account.common.events.AccountCreatedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountCreditedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountDebitedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountDeletedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountOverdraftedEvent;
+import com.ultimatesoftware.banking.account.common.events.*;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -109,6 +105,12 @@ public class Account {
         }
     }
 
+    @CommandHandler
+    public void on(UpdateAccountCommand updateAccountCommand) {
+        apply(new AccountUpdatedEvent(id, updateAccountCommand.getCustomerId(),
+                                      updateAccountCommand.getBalance(), updateAccountCommand.isActive()));
+    }
+
     @EventSourcingHandler
     public void on(AccountCreatedEvent accountCreatedEvent) {
         id = accountCreatedEvent.getId();
@@ -130,6 +132,13 @@ public class Account {
     @EventSourcingHandler
     public void on(AccountOverdraftedEvent accountOverdraftedEvent) {
         balance = accountOverdraftedEvent.getBalance();
+    }
+
+    @EventSourcingHandler
+    public void on(AccountUpdatedEvent accountUpdatedEvent) {
+        balance = accountUpdatedEvent.getBalance();
+        active = accountUpdatedEvent.isActive();
+        customerId = accountUpdatedEvent.getCustomerId();
     }
 
     @EventSourcingHandler

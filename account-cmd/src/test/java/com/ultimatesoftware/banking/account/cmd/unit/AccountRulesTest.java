@@ -63,7 +63,7 @@ public class AccountRulesTest {
     @Test
     public void Given50Account_WhenDebit50__ThenOutputShouldBeTrue() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), "t", 50.0, true);
+        Account account = new Account(UUID.randomUUID(), "20", 50.0, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 50.0);

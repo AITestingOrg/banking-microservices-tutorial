@@ -1,10 +1,6 @@
 package com.ultimatesoftware.banking.account.query.domain.eventhandlers;
 
-import com.ultimatesoftware.banking.account.common.events.AccountCreatedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountCreditedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountDebitedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountDeletedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountOverdraftedEvent;
+import com.ultimatesoftware.banking.account.common.events.*;
 import com.ultimatesoftware.banking.account.query.domain.models.Account;
 import com.ultimatesoftware.banking.account.query.service.repositories.AccountRepository;
 import org.axonframework.eventhandling.EventHandler;
@@ -49,6 +45,12 @@ public class AccountEventHandler {
     }
 
     @EventHandler
+    public void on(AccountUpdatedEvent event) {
+        LOG.info("Account Updated {}", event.getId());
+        updateAccount(event.getId(), event);
+    }
+
+    @EventHandler
     public void on(AccountDeletedEvent event) {
         LOG.info("Account Deleted {}", event.getId());
         Account account = accountRepository.findOne(event.getId());
@@ -62,5 +64,13 @@ public class AccountEventHandler {
         account.setBalance(balance);
         accountRepository.save(account);
         LOG.debug("Updated balance {}", account.getBalance());
+    }
+
+    private void updateAccount(UUID id, AccountUpdatedEvent accountUpdatedEvent) {
+        Account account = accountRepository.findOne(id);
+        account.setActive(accountUpdatedEvent.isActive());
+        account.setCustomerId(accountUpdatedEvent.getCustomerId());
+        accountRepository.save(account);
+        LOG.debug("Updated account {}", account.getBalance());
     }
 }
