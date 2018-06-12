@@ -30,3 +30,11 @@ amqp:
     exchange-name: eventBus-account
     queue-name: eventQueue-account
     handlers: com.ultimatesoftware.banking.account.query.domain.eventhandlers
+
+endpoints:
+  health:
+    sensitive:  false
+
+management:
+  security:
+    enabled: false

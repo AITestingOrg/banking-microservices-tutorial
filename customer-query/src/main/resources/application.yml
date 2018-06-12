@@ -31,3 +31,10 @@ amqp:
     queue-name: eventQueue-customer
     handlers: com.ultimatesoftware.banking.customer.query.domain.eventhandlers
 
+endpoints:
+  health:
+    sensitive:  false
+
+management:
+  security:
+    enabled: false
