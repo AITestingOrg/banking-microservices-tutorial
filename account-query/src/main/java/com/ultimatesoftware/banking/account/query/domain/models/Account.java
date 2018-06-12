@@ -35,6 +35,10 @@ public class Account {
         return active;
     }
 
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
     public void setBalance(double balance) {
         this.balance = balance;
     }

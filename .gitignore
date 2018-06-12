@@ -4,10 +4,8 @@
 *.iml
 
 \.idea/
-\.gradle/
-build/
-
 *.class
+out/
 
 .gradle
 /build/

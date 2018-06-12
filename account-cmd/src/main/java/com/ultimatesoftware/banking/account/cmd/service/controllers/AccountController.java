@@ -1,42 +1,58 @@
 package com.ultimatesoftware.banking.account.cmd.service.controllers;
 
-import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountCreationDto;
-import com.ultimatesoftware.banking.account.cmd.domain.models.Debit;
+import com.ultimatesoftware.banking.account.cmd.domain.models.AccountUpdateDto;
+import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionAmount;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("api/v1")
 public class AccountController {
     @Autowired
     private CommandGateway commandGateway;
 
     @PostMapping("account")
-    public void addAccount(@Valid @RequestBody AccountCreationDto account) {
-        commandGateway.send(new CreateAccountCommand(account.getCustomerId()));
+    public CreateAccountCommand addAccount(@Valid @RequestBody AccountCreationDto account) {
+        CreateAccountCommand command = new CreateAccountCommand(account.getCustomerId());
+        commandGateway.send(command);
+        return command;
+    }
+
+    @PutMapping("account/{id}")
+    public UpdateAccountCommand debitAccount(@PathVariable("id") UUID id,
+                                            @Valid @RequestBody AccountUpdateDto account) {
+        UpdateAccountCommand command = new UpdateAccountCommand(id, account);
+        commandGateway.send(command);
+        return command;
     }
 
     @PutMapping("account/{id}/debit")
-    public void debitAccount(@PathVariable("id") UUID id, @Valid @RequestBody Debit debit) {
-        commandGateway.send(new DebitAccountCommand(debit.getAccountId(), debit.getDebitAmount()));
-        commandGateway.send(new OverDraftAccountCommand(debit.getAccountId(), debit.getDebitAmount()));
+    public DebitAccountCommand debitAccount(@PathVariable("id") UUID id,
+                                            @Valid @RequestBody TransactionAmount amount) {
+        DebitAccountCommand command = new DebitAccountCommand(id, amount.getAmount());
+        commandGateway.send(command);
+        commandGateway.send(new OverDraftAccountCommand(id, amount.getAmount()));
+        return command;
     }
 
     @PutMapping("account/{id}/credit")
-    public void creditAccount(@Valid @PathVariable("id") UUID id, @Valid @RequestBody Account updatedAccount) {
-        commandGateway.send(new CreditAccountCommand(updatedAccount.getId(), updatedAccount.getBalance()));
+    public CreditAccountCommand creditAccount(@Valid @PathVariable("id") UUID id,
+                                              @Valid @RequestBody TransactionAmount amount) {
+        CreditAccountCommand command = new CreditAccountCommand(id, amount.getAmount());
+        commandGateway.send(command);
+        return command;
     }
 
     @DeleteMapping("account/{id}")
-    public void deleteAccount(@Valid @PathVariable("id") UUID id) {
-        commandGateway.send(new DeleteAccountCommand(id));
+    public DeleteAccountCommand deleteAccount(@Valid @PathVariable("id") UUID id) {
+        DeleteAccountCommand command = new DeleteAccountCommand(id);
+        commandGateway.send(command);
+        return command;
     }
 }

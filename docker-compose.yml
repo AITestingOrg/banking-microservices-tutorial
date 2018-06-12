@@ -12,7 +12,7 @@ services:
       - mongo
       - rabbitmq
     ports:
-      - "8082:8082"
+      - "8082:8080"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
@@ -23,7 +23,7 @@ services:
       - mongo
       - rabbitmq
     ports:
-      - "8079:8081"
+      - "8079:8080"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
@@ -35,11 +35,10 @@ services:
       - mongo
       - rabbitmq
     ports:
-      - "8083:8083"
+      - "8083:8080"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
-
   accountquery:
     build: account-query/
     depends_on:
@@ -47,7 +46,7 @@ services:
       - mongo
       - rabbitmq
     ports:
-      - "8084:8084"
+      - "8084:8080"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
@@ -58,7 +57,7 @@ services:
       - eurekaserver
       - mongo
     ports:
-      - "8085:8085"
+      - "8085:8080"
     environment:
       - MONGO_HOST=mongo
   mongo:

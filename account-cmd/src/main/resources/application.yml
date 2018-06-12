@@ -6,12 +6,12 @@ spring:
       host: ${MONGO_HOST:localhost}
       port: 27017
   application:
-    name: account-cmd
+    name: accountcmd
   rabbitmq:
     host: ${RABBIT_HOST:localhost}
 
 server:
-  port: 8083
+  port: 8080
 
 # Service Discovery Config
 eureka:
@@ -32,7 +32,7 @@ axon:
             - Account
 amqp:
   events:
-    host: localhost
+    host: ${RABBIT_HOST:localhost}
     exchange-name: eventBus-account
     queue-name: eventQueue-account
     handlers:
