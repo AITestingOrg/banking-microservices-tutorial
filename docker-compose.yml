@@ -1,76 +1,105 @@
-version: '3'
+version: '2.1'
 services:
-  eurekaserver:
-    image: springcloud/eureka
-    ports:
-      - "8761:8761"
-
   customerquery:
     build: customer-query/
     depends_on:
-      - eurekaserver
       - mongo
       - rabbitmq
+    mem_limit: 700m
     ports:
       - "8082:8082"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://:5000"
+        tag: "transaction-server"
+
   customercmd:
     build: customer-cmd/
     depends_on:
-      - eurekaserver
       - mongo
       - rabbitmq
+    mem_limit: 700m
     ports:
       - "8079:8081"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://:5000"
+        tag: "transaction-server"
 
   accountcmd:
     build: account-cmd/
     depends_on:
-      - eurekaserver
       - mongo
       - rabbitmq
+    mem_limit: 700m
     ports:
       - "8083:8083"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://:5000"
+        tag: "transaction-server"
 
   accountquery:
     build: account-query/
     depends_on:
-      - eurekaserver
       - mongo
       - rabbitmq
+    mem_limit: 700m
     ports:
       - "8084:8084"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://:5000"
+        tag: "transaction-server"
 
   transactionserver:
     build: transactions/
     depends_on:
-      - eurekaserver
       - mongo
+    mem_limit: 700m
     ports:
       - "8085:8085"
     environment:
       - MONGO_HOST=mongo
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://:5000"
+        tag: "transaction-server"
+
   mongo:
     image: 'mongo:3.4.1'
     ports:
       - '27017:27017'
     volumes:
       - 'mongo:/data/db'
+
   rabbitmq:
     image: rabbitmq:management
     ports:
       - "5672:5672"
       - "15672:15672"
+
 volumes:
   mongo:
