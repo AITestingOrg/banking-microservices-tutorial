@@ -17,22 +17,22 @@ public class AccountController {
     @Autowired
     private CommandGateway commandGateway;
 
-    @PostMapping("account")
+    @PostMapping("accounts")
     public CreateAccountCommand addAccount(@Valid @RequestBody AccountCreationDto account) {
         CreateAccountCommand command = new CreateAccountCommand(account.getCustomerId());
         commandGateway.send(command);
         return command;
     }
 
-    @PutMapping("account/{id}")
-    public UpdateAccountCommand debitAccount(@PathVariable("id") UUID id,
-                                            @Valid @RequestBody AccountUpdateDto account) {
+    @PutMapping("accounts/{id}")
+    public UpdateAccountCommand updateAccount(@PathVariable("id") UUID id,
+                                              @Valid @RequestBody AccountUpdateDto account) {
         UpdateAccountCommand command = new UpdateAccountCommand(id, account);
         commandGateway.send(command);
         return command;
     }
 
-    @PutMapping("account/{id}/debit")
+    @PutMapping("accounts/{id}/debit")
     public DebitAccountCommand debitAccount(@PathVariable("id") UUID id,
                                             @Valid @RequestBody TransactionAmount amount) {
         DebitAccountCommand command = new DebitAccountCommand(id, amount.getAmount());
@@ -41,7 +41,7 @@ public class AccountController {
         return command;
     }
 
-    @PutMapping("account/{id}/credit")
+    @PutMapping("accounts/{id}/credit")
     public CreditAccountCommand creditAccount(@Valid @PathVariable("id") UUID id,
                                               @Valid @RequestBody TransactionAmount amount) {
         CreditAccountCommand command = new CreditAccountCommand(id, amount.getAmount());
@@ -49,7 +49,7 @@ public class AccountController {
         return command;
     }
 
-    @DeleteMapping("account/{id}")
+    @DeleteMapping("accounts/{id}")
     public DeleteAccountCommand deleteAccount(@Valid @PathVariable("id") UUID id) {
         DeleteAccountCommand command = new DeleteAccountCommand(id);
         commandGateway.send(command);

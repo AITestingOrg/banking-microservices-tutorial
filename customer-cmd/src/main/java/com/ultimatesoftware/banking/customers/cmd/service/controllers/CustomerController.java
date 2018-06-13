@@ -17,14 +17,14 @@ public class CustomerController {
     @Autowired
     private CommandGateway commandGateway;
 
-    @PostMapping("customer")
+    @PostMapping("customers")
     public CreateCustomerCommand addCustomer(@Valid @RequestBody Customer customer) {
         CreateCustomerCommand command = new CreateCustomerCommand(customer.getFirstName(), customer.getFirstName());
         commandGateway.send(command);
         return command;
     }
 
-    @PutMapping("customer")
+    @PutMapping("customers")
     public UpdateCustomerCommand updateCustomer(@Valid @RequestBody Customer customer) {
         UpdateCustomerCommand command = new UpdateCustomerCommand(customer.getId(),
                                                                   customer.getFirstName(), customer.getLastName());
@@ -32,7 +32,7 @@ public class CustomerController {
         return command;
     }
 
-    @DeleteMapping("customer/{id}")
+    @DeleteMapping("customers/{id}")
     public DeleteCustomerCommand deleteCustomer(@PathVariable("id") UUID id) {
         DeleteCustomerCommand command = new DeleteCustomerCommand(id);
         commandGateway.send(command);
