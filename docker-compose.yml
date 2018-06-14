@@ -12,11 +12,6 @@ services:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-    logging:
-      driver: syslog
-      options:
-        syslog-address: "tcp://:5000"
-        tag: "transaction-server"
 
   customercmd:
     build: customer-cmd/
@@ -30,11 +25,6 @@ services:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-    logging:
-      driver: syslog
-      options:
-        syslog-address: "udp://:5000"
-        tag: "transaction-server"
 
   accountcmd:
     build: account-cmd/
@@ -47,6 +37,7 @@ services:
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
+
   accountquery:
     build: account-query/
     depends_on:
@@ -59,11 +50,6 @@ services:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-    logging:
-      driver: syslog
-      options:
-        syslog-address: "udp://:5000"
-        tag: "transaction-server"
 
   transactionserver:
     build: transactions/
@@ -75,11 +61,6 @@ services:
     environment:
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-    logging:
-      driver: syslog
-      options:
-        syslog-address: "udp://:5000"
-        tag: "transaction-server"
 
   mongo:
     image: 'mongo:3.4.1'
