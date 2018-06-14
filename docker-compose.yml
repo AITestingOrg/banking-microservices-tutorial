@@ -1,10 +1,5 @@
 version: '3'
 services:
-  eurekaserver:
-    image: springcloud/eureka
-    ports:
-      - "8761:8761"
-
   customerquery:
     build: customer-query/
     depends_on:
@@ -13,9 +8,7 @@ services:
       - rabbitmq
     ports:
       - "8082:8080"
-    environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
+    restart: on-failure
   customercmd:
     build: customer-cmd/
     depends_on:
@@ -24,9 +17,7 @@ services:
       - rabbitmq
     ports:
       - "8079:8080"
-    environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
+    restart: on-failure
 
   accountcmd:
     build: account-cmd/
@@ -36,9 +27,7 @@ services:
       - rabbitmq
     ports:
       - "8083:8080"
-    environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
+    restart: on-failure
   accountquery:
     build: account-query/
     depends_on:
@@ -47,9 +36,7 @@ services:
       - rabbitmq
     ports:
       - "8084:8080"
-    environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
+    restart: on-failure
 
   transactionserver:
     build: transactions/
@@ -60,6 +47,8 @@ services:
       - "8085:8080"
     environment:
       - MONGO_HOST=mongo
+    restart: on-failure
+
   mongo:
     image: 'mongo:3.4.1'
     ports:
@@ -71,5 +60,14 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  eurekaserver:
+    image: springcloud/eureka
+    ports:
+      - "8761:8761"
+#  configurationservice:
+#    image: aista/configuration-service
+#    ports:
+#      - "8888:8080"
+
 volumes:
   mongo:
