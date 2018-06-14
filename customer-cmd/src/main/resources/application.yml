@@ -11,7 +11,7 @@ spring:
     host: ${RABBIT_HOST:localhost}
 
 server:
-  port: 8081
+  port: 8080
 
 # Service Discovery Config
 eureka:
@@ -32,8 +32,15 @@ axon:
             - Customer
 amqp:
     events:
-      host: localhost
+      host: ${RABBIT_HOST:localhost}
       exchange-name: eventBus-customer
       queue-name: eventQueue-customer
       handlers:
 
+endpoints:
+  health:
+    sensitive:  false
+
+management:
+  security:
+    enabled: false

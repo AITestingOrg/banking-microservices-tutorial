@@ -14,7 +14,7 @@ spring:
     password: guest
 
 server:
-  port: 8082
+  port: 8080
 
 # Service Discovery Config
 eureka:
@@ -31,3 +31,10 @@ amqp:
     queue-name: eventQueue-customer
     handlers: com.ultimatesoftware.banking.customer.query.domain.eventhandlers
 
+endpoints:
+  health:
+    sensitive:  false
+
+management:
+  security:
+    enabled: false
