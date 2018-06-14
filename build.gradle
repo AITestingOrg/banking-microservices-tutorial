@@ -23,10 +23,10 @@ dependencyManagement {
 apply plugin: 'java'
 
 dependencies {
-    compile project('customer-cmd')
-    compile project('customer-query')
-    compile project('account-cmd')
-    compile project('account-query')
+    compile project('customer.cmd')
+    compile project('customer.query')
+    compile project('account.cmd')
+    compile project('account.query')
     compile project('transactions')
 }
 
