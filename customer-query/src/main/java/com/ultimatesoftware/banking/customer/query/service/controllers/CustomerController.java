@@ -15,12 +15,12 @@ public class CustomerController {
     @Autowired
     CustomerRepository customerRepository;
 
-    @GetMapping("customer")
+    @GetMapping("customers")
     public List<Customer> getCustomers() {
         return customerRepository.findAll();
     }
 
-    @GetMapping("customer/{id}")
+    @GetMapping("customers/{id}")
     public Customer getCustomer(@PathVariable("id") UUID id) {
         return customerRepository.findOne(id);
     }

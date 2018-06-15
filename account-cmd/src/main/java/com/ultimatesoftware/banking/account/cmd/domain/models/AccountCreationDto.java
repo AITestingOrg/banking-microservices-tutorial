@@ -21,4 +21,11 @@ public class AccountCreationDto {
     public String getCustomerId() {
         return customerId;
     }
+
+    @Override
+    public String toString() {
+        return "AccountCreationDto{" +
+                "customerId='" + customerId + '\'' +
+                '}';
+    }
 }

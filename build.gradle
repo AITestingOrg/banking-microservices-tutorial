@@ -4,6 +4,7 @@ buildscript {
         springCloudStarter = '1.4.4.RELEASE'
         springBootVersion = '1.5.13.RELEASE'
         axonVersion = '3.1.2'
+        aspectjVersion = '1.9.1'
     }
 }
 
@@ -66,6 +67,7 @@ configure(springProjects) {
     }
     dependencies {
         compile 'org.springframework.boot:spring-boot-starter-actuator'
+        compile 'org.springframework.boot:spring-boot-starter-aop'
         compile 'org.springframework.cloud:spring-cloud-starter-config'
 
         testCompile 'junit:junit:4.12'
