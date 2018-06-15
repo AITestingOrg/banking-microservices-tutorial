@@ -1,0 +1,8 @@
+#spring:
+#  application:
+#    name: customercmd
+#  cloud:
+#    config:
+#      uri: ${CONFIG_URI:http://configurationservice:8080}
+#  profiles:
+#    active:
