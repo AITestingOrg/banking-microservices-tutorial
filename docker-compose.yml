@@ -3,18 +3,20 @@ services:
   customerquery:
     build: customer-query/
     depends_on:
-      - eurekaserver
+      - discoveryservice
       - mongo
       - rabbitmq
+      - configurationservice
     ports:
       - "8082:8080"
     restart: on-failure
   customercmd:
     build: customer-cmd/
     depends_on:
-      - eurekaserver
+      - discoveryservice
       - mongo
       - rabbitmq
+      - configurationservice
     ports:
       - "8079:8080"
     restart: on-failure
@@ -22,18 +24,20 @@ services:
   accountcmd:
     build: account-cmd/
     depends_on:
-      - eurekaserver
+      - discoveryservice
       - mongo
       - rabbitmq
+      - configurationservice
     ports:
       - "8083:8080"
     restart: on-failure
   accountquery:
     build: account-query/
     depends_on:
-      - eurekaserver
+      - discoveryservice
       - mongo
       - rabbitmq
+      - configurationservice
     ports:
       - "8084:8080"
     restart: on-failure
@@ -41,7 +45,7 @@ services:
   transactionserver:
     build: transactions/
     depends_on:
-      - eurekaserver
+      - discoveryservice
       - mongo
     ports:
       - "8085:8080"
@@ -60,14 +64,14 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-  eurekaserver:
+  discoveryservice:
     image: springcloud/eureka
     ports:
       - "8761:8761"
-#  configurationservice:
-#    image: aista/configuration-service
-#    ports:
-#      - "8888:8080"
+  configurationservice:
+    image: aista/configuration-service
+    ports:
+      - "8888:8080"
 
 volumes:
   mongo:

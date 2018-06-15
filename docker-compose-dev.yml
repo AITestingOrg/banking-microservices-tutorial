@@ -1,6 +1,6 @@
 version: '3'
 services:
-  eurekaserver:
+  discoveryservice:
     image: springcloud/eureka
     ports:
       - "8761:8761"
@@ -19,5 +19,7 @@ services:
     image: aista/configuration-service
     ports:
      - '8888:8080'
+    depends_on:
+      - discoveryservice
 volumes:
   mongo:
