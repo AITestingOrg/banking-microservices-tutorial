@@ -16,4 +16,11 @@ public class TransactionAmount {
     public double getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionAmount{" +
+                "amount=" + amount +
+                '}';
+    }
 }

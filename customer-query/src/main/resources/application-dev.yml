@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    include: default
+  data:
+    mongodb:
+      host: mongo
+  rabbitmq:
+    host: rabbitmq
+
+amqp:
+  events:
+    host: rabbitmq
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eurekaserver:8761/eureka
+  instance:
+    preferIpAddress: true

@@ -80,4 +80,13 @@ public class Customer {
         firstName = event.getFirstName();
         lastName = event.getLastName();
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
 }

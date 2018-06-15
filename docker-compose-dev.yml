@@ -1,0 +1,19 @@
+version: '3'
+services:
+  eurekaserver:
+    image: springcloud/eureka
+    ports:
+      - "8761:8761"
+  mongo:
+    image: 'mongo:3.4.1'
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/db'
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+volumes:
+  mongo:

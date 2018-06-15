@@ -20,6 +20,7 @@ dependencies {
     compile("org.axonframework:axon-spring-boot-starter:${axonVersion}")
     compile("org.axonframework:axon-spring-boot-autoconfigure:${axonVersion}")
     compile("org.axonframework:axon-amqp:${axonVersion}")
+    compile "org.aspectj:aspectjtools:${aspectjVersion}"
     testCompile("org.axonframework:axon-test:${axonVersion}")
     testCompile 'junit:junit:4.12'
 }
