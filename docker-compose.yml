@@ -10,8 +10,6 @@ services:
       - "8082:8080"
     restart: on-failure
     environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
 
   customercmd:
@@ -24,8 +22,6 @@ services:
       - "8079:8080"
     restart: on-failure
     environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
 
   accountcmd:
@@ -38,9 +34,7 @@ services:
       - "8083:8080"
     restart: on-failure
     environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
-
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
   accountquery:
     build: account-query/
     depends_on:
@@ -51,10 +45,7 @@ services:
       - "8084:8080"
     restart: on-failure
     environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-
   transactionserver:
     build: transactions/
     depends_on:
@@ -64,9 +55,8 @@ services:
       - "8085:8080"
     environment:
       - MONGO_HOST=mongo
-    restart: on-failure
-
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    restart: on-failure
 
   mongo:
     image: 'mongo:3.4.1'
