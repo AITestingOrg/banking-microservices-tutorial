@@ -1,77 +1,48 @@
-version: '3'
+version: '2'
 services:
   customerquery:
     build: customer-query/
-    depends_on:
-      - discoveryservice
-      - mongo
-      - rabbitmq
-      - configurationservice
     ports:
       - "8082:8080"
+    networks:
+      - banking-microservices-example_bank
     restart: on-failure
   customercmd:
     build: customer-cmd/
-    depends_on:
-      - discoveryservice
-      - mongo
-      - rabbitmq
-      - configurationservice
     ports:
       - "8079:8080"
+    networks:
+      - banking-microservices-example_bank
     restart: on-failure
 
   accountcmd:
     build: account-cmd/
-    depends_on:
-      - discoveryservice
-      - mongo
-      - rabbitmq
-      - configurationservice
     ports:
       - "8083:8080"
+    networks:
+      - banking-microservices-example_bank
     restart: on-failure
   accountquery:
     build: account-query/
-    depends_on:
-      - discoveryservice
-      - mongo
-      - rabbitmq
-      - configurationservice
     ports:
       - "8084:8080"
+    networks:
+      - banking-microservices-example_bank
     restart: on-failure
 
   transactionserver:
     build: transactions/
-    depends_on:
-      - discoveryservice
-      - mongo
     ports:
       - "8085:8080"
     environment:
       - MONGO_HOST=mongo
+    networks:
+      - banking-microservices-example_bank
     restart: on-failure
 
-  mongo:
-    image: 'mongo:3.4.1'
-    ports:
-      - '27017:27017'
-    volumes:
-      - 'mongo:/data/db'
-  rabbitmq:
-    image: rabbitmq:management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-  discoveryservice:
-    image: springcloud/eureka
-    ports:
-      - "8761:8761"
-  configurationservice:
-    image: aista/configuration-service
-    ports:
-      - "8888:8080"
+networks:
+  banking-microservices-example_bank:
+    external: true
 
 volumes:
   mongo:
