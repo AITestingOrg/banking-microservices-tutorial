@@ -9,8 +9,9 @@ services:
     ports:
       - "8082:8080"
     restart: on-failure
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     environment:
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+
   customercmd:
     build: customer-cmd/
     depends_on:
@@ -32,6 +33,8 @@ services:
     ports:
       - "8083:8080"
     restart: on-failure
+    environment:
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
   accountquery:
     build: account-query/
     depends_on:
@@ -40,10 +43,9 @@ services:
     mem_limit: 700m
     ports:
       - "8084:8080"
+    restart: on-failure
     environment:
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-    restart: on-failure
-
   transactionserver:
     build: transactions/
     depends_on:
@@ -76,6 +78,7 @@ services:
 #    image: aista/configuration-service
 #    ports:
 #      - "8888:8080"
+
 
 volumes:
   mongo:

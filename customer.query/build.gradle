@@ -1,11 +1,11 @@
 dependencies {
-    compile project(":event-sourcing")
-    compile project(":account.common")
+    compile project(':eventsourcing')
+    compile project(':customer.common')
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+    testCompile("org.axonframework:axon-test:${axonVersion}")
 }
 
 version = '0.0.1'
