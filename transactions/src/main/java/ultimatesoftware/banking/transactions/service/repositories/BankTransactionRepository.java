@@ -1,7 +1,7 @@
-package ultimatesoftware.banking.transactions.dao;
+package ultimatesoftware.banking.transactions.service.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import ultimatesoftware.banking.transactions.models.BankTransaction;
+import ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 
 import java.util.List;
 

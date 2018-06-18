@@ -4,11 +4,11 @@ import java.util.UUID;
 
 public class AccountUpdatedEvent {
     private UUID id;
-    private String customerId;
+    private UUID customerId;
     private double balance;
     private boolean active;
 
-    public AccountUpdatedEvent(UUID id, String customerId, double balance, boolean active) {
+    public AccountUpdatedEvent(UUID id, UUID customerId, double balance, boolean active) {
         this.id = id;
         this.customerId = customerId;
         this.balance = balance;
@@ -19,7 +19,7 @@ public class AccountUpdatedEvent {
         return id;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 

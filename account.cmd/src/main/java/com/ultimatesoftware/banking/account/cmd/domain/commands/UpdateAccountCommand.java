@@ -8,11 +8,11 @@ import java.util.UUID;
 public class UpdateAccountCommand {
     @TargetAggregateIdentifier
     private UUID id;
-    private String customerId;
+    private UUID customerId;
     private double balance;
     private boolean active;
 
-    public UpdateAccountCommand(UUID id, String customerId, double balance, boolean active) {
+    public UpdateAccountCommand(UUID id, UUID customerId, double balance, boolean active) {
         this.id = id;
         this.customerId = customerId;
         this.balance = balance;
@@ -30,7 +30,7 @@ public class UpdateAccountCommand {
         return id;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 

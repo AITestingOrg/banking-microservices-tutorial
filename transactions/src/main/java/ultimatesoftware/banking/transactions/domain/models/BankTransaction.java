@@ -1,19 +1,21 @@
-package ultimatesoftware.banking.transactions.models;
+package ultimatesoftware.banking.transactions.domain.models;
 
 import org.springframework.data.annotation.Id;
+
+import java.util.UUID;
 
 public class BankTransaction {
     @Id
     private String id;
     private TransactionType type;
-    private String account;
-    private String customerId;
+    private UUID account;
+    private UUID customerId;
     private double amount;
-    private String destinationAccount;
+    private UUID destinationAccount;
 
     public BankTransaction() {}
 
-    public BankTransaction(String id, TransactionType type, String customerId, String account, double amount, String destinationAccount) {
+    public BankTransaction(String id, TransactionType type, UUID customerId, UUID account, double amount, UUID destinationAccount) {
         this.id = id;
         this.type = type;
         this.account = account;
@@ -22,7 +24,7 @@ public class BankTransaction {
         this.destinationAccount = destinationAccount;
     }
 
-    public BankTransaction(String id, TransactionType type, String account, double amount) {
+    public BankTransaction(String id, TransactionType type, UUID account, double amount) {
         this.id = id;
         this.type = type;
         this.account = account;
@@ -33,7 +35,7 @@ public class BankTransaction {
         return id;
     }
 
-    public String getDestinationAccount() {
+    public UUID getDestinationAccount() {
         return destinationAccount;
     }
 
@@ -41,7 +43,7 @@ public class BankTransaction {
         return type;
     }
 
-    public String getAccount() {
+    public UUID getAccount() {
         return account;
     }
 
@@ -49,29 +51,29 @@ public class BankTransaction {
         return amount;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 
     public static class BankTransactionBuilder {
         private String id;
         private TransactionType type;
-        private String account;
+        private UUID account;
         private double amount;
-        private String destinationAccount;
-        private String customerId;
+        private UUID destinationAccount;
+        private UUID customerId;
 
         public BankTransactionBuilder setType(TransactionType type) {
             this.type = type;
             return this;
         }
 
-        public BankTransactionBuilder setCustomerId(String customerId) {
+        public BankTransactionBuilder setCustomerId(UUID customerId) {
             this.customerId = customerId;
             return this;
         }
 
-        public BankTransactionBuilder setAccount(String account) {
+        public BankTransactionBuilder setAccount(UUID account) {
             this.account = account;
             return this;
         }
@@ -81,7 +83,7 @@ public class BankTransaction {
             return this;
         }
 
-        public BankTransactionBuilder setDestinationAccount(String destinationAccount) {
+        public BankTransactionBuilder setDestinationAccount(UUID destinationAccount) {
             this.destinationAccount = destinationAccount;
             return this;
         }

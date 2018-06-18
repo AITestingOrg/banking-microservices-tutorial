@@ -21,7 +21,7 @@ amqp:
     host: localhost
     exchange-name: eventBus-customer
     queue-name: eventQueue-customer
-    handlers: com.ultimatesoftware.banking.customer.query.domain.eventhandlers
+    handlers: com.ultimatesoftware.banking.customer.query.ultimatesoftware.banking.transactions.domain.eventhandlers
 
 endpoints:
   health:

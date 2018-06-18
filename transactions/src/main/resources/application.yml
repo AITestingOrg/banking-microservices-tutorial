@@ -1,6 +1,6 @@
 spring:
   application:
-    name: accountquery
+    name: transactions
   data:
     mongodb:
       database: ${spring.application.name}

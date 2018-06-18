@@ -5,9 +5,14 @@ import java.util.UUID;
 public class AccountOverdraftedEvent {
     private UUID id;
     private double balance;
+    private UUID customerId;
     private double debitAmount;
 
-    public AccountOverdraftedEvent(UUID id, double balance, double debitAmount) {
+    public AccountOverdraftedEvent(UUID id, double balance, UUID customerId, double debitAmount) {
+        this.id = id;
+        this.balance = balance;
+        this.customerId = customerId;
+        this.debitAmount = debitAmount;
     }
 
     public UUID getId() {
@@ -20,5 +25,9 @@ public class AccountOverdraftedEvent {
 
     public double getDebitAmount() {
         return debitAmount;
+    }
+
+    public UUID getCustomerId() {
+        return customerId;
     }
 }
