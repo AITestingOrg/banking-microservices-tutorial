@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: accountquery
+  data:
+    mongodb:
+      database: ${spring.application.name}
+      host: localhost
+      port: 27017
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 8080
+
+amqp:
+  events:
+    host: localhost
+    exchange-name: eventBus-account
+    queue-name: eventQueue-account
+    handlers: com.ultimatesoftware.banking.account.query.domain.eventhandlers
+
+endpoints:
+  health:
+    sensitive:  false
+
+management:
+  security:
+    enabled: false

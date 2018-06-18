@@ -1,9 +1,8 @@
 dependencies {
-    compile project(":event-sourcing")
+    compile project(":eventsourcing")
     compile project(":customer.common")
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.axonframework:axon-test:${axonVersion}")
 }

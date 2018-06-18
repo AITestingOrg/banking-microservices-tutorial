@@ -1,12 +1,16 @@
-version: '2'
+version: '2.1'
 services:
   customerquery:
     build: customer-query/
+    mem_limit: 700m
     ports:
       - "8082:8080"
     networks:
       - banking-microservices-example_bank
     restart: on-failure
+    environment:
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+
   customercmd:
     build: customer-cmd/
     ports:
@@ -14,35 +18,45 @@ services:
     networks:
       - banking-microservices-example_bank
     restart: on-failure
+    environment:
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
 
   accountcmd:
     build: account-cmd/
+    mem_limit: 700m
     ports:
       - "8083:8080"
     networks:
       - banking-microservices-example_bank
     restart: on-failure
+    environment:
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
   accountquery:
     build: account-query/
+    mem_limit: 700m
     ports:
       - "8084:8080"
     networks:
       - banking-microservices-example_bank
     restart: on-failure
-
+    environment:
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
   transactionserver:
     build: transactions/
+    mem_limit: 700m
     ports:
       - "8085:8080"
     environment:
       - MONGO_HOST=mongo
     networks:
       - banking-microservices-example_bank
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     restart: on-failure
 
 networks:
   banking-microservices-example_bank:
     external: true
+
 
 volumes:
   mongo:
