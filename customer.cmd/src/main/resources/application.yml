@@ -1,6 +1,6 @@
 spring:
   application:
-    name: accountcmd
+    name: customercmd
   data:
     mongodb:
       database: ${spring.application.name}
@@ -20,12 +20,12 @@ axon:
         default:
           uri: mongodb://localhost:27017/${spring.application.name}
           aggregates:
-            - Account
+            - Customer
 amqp:
   events:
     host: localhost
-    exchange-name: eventBus-account
-    queue-name: eventQueue-account
+    exchange-name: eventBus-customer
+    queue-name: eventQueue-customer
     handlers:
 
 endpoints:

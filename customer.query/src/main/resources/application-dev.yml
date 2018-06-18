@@ -7,12 +7,6 @@ spring:
   rabbitmq:
     host: rabbitmq
 
-axon:
-  eventstore:
-    mongo:
-      connections:
-        default:
-          uri: mongodb://mongo:27017/${spring.application.name}
 amqp:
   events:
     host: rabbitmq

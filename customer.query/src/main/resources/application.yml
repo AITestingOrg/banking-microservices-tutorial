@@ -1,6 +1,7 @@
+# Mongo config
 spring:
   application:
-    name: accountquery
+    name: customerquery
   data:
     mongodb:
       database: ${spring.application.name}
@@ -18,9 +19,9 @@ server:
 amqp:
   events:
     host: localhost
-    exchange-name: eventBus-account
-    queue-name: eventQueue-account
-    handlers: com.ultimatesoftware.banking.account.query.domain.eventhandlers
+    exchange-name: eventBus-customer
+    queue-name: eventQueue-customer
+    handlers: com.ultimatesoftware.banking.customer.query.domain.eventhandlers
 
 endpoints:
   health:
