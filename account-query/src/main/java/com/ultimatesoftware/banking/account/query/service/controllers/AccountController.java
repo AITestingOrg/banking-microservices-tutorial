@@ -21,7 +21,7 @@ public class AccountController {
         return accountRepository.findAll();
     }
 
-    @GetMapping("account/{id}")
+    @GetMapping("accounts/{id}")
     public Account getCustomer(@Valid @PathVariable("id") UUID id) {
         return accountRepository.findOne(id);
     }

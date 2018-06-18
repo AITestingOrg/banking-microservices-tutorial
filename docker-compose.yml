@@ -8,11 +8,9 @@ services:
     mem_limit: 700m
     ports:
       - "8082:8080"
-    environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
+    restart: on-failure
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-
+    environment:
   customercmd:
     build: customer-cmd/
     depends_on:
@@ -21,9 +19,8 @@ services:
     mem_limit: 700m
     ports:
       - "8079:8080"
+    restart: on-failure
     environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
 
   accountcmd:
@@ -34,10 +31,7 @@ services:
     mem_limit: 700m
     ports:
       - "8083:8080"
-    environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
-
+    restart: on-failure
   accountquery:
     build: account-query/
     depends_on:
@@ -47,9 +41,8 @@ services:
     ports:
       - "8084:8080"
     environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    restart: on-failure
 
   transactionserver:
     build: transactions/
@@ -61,6 +54,7 @@ services:
     environment:
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    restart: on-failure
 
   mongo:
     image: 'mongo:3.4.1'
@@ -74,6 +68,14 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  eurekaserver:
+    image: springcloud/eureka
+    ports:
+      - "8761:8761"
+#  configurationservice:
+#    image: aista/configuration-service
+#    ports:
+#      - "8888:8080"
 
 volumes:
   mongo:
