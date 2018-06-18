@@ -1,7 +1,6 @@
 package ultimatesoftware.banking.transactions.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -12,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public abstract class RestService<T> {
     @Bean
-    @LoadBalanced
     RestTemplate restTemplate() {
         return new RestTemplate();
     }

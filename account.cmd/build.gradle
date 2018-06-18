@@ -1,0 +1,11 @@
+dependencies {
+    compile project(":eventsourcing")
+    compile project(":account.common")
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.axonframework:axon-test:${axonVersion}")
+}
+
+version = '0.0.1'

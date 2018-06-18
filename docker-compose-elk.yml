@@ -8,11 +8,15 @@ services:
     mem_limit: 700m
     ports:
       - "8082:8080"
-    restart: on-failure
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://:5000"
+        tag: "customer-query-server"
 
   customercmd:
     build: customer-cmd/
@@ -22,11 +26,15 @@ services:
     mem_limit: 700m
     ports:
       - "8079:8080"
-    restart: on-failure
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://:5000"
+        tag: "customer-cmd-server"
 
   accountcmd:
     build: account-cmd/
@@ -36,10 +44,14 @@ services:
     mem_limit: 700m
     ports:
       - "8083:8080"
-    restart: on-failure
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://:5000"
+        tag: "account-cmd-server"
 
   accountquery:
     build: account-query/
@@ -49,11 +61,15 @@ services:
     mem_limit: 700m
     ports:
       - "8084:8080"
-    restart: on-failure
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://:5000"
+        tag: "acount-query-server"
 
   transactionserver:
     build: transactions/
@@ -64,9 +80,12 @@ services:
       - "8085:8080"
     environment:
       - MONGO_HOST=mongo
-    restart: on-failure
-
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://:5000"
+        tag: "transaction-server"
 
   mongo:
     image: 'mongo:3.4.1'
@@ -80,15 +99,6 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-  eurekaserver:
-    image: springcloud/eureka
-    ports:
-      - "8761:8761"
-#  configurationservice:
-#    image: aista/configuration-service
-#    ports:
-#      - "8888:8080"
-
 
 volumes:
   mongo:

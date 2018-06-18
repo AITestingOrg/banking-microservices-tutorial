@@ -15,9 +15,5 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-  configurationservice:
-    image: aista/configuration-service
-    ports:
-     - '8888:8080'
 volumes:
   mongo:
