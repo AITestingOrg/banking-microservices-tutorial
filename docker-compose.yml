@@ -1,52 +1,59 @@
-version: '3'
+version: '2.1'
 services:
   customerquery:
     build: customer-query/
     depends_on:
-      - eurekaserver
       - mongo
       - rabbitmq
+    mem_limit: 700m
     ports:
       - "8082:8080"
     restart: on-failure
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    environment:
   customercmd:
     build: customer-cmd/
     depends_on:
-      - eurekaserver
       - mongo
       - rabbitmq
+    mem_limit: 700m
     ports:
       - "8079:8080"
     restart: on-failure
+    environment:
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
 
   accountcmd:
     build: account-cmd/
     depends_on:
-      - eurekaserver
       - mongo
       - rabbitmq
+    mem_limit: 700m
     ports:
       - "8083:8080"
     restart: on-failure
   accountquery:
     build: account-query/
     depends_on:
-      - eurekaserver
       - mongo
       - rabbitmq
+    mem_limit: 700m
     ports:
       - "8084:8080"
+    environment:
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     restart: on-failure
 
   transactionserver:
     build: transactions/
     depends_on:
-      - eurekaserver
       - mongo
+    mem_limit: 700m
     ports:
       - "8085:8080"
     environment:
       - MONGO_HOST=mongo
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     restart: on-failure
 
   mongo:
@@ -55,6 +62,7 @@ services:
       - '27017:27017'
     volumes:
       - 'mongo:/data/db'
+
   rabbitmq:
     image: rabbitmq:management
     ports:
