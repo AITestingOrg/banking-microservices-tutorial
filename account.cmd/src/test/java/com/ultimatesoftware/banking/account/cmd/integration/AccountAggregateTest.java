@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.UUID;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AccountAggregateTest {
@@ -25,7 +27,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountCreation() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         double balance = 0.0;
         boolean active = true;
         CreateAccountCommand command = new CreateAccountCommand(customerId);
@@ -36,7 +38,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDebit() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
         DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0);
@@ -47,7 +49,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountCredit() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), 10.0);
         fixture.givenCommands(createCommand)
@@ -57,7 +59,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountOverdraft() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
         DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0);
@@ -69,7 +71,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDelete() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());
         fixture.givenCommands(createCommand)
@@ -81,7 +83,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDelete_WhenPositiveBalance_NoEventsSent() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());
@@ -92,7 +94,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDelete_WhenNegativeBalance_NoEventsSent() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
         DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0);
@@ -104,7 +106,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountOverdraft_WhenPositiveBalance_NoEventSent() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
         DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 10.0);
@@ -116,7 +118,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDebit_WhenNegativeBalance_NoEventSent() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
         DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0);
@@ -128,7 +130,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDebit_WhenAccountInactive_NoEventSent() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());
         DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0);
@@ -139,7 +141,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountCredit_WhenAccountInactive_NoEventSent() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());
         CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), 10.0);
@@ -150,7 +152,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDelete_WhenAccountInactive_NoEventSent() {
-        String customerId = "Doe";
+        UUID customerId = "Doe";
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());

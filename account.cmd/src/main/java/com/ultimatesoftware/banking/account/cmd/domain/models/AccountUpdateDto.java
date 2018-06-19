@@ -1,17 +1,19 @@
 package com.ultimatesoftware.banking.account.cmd.domain.models;
 
+import java.util.UUID;
+
 public class AccountUpdateDto {
-    private String customerId;
+    private UUID customerId;
     private double balance;
     private boolean active;
 
-    public AccountUpdateDto(String customerId, double balance, boolean active) {
+    public AccountUpdateDto(UUID customerId, double balance, boolean active) {
         this.customerId = customerId;
         this.balance = balance;
         this.active = active;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 

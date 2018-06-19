@@ -1,6 +1,6 @@
 FROM frolvlad/alpine-oraclejdk8:slim
 VOLUME /tmp
-ADD build/libs/account-cmd-0.0.1.jar app.jar
+ADD build/libs/account.cmd-0.0.1.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=dev
 ENV JAVA_OPTS=""
 EXPOSE 8080

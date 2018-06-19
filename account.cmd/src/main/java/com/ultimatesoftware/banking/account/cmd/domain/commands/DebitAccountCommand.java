@@ -4,12 +4,13 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class DebitAccountCommand {
+public class DebitAccountCommand extends TransactionCommand implements Command {
     @TargetAggregateIdentifier
     private UUID id;
     private double amount;
 
-    public DebitAccountCommand(UUID id, double amount) {
+    public DebitAccountCommand(UUID id, double amount, UUID transactionId) {
+        super(transactionId);
         this.id = id;
         this.amount = amount;
     }
