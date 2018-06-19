@@ -1,15 +1,19 @@
-version: '3'
+version: '2'
 services:
-  eurekaserver:
+  discoveryservice:
     image: springcloud/eureka
     ports:
       - "8761:8761"
+    networks:
+      - bank
   mongo:
     image: 'mongo:3.4.1'
     ports:
       - '27017:27017'
     volumes:
       - 'mongo:/data/db'
+    networks:
+      - bank
   rabbitmq:
     image: rabbitmq:management
     ports:

@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: customerquery
+  cloud:
+    config:
+      uri: http://configurationservice:8080
