@@ -1,8 +1,8 @@
 buildscript {
     ext {
         springCloudVersion = 'Edgware.SR3'
-        springCloudStarter = '1.4.4.RELEASE'
-        springBootVersion = '1.5.13.RELEASE'
+        //springCloudStarter = '1.4.4.RELEASE'
+        springBootVersion = '1.5.14.RELEASE'
         axonVersion = '3.1.2'
         aspectjVersion = '1.9.1'
     }
@@ -11,7 +11,7 @@ buildscript {
 plugins {
     id "io.spring.dependency-management" version "1.0.5.RELEASE"
     //do not enable boot here, it is enabled on the corresponding spring projects
-    id "org.springframework.boot" version "1.5.13.RELEASE" apply false
+    id "org.springframework.boot" version "1.5.14.RELEASE" apply false
 }
 
 dependencyManagement {
@@ -29,13 +29,16 @@ dependencies {
     compile project('account.cmd')
     compile project('account.query')
     compile project('transactions')
+    compile project('eureka')
 }
 
 assemble.dependsOn(clean)
 
 def springProjects = subprojects.findAll { project -> project.name.indexOf('cmd') != -1}
 def queryProjects = subprojects.findAll { project -> project.name.indexOf('query') != -1}
+def supportProjects = subprojects.findAll { project -> project.name.equals('eureka') }
 springProjects.addAll(queryProjects)
+springProjects.addAll(supportProjects)
 springProjects.add(project('transactions'))
 
 allprojects {

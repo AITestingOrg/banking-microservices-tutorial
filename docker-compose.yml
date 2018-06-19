@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   customerquery:
-    build: customer-query/
+    build: customer.query/
     depends_on:
       - mongo
       - rabbitmq
@@ -10,10 +10,12 @@ services:
       - "8082:8080"
     restart: on-failure
     environment:
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   customercmd:
-    build: customer-cmd/
+    build: customer.cmd/
     depends_on:
       - mongo
       - rabbitmq
@@ -22,21 +24,24 @@ services:
       - "8079:8080"
     restart: on-failure
     environment:
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   accountcmd:
-    build: account-cmd/
+    build: account.cmd/
     depends_on:
       - mongo
       - rabbitmq
-    mem_limit: 700m
     ports:
       - "8083:8080"
     restart: on-failure
     environment:
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+
   accountquery:
-    build: account-query/
+    build: account.query/
     depends_on:
       - mongo
       - rabbitmq
@@ -45,7 +50,10 @@ services:
       - "8084:8080"
     restart: on-failure
     environment:
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+
   transactionserver:
     build: transactions/
     depends_on:
@@ -55,7 +63,8 @@ services:
       - "8085:8080"
     environment:
       - MONGO_HOST=mongo
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
     restart: on-failure
 
   mongo:
@@ -70,10 +79,12 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+
   eurekaserver:
-    image: springcloud/eureka
+    build: eureka/
     ports:
       - "8761:8761"
+
 #  configurationservice:
 #    image: aista/configuration-service
 #    ports:
