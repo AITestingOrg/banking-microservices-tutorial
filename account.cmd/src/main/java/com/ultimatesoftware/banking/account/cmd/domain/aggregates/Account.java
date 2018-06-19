@@ -20,7 +20,7 @@ import static org.axonframework.commandhandling.model.AggregateLifecycle.markDel
 public class Account {
     @AggregateIdentifier
     private UUID id;
-    private String customerId;
+    private UUID customerId;
     private double balance;
     private boolean active;
     private final double overdraftFee = 35.0;
@@ -30,14 +30,14 @@ public class Account {
         apply(new AccountCreatedEvent(createAccountCommand.getId(), createAccountCommand.getCustomerId(), createAccountCommand.getBalance(), createAccountCommand.getActive()));
     }
 
-    public Account(UUID id, String customerId, double balance, boolean active) {
+    public Account(UUID id, UUID customerId, double balance, boolean active) {
         this.id = id;
         this.customerId = customerId;
         this.balance = balance;
         this.active = active;
     }
 
-    public Account(String customerId) {
+    public Account(UUID customerId) {
         this.customerId = customerId;
     }
 
@@ -53,7 +53,7 @@ public class Account {
         return active;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 
@@ -70,7 +70,7 @@ public class Account {
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
-        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance));
+        apply(new AccountDebitedEvent(debitAccountCommand.getId(), balance, debitAccountCommand.getAmount(), customerId, true, debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -79,7 +79,7 @@ public class Account {
             throw new AccountInactiveException(id);
         }
         double newBalance = balance + creditAccountCommand.getAmount();
-        apply(new AccountCreditedEvent(creditAccountCommand.getId(), newBalance));
+        apply(new AccountCreditedEvent(creditAccountCommand.getId(), customerId, creditAccountCommand.getAmount(), newBalance, true, creditAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -101,14 +101,13 @@ public class Account {
 
         if (AccountRules.eligibleForDebitOverdraft(balance, overDraftAccountCommand.getDebitAmount())) {
             double newBalance = balance - overdraftFee;
-            apply(new AccountOverdraftedEvent(id, newBalance, overDraftAccountCommand.getDebitAmount()));
+            apply(new AccountOverdraftedEvent(id, newBalance, customerId, overdraftFee, true, overDraftAccountCommand.getTransactionId()));
         }
     }
 
     @CommandHandler
     public void on(UpdateAccountCommand updateAccountCommand) {
-        apply(new AccountUpdatedEvent(id, updateAccountCommand.getCustomerId(),
-                                      updateAccountCommand.getBalance(), updateAccountCommand.isActive()));
+        apply(new AccountUpdatedEvent(id, updateAccountCommand.getCustomerId()));
     }
 
     @EventSourcingHandler
@@ -136,8 +135,6 @@ public class Account {
 
     @EventSourcingHandler
     public void on(AccountUpdatedEvent accountUpdatedEvent) {
-        balance = accountUpdatedEvent.getBalance();
-        active = accountUpdatedEvent.isActive();
         customerId = accountUpdatedEvent.getCustomerId();
     }
 

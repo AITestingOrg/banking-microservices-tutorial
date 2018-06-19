@@ -5,40 +5,26 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class UpdateAccountCommand {
+public class UpdateAccountCommand implements Command {
     @TargetAggregateIdentifier
     private UUID id;
-    private String customerId;
-    private double balance;
-    private boolean active;
+    private UUID customerId;
 
-    public UpdateAccountCommand(UUID id, String customerId, double balance, boolean active) {
+    public UpdateAccountCommand(UUID id, UUID customerId) {
         this.id = id;
         this.customerId = customerId;
-        this.balance = balance;
-        this.active = active;
     }
 
     public UpdateAccountCommand(UUID id, AccountUpdateDto accountUpdateDto) {
         this.id = id;
         this.customerId = accountUpdateDto.getCustomerId();
-        this.balance = accountUpdateDto.getBalance();
-        this.active = accountUpdateDto.isActive();
     }
 
     public UUID getId() {
         return id;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public boolean isActive() {
-        return active;
     }
 }

@@ -9,7 +9,9 @@ services:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   customercmd:
     build: customer.cmd/
@@ -20,7 +22,9 @@ services:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   accountcmd:
     build: account.cmd/
@@ -31,7 +35,9 @@ services:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+
   accountquery:
     build: account.query/
     mem_limit: 700m
@@ -41,7 +47,10 @@ services:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+
   transactionserver:
     build: transactions/
     mem_limit: 700m

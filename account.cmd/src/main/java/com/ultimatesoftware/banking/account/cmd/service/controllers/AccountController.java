@@ -3,13 +3,16 @@ package com.ultimatesoftware.banking.account.cmd.service.controllers;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountCreationDto;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountUpdateDto;
-import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionAmount;
+import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("api/v1")
@@ -18,41 +21,41 @@ public class AccountController {
     private CommandGateway commandGateway;
 
     @PostMapping("accounts")
-    public CreateAccountCommand addAccount(@Valid @RequestBody AccountCreationDto account) {
+    public ResponseEntity<String> addAccount(@Valid @RequestBody AccountCreationDto account) {
         CreateAccountCommand command = new CreateAccountCommand(account.getCustomerId());
-        commandGateway.send(command);
-        return command;
+        return sendCommand(command);
     }
 
     @PutMapping("accounts/{id}")
-    public UpdateAccountCommand updateAccount(@PathVariable("id") UUID id,
+    public ResponseEntity<String> updateAccount(@PathVariable("id") UUID id,
                                               @Valid @RequestBody AccountUpdateDto account) {
         UpdateAccountCommand command = new UpdateAccountCommand(id, account);
-        commandGateway.send(command);
-        return command;
+        return sendCommand(command);
     }
 
-    @PutMapping("accounts/{id}/debit")
-    public DebitAccountCommand debitAccount(@PathVariable("id") UUID id,
-                                            @Valid @RequestBody TransactionAmount amount) {
-        DebitAccountCommand command = new DebitAccountCommand(id, amount.getAmount());
-        commandGateway.send(command);
-        commandGateway.send(new OverDraftAccountCommand(id, amount.getAmount()));
-        return command;
+    @PutMapping("accounts/debit")
+    public ResponseEntity<String> debitAccount(@Valid TransactionDto transaction) {
+        DebitAccountCommand command = new DebitAccountCommand(transaction.getAccount(), transaction.getAmount(), transaction.getId());
+        return sendCommand(command);
     }
 
-    @PutMapping("accounts/{id}/credit")
-    public CreditAccountCommand creditAccount(@Valid @PathVariable("id") UUID id,
-                                              @Valid @RequestBody TransactionAmount amount) {
-        CreditAccountCommand command = new CreditAccountCommand(id, amount.getAmount());
-        commandGateway.send(command);
-        return command;
+    @PutMapping("accounts/credit")
+    public ResponseEntity<String> creditAccount(@Valid TransactionDto transaction) {
+        CreditAccountCommand command = new CreditAccountCommand(transaction.getAccount(), transaction.getAmount(), transaction.getId());
+        return sendCommand(command);
     }
 
     @DeleteMapping("accounts/{id}")
-    public DeleteAccountCommand deleteAccount(@Valid @PathVariable("id") UUID id) {
+    public ResponseEntity<String> deleteAccount(@Valid @PathVariable("id") UUID id) {
         DeleteAccountCommand command = new DeleteAccountCommand(id);
-        commandGateway.send(command);
-        return command;
+        return sendCommand(command);
+    }
+
+    private ResponseEntity<String> sendCommand(Command command) {
+        CompletableFuture future = commandGateway.send(command);
+        if(future.isCompletedExceptionally()) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(command.getId().toString(), HttpStatus.OK);
     }
 }

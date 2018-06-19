@@ -8,11 +8,11 @@ public class Account {
     @NotNull
     private UUID id;
     @Min(18)
-    private String customerId;
+    private UUID customerId;
     private double balance;
     private boolean active;
 
-    public Account(UUID id, String customerId, double balance, boolean active) {
+    public Account(UUID id, UUID customerId, double balance, boolean active) {
         this.id = id;
         this.customerId = customerId;
         this.balance = balance;
@@ -23,7 +23,7 @@ public class Account {
         return id;
     }
 
-    public String getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
     }
 
@@ -35,7 +35,7 @@ public class Account {
         return active;
     }
 
-    public void setCustomerId(String customerId) {
+    public void setCustomerId(UUID customerId) {
         this.customerId = customerId;
     }
 
