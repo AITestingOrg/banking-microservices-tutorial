@@ -2,13 +2,14 @@ package com.ultimatesoftware.banking.account.common.events;
 
 import java.util.UUID;
 
-public class AccountDebitedEvent {
+public class AccountDebitedEvent extends AccountTransactionEvent {
     private UUID id;
     private double balance;
     private double debitAmount;
     private UUID customerId;
 
-    public AccountDebitedEvent(UUID id, double balance, double debitAmount, UUID customerId) {
+    public AccountDebitedEvent(UUID id, double balance, double debitAmount, UUID customerId, boolean success, UUID transactionId) {
+        super(success, transactionId);
         this.id = id;
         this.balance = balance;
         this.debitAmount = debitAmount;
@@ -29,5 +30,9 @@ public class AccountDebitedEvent {
 
     public double getDebitAmount() {
         return debitAmount;
+    }
+
+    public UUID getTransactionId() {
+        return transactionId;
     }
 }

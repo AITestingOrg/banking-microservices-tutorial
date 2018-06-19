@@ -68,7 +68,6 @@ public class AccountEventHandler {
 
     private void updateAccount(UUID id, AccountUpdatedEvent accountUpdatedEvent) {
         Account account = accountRepository.findOne(id);
-        account.setActive(accountUpdatedEvent.isActive());
         account.setCustomerId(accountUpdatedEvent.getCustomerId());
         accountRepository.save(account);
         LOG.debug("Updated account {}", account.getBalance());

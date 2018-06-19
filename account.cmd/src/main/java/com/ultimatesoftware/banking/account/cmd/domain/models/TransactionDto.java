@@ -1,0 +1,51 @@
+package com.ultimatesoftware.banking.account.cmd.domain.models;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.UUID;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TransactionDto {
+    @NotNull
+    private UUID id;
+    @NotNull
+    private UUID account;
+    @NotNull
+    private UUID customerId;
+    @Min(1)
+    private double amount;
+    private UUID destinationAccount;
+
+    public TransactionDto() {
+    }
+
+    public TransactionDto(UUID id, UUID account, UUID customerId, double amount, UUID destinationAccount) {
+        this.id = id;
+        this.account = account;
+        this.customerId = customerId;
+        this.amount = amount;
+        this.destinationAccount = destinationAccount;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getDestinationAccount() {
+        return destinationAccount;
+    }
+
+    public UUID getAccount() {
+        return account;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public UUID getCustomerId() {
+        return customerId;
+    }
+}

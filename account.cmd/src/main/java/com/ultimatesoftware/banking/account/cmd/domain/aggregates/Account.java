@@ -70,7 +70,7 @@ public class Account {
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
-        apply(new AccountDebitedEvent(debitAccountCommand.getId(), balance, debitAccountCommand.getAmount(), customerId));
+        apply(new AccountDebitedEvent(debitAccountCommand.getId(), balance, debitAccountCommand.getAmount(), customerId, true, debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -79,7 +79,7 @@ public class Account {
             throw new AccountInactiveException(id);
         }
         double newBalance = balance + creditAccountCommand.getAmount();
-        apply(new AccountCreditedEvent(creditAccountCommand.getId(), customerId, creditAccountCommand.getAmount(), newBalance));
+        apply(new AccountCreditedEvent(creditAccountCommand.getId(), customerId, creditAccountCommand.getAmount(), newBalance, true, creditAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -101,14 +101,13 @@ public class Account {
 
         if (AccountRules.eligibleForDebitOverdraft(balance, overDraftAccountCommand.getDebitAmount())) {
             double newBalance = balance - overdraftFee;
-            apply(new AccountOverdraftedEvent(id, newBalance, customerId, overdraftFee));
+            apply(new AccountOverdraftedEvent(id, newBalance, customerId, overdraftFee, true, overDraftAccountCommand.getTransactionId()));
         }
     }
 
     @CommandHandler
     public void on(UpdateAccountCommand updateAccountCommand) {
-        apply(new AccountUpdatedEvent(id, updateAccountCommand.getCustomerId(),
-                                      updateAccountCommand.getBalance(), updateAccountCommand.isActive()));
+        apply(new AccountUpdatedEvent(id, updateAccountCommand.getCustomerId()));
     }
 
     @EventSourcingHandler
@@ -136,8 +135,6 @@ public class Account {
 
     @EventSourcingHandler
     public void on(AccountUpdatedEvent accountUpdatedEvent) {
-        balance = accountUpdatedEvent.getBalance();
-        active = accountUpdatedEvent.isActive();
         customerId = accountUpdatedEvent.getCustomerId();
     }
 

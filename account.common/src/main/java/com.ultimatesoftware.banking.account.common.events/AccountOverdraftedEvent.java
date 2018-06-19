@@ -2,13 +2,14 @@ package com.ultimatesoftware.banking.account.common.events;
 
 import java.util.UUID;
 
-public class AccountOverdraftedEvent {
+public class AccountOverdraftedEvent extends AccountTransactionEvent {
     private UUID id;
     private double balance;
     private UUID customerId;
     private double debitAmount;
 
-    public AccountOverdraftedEvent(UUID id, double balance, UUID customerId, double debitAmount) {
+    public AccountOverdraftedEvent(UUID id, double balance, UUID customerId, double debitAmount, boolean success, UUID transactionId) {
+        super(success, transactionId);
         this.id = id;
         this.balance = balance;
         this.customerId = customerId;

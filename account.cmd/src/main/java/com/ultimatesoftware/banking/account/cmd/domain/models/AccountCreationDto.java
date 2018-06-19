@@ -1,10 +1,11 @@
 package com.ultimatesoftware.banking.account.cmd.domain.models;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class AccountCreationDto {
-    @Min(18)
+    @NotNull
     private UUID customerId;
 
     public AccountCreationDto(UUID customerId) {
