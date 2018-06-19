@@ -1,10 +1,10 @@
 dependencies {
     compile project(":eventsourcing")
     compile project(":account.common")
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile "org.aspectj:aspectjtools:${aspectjVersion}"
-    compile("org.axonframework:axon-test:${axonVersion}")
 }
 
 version = '0.0.1'

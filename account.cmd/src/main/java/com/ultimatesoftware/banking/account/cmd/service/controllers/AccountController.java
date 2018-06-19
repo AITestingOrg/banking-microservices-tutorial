@@ -56,6 +56,6 @@ public class AccountController {
         if(future.isCompletedExceptionally()) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(command.getId().toString(), HttpStatus.OK);
     }
 }

@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.transactions;
+package com.ultimatesoftware.banking.transactions;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

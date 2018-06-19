@@ -3,7 +3,6 @@ package ultimatesoftware.banking.transactions.domain.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
 import ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
@@ -14,10 +13,8 @@ import java.util.UUID;
 
 @Service
 public class TransactionService extends RestService {
-    @Value("${transactions.bankservice.name}")
-    private String BANK_ACCOUNT_SERVICE;
-    @Value("${transactions.bankservice.paths.account}")
-    private String BANK_ACCOUNT_GET_PATH;
+    private static final String BANK_ACCOUNT_SERVICE = "accounts";
+    private static final String BANK_ACCOUNT_GET_PATH = "/api/account/";
     private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
 
     @Autowired

@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.transactions;
+package com.ultimatesoftware.banking.transactions;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
