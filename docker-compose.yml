@@ -67,6 +67,5 @@ networks:
   banking-microservices-example_bank:
     external: true
 
-
 volumes:
   mongo:
