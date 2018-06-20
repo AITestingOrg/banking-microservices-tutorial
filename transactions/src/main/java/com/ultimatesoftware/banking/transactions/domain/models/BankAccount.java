@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.transactions.domain.models;
+package com.ultimatesoftware.banking.transactions.domain.models;
 
 import java.util.UUID;
 

@@ -1,5 +1,6 @@
 package com.ultimatesoftware.banking.account.cmd.service.controllers;
 
+import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Transaction;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountCreationDto;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountUpdateDto;
@@ -51,6 +52,18 @@ public class AccountController {
     public ResponseEntity<String> deleteAccount(@Valid @PathVariable("id") UUID id) {
         DeleteAccountCommand command = new DeleteAccountCommand(id);
         return sendCommand(command);
+    }
+
+    @PostMapping("transaction/start")
+    public ResponseEntity<?> startTransaction(@Valid @RequestBody Transaction transaction) {
+        CompletableFuture future = commandGateway.send(new StartTransferTransactionCommand(
+                                                                transaction.getFromAccount(),
+                                                                transaction.getToAccount(),
+                                                                transaction.getAmount()));
+        if(future.isCompletedExceptionally()) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(transaction.getTransactionId(), HttpStatus.OK);
     }
 
     private ResponseEntity<String> sendCommand(Command command) {

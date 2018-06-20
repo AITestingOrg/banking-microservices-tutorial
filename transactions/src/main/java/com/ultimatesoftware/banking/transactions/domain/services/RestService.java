@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.transactions.domain.services;
+package com.ultimatesoftware.banking.transactions.domain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

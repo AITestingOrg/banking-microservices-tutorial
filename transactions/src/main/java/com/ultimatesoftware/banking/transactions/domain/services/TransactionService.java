@@ -1,13 +1,13 @@
-package ultimatesoftware.banking.transactions.domain.services;
+package com.ultimatesoftware.banking.transactions.domain.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
-import ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
-import ultimatesoftware.banking.transactions.domain.models.*;
-import ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
+import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
+import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
+import com.ultimatesoftware.banking.transactions.domain.models.*;
+import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
 
 import java.util.UUID;
 

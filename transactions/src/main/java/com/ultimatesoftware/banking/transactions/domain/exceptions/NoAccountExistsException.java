@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.transactions.domain.exceptions;
+package com.ultimatesoftware.banking.transactions.domain.exceptions;
 
 public class NoAccountExistsException extends Exception {
     public NoAccountExistsException(String msg) {

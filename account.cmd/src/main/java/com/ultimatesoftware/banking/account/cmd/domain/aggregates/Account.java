@@ -5,11 +5,23 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountInactiv
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.account.common.events.AccountCreatedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountCreditedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountDebitedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountDeletedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountOverdraftedEvent;
+import com.ultimatesoftware.banking.account.common.events.AccountUpdatedEvent;
+import com.ultimatesoftware.banking.account.common.events.TransferCanceledEvent;
+import com.ultimatesoftware.banking.account.common.events.TransferConcludedEvent;
+import com.ultimatesoftware.banking.account.common.events.TransferFailedToConcludeEvent;
+import com.ultimatesoftware.banking.account.common.events.TransferFailedToStartEvent;
+import com.ultimatesoftware.banking.account.common.events.TransferStartedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -18,6 +30,7 @@ import static org.axonframework.commandhandling.model.AggregateLifecycle.markDel
 
 @Aggregate
 public class Account {
+    Logger logger = LoggerFactory.getLogger(Account.class);
     @AggregateIdentifier
     private UUID id;
     private UUID customerId;
@@ -70,7 +83,7 @@ public class Account {
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
-        apply(new AccountDebitedEvent(debitAccountCommand.getId(), balance, debitAccountCommand.getAmount(), customerId, true, debitAccountCommand.getTransactionId()));
+        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance, debitAccountCommand.getAmount(), customerId, true, debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -110,6 +123,50 @@ public class Account {
         apply(new AccountUpdatedEvent(id, updateAccountCommand.getCustomerId()));
     }
 
+    @CommandHandler
+    public void on(StartTransferCommand startTransferCommand) throws AccountInactiveException, AccountNotEligibleForDebitException {
+        if (!active) {
+            apply(new TransferFailedToStartEvent(startTransferCommand.getTransactionId()));
+            throw new AccountInactiveException(id);
+        }
+        if (!AccountRules.eligibleForDebit(this, startTransferCommand.getAmount())) {
+            apply(new TransferFailedToStartEvent(startTransferCommand.getTransactionId()));
+            throw new AccountNotEligibleForDebitException(id, balance);
+        }
+
+        logger.info("Transfer started from {} successfully", id);
+        double newBalance = balance - startTransferCommand.getAmount();
+        apply(new TransferStartedEvent(startTransferCommand.getTransactionId(),
+                                       startTransferCommand.getId(),
+                                       newBalance));
+    }
+
+    @CommandHandler
+    public void on(ConcludeTransferCommand concludeTransferCommand) throws AccountInactiveException {
+        if (!active) {
+            logger.info("Transfer concluded to {} failed, account not active", id);
+            apply(new TransferFailedToConcludeEvent(concludeTransferCommand.getTransactionId()));
+            throw new AccountInactiveException(id);
+        }
+        logger.info("Transfer concluded to {} successfully", id);
+        double newBalance = balance + concludeTransferCommand.getAmount();
+        apply(new TransferConcludedEvent(concludeTransferCommand.getTransactionId(),
+                                         concludeTransferCommand.getId(),
+                                         newBalance));
+    }
+
+    @CommandHandler
+    public void on(CancelTransferCommand cancelTransferCommand) throws AccountInactiveException {
+        if (!active) {
+            apply(new TransferFailedToConcludeEvent(cancelTransferCommand.getTransactionId()));
+            throw new AccountInactiveException(id);
+        }
+        double newBalance = balance + cancelTransferCommand.getAmount();
+        apply(new TransferCanceledEvent(cancelTransferCommand.getTransactionId(),
+                                        cancelTransferCommand.getId(),
+                                        newBalance));
+    }
+
     @EventSourcingHandler
     public void on(AccountCreatedEvent accountCreatedEvent) {
         id = accountCreatedEvent.getId();
@@ -141,5 +198,20 @@ public class Account {
     @EventSourcingHandler
     public void on(AccountDeletedEvent accountDeletedEvent) {
         markDeleted();
+    }
+
+    @EventSourcingHandler
+    public void on(TransferStartedEvent transferStartedEvent) {
+        balance = transferStartedEvent.getBalance();
+    }
+
+    @EventSourcingHandler
+    public void on(TransferConcludedEvent transferConcludedEvent) {
+        balance = transferConcludedEvent.getBalance();
+    }
+
+    @EventSourcingHandler
+    public void on(TransferCanceledEvent transferCanceledEvent) {
+        balance = transferCanceledEvent.getBalance();
     }
 }

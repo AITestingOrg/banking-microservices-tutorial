@@ -1,12 +1,12 @@
-package ultimatesoftware.banking.transactions.domain.controllers;
+package com.ultimatesoftware.banking.transactions.service.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
-import ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
-import ultimatesoftware.banking.transactions.domain.services.TransactionService;
+import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
+import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
+import com.ultimatesoftware.banking.transactions.domain.services.TransactionService;
 
 import java.util.UUID;
 

@@ -27,8 +27,19 @@ public class AccountEventHandler {
     }
 
     @EventHandler
+    public void on(TransferConcludedEvent event) {
+        LOG.info("Transfer concluded to {}", event.getId());
+        updateBalance(event.getId(), event.getBalance());
+    }
+    @EventHandler
     public void on(AccountDebitedEvent event) {
         LOG.info("Account Debited {}", event.getId());
+        updateBalance(event.getId(), event.getBalance());
+    }
+
+    @EventHandler
+    public void on(TransferStartedEvent event) {
+        LOG.info("Transfer started from  {}", event.getId());
         updateBalance(event.getId(), event.getBalance());
     }
 
