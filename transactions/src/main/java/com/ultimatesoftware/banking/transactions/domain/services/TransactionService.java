@@ -16,7 +16,8 @@ import java.util.UUID;
 
 @Service
 public class TransactionService extends RestService {
-    private static final String BANK_ACCOUNT_SERVICE = "accountquery:8084";
+    private static final String BANK_ACCOUNT_QUERY_SERVICE = "accountquery:8084";
+    private static final String BANK_ACCOUNT_CMD_SERVICE = "accountcmd:8083";
     private static final String BANK_ACCOUNT_GET_PATH = "/api/v1/accounts/";
     private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
 
@@ -25,7 +26,7 @@ public class TransactionService extends RestService {
 
     public TransactionService() {}
 
-    public UUID transfer(UUID customerId, UUID accountId, UUID destAccountId, double amount) throws Exception {
+    public String transfer(UUID customerId, UUID accountId, UUID destAccountId, double amount) throws Exception {
         BankAccount account = validateAccount(accountId);
         BankAccount destAccount = validateAccount(destAccountId);
 
@@ -45,7 +46,7 @@ public class TransactionService extends RestService {
         return transaction.getId();
     }
 
-    public UUID withdraw(UUID customerId, UUID accountId, double amount) throws Exception {
+    public String withdraw(UUID customerId, UUID accountId, double amount) throws Exception {
         BankAccount account = validateAccount(accountId);
 
         validateAccountBalance(account, amount);
@@ -63,7 +64,7 @@ public class TransactionService extends RestService {
         return transaction.getId();
     }
 
-    public UUID deposit(UUID customerId, UUID accountId, double amount) throws Exception {
+    public String deposit(UUID customerId, UUID accountId, double amount) throws Exception {
         BankAccount account = validateAccount(accountId);
 
         BankTransaction transaction = new BankTransaction.BankTransactionBuilder()
@@ -80,7 +81,7 @@ public class TransactionService extends RestService {
     }
 
     protected void updateAccount(BankTransaction transaction) throws Exception {
-        HttpStatus status = put(BANK_ACCOUNT_SERVICE, BANK_ACCOUNT_GET_PATH + transaction.getType().toString().toLowerCase(),
+        HttpStatus status = put(BANK_ACCOUNT_CMD_SERVICE, BANK_ACCOUNT_GET_PATH + transaction.getType().toString().toLowerCase(),
                 transaction,
                 BankTransaction.class);
         if(status.is2xxSuccessful()) {
@@ -91,7 +92,7 @@ public class TransactionService extends RestService {
 
     protected BankAccount getAccount(UUID accountId) {
         try {
-            return (BankAccount) get(BANK_ACCOUNT_SERVICE, BANK_ACCOUNT_GET_PATH + accountId, BankAccount.class);
+            return (BankAccount) get(BANK_ACCOUNT_QUERY_SERVICE, BANK_ACCOUNT_GET_PATH + accountId, BankAccount.class);
         } catch (Exception e) {
             log.warn(e.getMessage());
             return null;

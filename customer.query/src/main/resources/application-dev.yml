@@ -14,7 +14,7 @@ amqp:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://eurekaserver:8761/eureka
+      defaultZone: http://discoveryservice:8761/eureka
     fetch-registry: true
     register-with-eureka: true
   instance:

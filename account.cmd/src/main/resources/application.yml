@@ -22,6 +22,9 @@ spring:
           durable: false
         queue-postfix: .dlq
 
+security:
+  enable-csrf: false
+
 axon:
   cluster-name: ${spring.application.name}
   eventstore:

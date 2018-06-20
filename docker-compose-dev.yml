@@ -1,7 +1,7 @@
 version: '2'
 services:
   discoveryservice:
-    image: springcloud/eureka
+    build: 'eureka/'
     ports:
       - "8761:8761"
     networks:

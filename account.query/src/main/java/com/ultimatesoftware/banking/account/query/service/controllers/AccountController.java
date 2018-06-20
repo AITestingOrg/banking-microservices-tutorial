@@ -19,13 +19,8 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @GetMapping("accounts")
-    public List<Account> getCustomers() {
-        return accountRepository.findAll();
-    }
-
     @GetMapping("accounts/{id}")
-    public ResponseEntity<Account> getCustomer(@Valid @PathVariable("id") UUID id) {
+    public ResponseEntity<Account> getAccount(@Valid @PathVariable("id") UUID id) {
         Optional<Account> account = accountRepository.findByAccountId(id);
         if(account.isPresent()) {
             return new ResponseEntity<>(account.get(), HttpStatus.OK);
