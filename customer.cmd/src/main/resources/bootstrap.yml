@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: customercmd
+  cloud:
+    config:
+      uri: http://configurationservice:8080

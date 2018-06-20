@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   customerquery:
-    build: customer-query/
+    build: customer.query/
     depends_on:
       - mongo
       - rabbitmq
@@ -19,7 +19,7 @@ services:
         tag: "customer-query-server"
 
   customercmd:
-    build: customer-cmd/
+    build: customer.cmd/
     depends_on:
       - mongo
       - rabbitmq
@@ -37,7 +37,7 @@ services:
         tag: "customer-cmd-server"
 
   accountcmd:
-    build: account-cmd/
+    build: account.cmd/
     depends_on:
       - mongo
       - rabbitmq
@@ -54,7 +54,7 @@ services:
         tag: "account-cmd-server"
 
   accountquery:
-    build: account-query/
+    build: account.query/
     depends_on:
       - mongo
       - rabbitmq

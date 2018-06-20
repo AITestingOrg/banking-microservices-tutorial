@@ -28,20 +28,22 @@ public class AccountController {
 
     @PutMapping("accounts/{id}")
     public ResponseEntity<String> updateAccount(@PathVariable("id") UUID id,
-                                              @Valid @RequestBody AccountUpdateDto account) {
+                                                @Valid @RequestBody AccountUpdateDto account) {
         UpdateAccountCommand command = new UpdateAccountCommand(id, account);
         return sendCommand(command);
     }
 
     @PutMapping("accounts/debit")
-    public ResponseEntity<String> debitAccount(@Valid TransactionDto transaction) {
-        DebitAccountCommand command = new DebitAccountCommand(transaction.getAccount(), transaction.getAmount(), transaction.getId());
+    public ResponseEntity<String> debitAccount(@Valid @RequestBody TransactionDto transaction) {
+        DebitAccountCommand command
+                = new DebitAccountCommand(transaction.getAccount(), transaction.getAmount(), transaction.getId());
         return sendCommand(command);
     }
 
     @PutMapping("accounts/credit")
-    public ResponseEntity<String> creditAccount(@Valid TransactionDto transaction) {
-        CreditAccountCommand command = new CreditAccountCommand(transaction.getAccount(), transaction.getAmount(), transaction.getId());
+    public ResponseEntity<String> creditAccount(@Valid @RequestBody TransactionDto transaction) {
+        CreditAccountCommand command
+                = new CreditAccountCommand(transaction.getAccount(), transaction.getAmount(), transaction.getId());
         return sendCommand(command);
     }
 

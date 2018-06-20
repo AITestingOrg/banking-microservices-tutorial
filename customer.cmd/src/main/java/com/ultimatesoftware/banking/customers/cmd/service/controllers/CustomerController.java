@@ -19,7 +19,7 @@ public class CustomerController {
 
     @PostMapping("customers")
     public CreateCustomerCommand addCustomer(@Valid @RequestBody Customer customer) {
-        CreateCustomerCommand command = new CreateCustomerCommand(customer.getFirstName(), customer.getFirstName());
+        CreateCustomerCommand command = new CreateCustomerCommand(customer.getFirstName(), customer.getLastName());
         commandGateway.send(command);
         return command;
     }
