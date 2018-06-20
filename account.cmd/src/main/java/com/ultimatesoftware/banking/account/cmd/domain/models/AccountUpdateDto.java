@@ -13,6 +13,9 @@ public class AccountUpdateDto {
         this.active = active;
     }
 
+    public AccountUpdateDto() {
+    }
+
     public UUID getCustomerId() {
         return customerId;
     }
