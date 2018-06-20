@@ -1,13 +1,13 @@
-package ultimatesoftware.banking.transactions.domain.eventhandlers;
+package com.ultimatesoftware.banking.transactions.domain.eventhandlers;
 
 import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
+import com.ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import ultimatesoftware.banking.transactions.domain.models.BankTransaction;
-import ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
-import ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
+import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
 
 public class AccountEventHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);

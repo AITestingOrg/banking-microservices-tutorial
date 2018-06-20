@@ -1,9 +1,11 @@
-package ultimatesoftware.banking.transactions.domain.services;
+package com.ultimatesoftware.banking.transactions.domain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public abstract class RestService<T> {
     @Bean
+    @LoadBalanced
     RestTemplate restTemplate() {
         return new RestTemplate();
     }
@@ -18,13 +21,13 @@ public abstract class RestService<T> {
     @Autowired
     protected RestTemplate restTemplate;
 
-    protected T get(String appName, String path, Class<T> type) throws IllegalAccessException, InstantiationException {
+    protected T get(String appName, String path, Class<T> type) {
         return restTemplate.getForObject("http://" + appName + path, type);
     }
 
-    protected boolean put(String appName, String path, T objectToPut, Class<T> type) {
+    protected HttpStatus put(String appName, String path, T objectToPut, Class<T> type) {
         HttpEntity<T> requestUpdate = new HttpEntity<>(objectToPut);
         ResponseEntity<T> response = restTemplate.exchange("http://" + appName + path , HttpMethod.PUT, requestUpdate, type);
-        return response.getStatusCode().is2xxSuccessful();
+        return response.getStatusCode();
     }
 }

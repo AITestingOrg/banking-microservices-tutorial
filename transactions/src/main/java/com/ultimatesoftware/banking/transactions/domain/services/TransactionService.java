@@ -1,20 +1,23 @@
-package ultimatesoftware.banking.transactions.domain.services;
+package com.ultimatesoftware.banking.transactions.domain.services;
 
+import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
+import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
+import com.ultimatesoftware.banking.transactions.domain.models.BankAccount;
+import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
+import com.ultimatesoftware.banking.transactions.domain.models.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
-import ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
-import ultimatesoftware.banking.transactions.domain.models.*;
-import ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
+import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
 
 import java.util.UUID;
 
 @Service
 public class TransactionService extends RestService {
-    private static final String BANK_ACCOUNT_SERVICE = "accounts";
-    private static final String BANK_ACCOUNT_GET_PATH = "/api/account/";
+    private static final String BANK_ACCOUNT_SERVICE = "accountquery:8084";
+    private static final String BANK_ACCOUNT_GET_PATH = "/api/v1/accounts/";
     private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
 
     @Autowired
@@ -76,14 +79,21 @@ public class TransactionService extends RestService {
         return transaction.getId();
     }
 
-    protected void updateAccount(BankTransaction transaction) {
-        put(BANK_ACCOUNT_SERVICE, BANK_ACCOUNT_GET_PATH + transaction.getType().toString().toLowerCase(), transaction,  BankTransaction.class);
+    protected void updateAccount(BankTransaction transaction) throws Exception {
+        HttpStatus status = put(BANK_ACCOUNT_SERVICE, BANK_ACCOUNT_GET_PATH + transaction.getType().toString().toLowerCase(),
+                transaction,
+                BankTransaction.class);
+        if(status.is2xxSuccessful()) {
+            return;
+        }
+        throw new Exception("There was a problem that occured when PUTing the transaction to the account service.");
     }
 
     protected BankAccount getAccount(UUID accountId) {
         try {
             return (BankAccount) get(BANK_ACCOUNT_SERVICE, BANK_ACCOUNT_GET_PATH + accountId, BankAccount.class);
         } catch (Exception e) {
+            log.warn(e.getMessage());
             return null;
         }
     }

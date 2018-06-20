@@ -28,6 +28,15 @@ amqp:
     queue-name: eventQueue-customer
     handlers:
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: false
+    register-with-eureka: false
+  instance:
+    preferIpAddress: true
+
 endpoints:
   health:
     sensitive:  false

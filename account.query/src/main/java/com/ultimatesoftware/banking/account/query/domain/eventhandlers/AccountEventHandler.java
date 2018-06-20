@@ -53,13 +53,13 @@ public class AccountEventHandler {
     @EventHandler
     public void on(AccountDeletedEvent event) {
         LOG.info("Account Deleted {}", event.getId());
-        Account account = accountRepository.findOne(event.getId());
+        Account account = accountRepository.findByAccountId(event.getId()).get();
         account.setActive(false);
         accountRepository.save(account);
     }
 
     private void updateBalance(UUID id, double balance) {
-        Account account = accountRepository.findOne(id);
+        Account account = accountRepository.findByAccountId(id).get();
         LOG.debug("Initial balance {}", account.getBalance());
         account.setBalance(balance);
         accountRepository.save(account);
@@ -67,7 +67,7 @@ public class AccountEventHandler {
     }
 
     private void updateAccount(UUID id, AccountUpdatedEvent accountUpdatedEvent) {
-        Account account = accountRepository.findOne(id);
+        Account account = accountRepository.findByAccountId(id).get();
         account.setCustomerId(accountUpdatedEvent.getCustomerId());
         accountRepository.save(account);
         LOG.debug("Updated account {}", account.getBalance());

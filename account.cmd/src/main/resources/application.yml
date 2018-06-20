@@ -11,6 +11,16 @@ spring:
     port: 5672
     username: guest
     password: guest
+    auto-config:
+      default-exchange:
+        type: fanout
+        dead-letter-enabled: true
+      dead-letter-config:
+        dead-letter-exchange:
+          name: dead-letter-${spring.application.name}
+          auto-delete: true
+          durable: false
+        queue-postfix: .dlq
 
 axon:
   cluster-name: ${spring.application.name}
@@ -27,6 +37,15 @@ amqp:
     exchange-name: eventBus-account
     queue-name: eventQueue-account
     handlers:
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: false
+    register-with-eureka: false
+  instance:
+    preferIpAddress: true
 
 endpoints:
   health:
