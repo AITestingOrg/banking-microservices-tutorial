@@ -40,7 +40,7 @@ amqp:
   events:
     host: localhost
     exchange-name: eventBus-account
-    queue-name: eventQueue-account
+    queue-name: eventQueue-account-transactions
     handlers: com.ultimatesoftware.banking.transactions.domain.eventhandlers
 
 endpoints:
@@ -50,3 +50,7 @@ endpoints:
 management:
   security:
     enabled: false
+
+hosts:
+  account-cmd: localhost:8083
+  account-query: localhost:8084

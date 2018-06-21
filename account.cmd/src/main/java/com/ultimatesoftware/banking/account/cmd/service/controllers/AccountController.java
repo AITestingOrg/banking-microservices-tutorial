@@ -21,43 +21,36 @@ public class AccountController {
     private CommandGateway commandGateway;
 
     @PostMapping("accounts")
-    public ResponseEntity<String> addAccount(@Valid @RequestBody AccountCreationDto account) {
+    public UUID addAccount(@Valid @RequestBody AccountCreationDto account) {
         CreateAccountCommand command = new CreateAccountCommand(account.getCustomerId());
-        return sendCommand(command);
+        commandGateway.send(command);
+        return command.getId();
     }
 
     @PutMapping("accounts/{id}")
-    public ResponseEntity<String> updateAccount(@PathVariable("id") UUID id,
+    public void updateAccount(@PathVariable("id") UUID id,
                                                 @Valid @RequestBody AccountUpdateDto account) {
         UpdateAccountCommand command = new UpdateAccountCommand(id, account);
-        return sendCommand(command);
+        commandGateway.send(command);
     }
 
     @PutMapping("accounts/debit")
-    public ResponseEntity<String> debitAccount(@Valid @RequestBody TransactionDto transaction) {
+    public void debitAccount(@Valid @RequestBody TransactionDto transaction) {
         DebitAccountCommand command
                 = new DebitAccountCommand(transaction.getAccount(), transaction.getAmount(), transaction.getId());
-        return sendCommand(command);
+        commandGateway.send(command);
     }
 
     @PutMapping("accounts/credit")
-    public ResponseEntity<String> creditAccount(@Valid @RequestBody TransactionDto transaction) {
+    public void creditAccount(@Valid @RequestBody TransactionDto transaction) {
         CreditAccountCommand command
                 = new CreditAccountCommand(transaction.getAccount(), transaction.getAmount(), transaction.getId());
-        return sendCommand(command);
+        commandGateway.send(command);
     }
 
     @DeleteMapping("accounts/{id}")
-    public ResponseEntity<String> deleteAccount(@Valid @PathVariable("id") UUID id) {
+    public void deleteAccount(@Valid @PathVariable("id") UUID id) {
         DeleteAccountCommand command = new DeleteAccountCommand(id);
-        return sendCommand(command);
-    }
-
-    private ResponseEntity<String> sendCommand(Command command) {
-        CompletableFuture future = commandGateway.send(command);
-        if(future.isCompletedExceptionally()) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(command.getId().toString(), HttpStatus.OK);
+        commandGateway.send(command);
     }
 }

@@ -38,7 +38,7 @@ amqp:
   events:
     host: localhost
     exchange-name: eventBus-account
-    queue-name: eventQueue-account
+    queue-name: eventQueue-account-query
     handlers: com.ultimatesoftware.banking.account.query.domain.eventhandlers
 
 endpoints:

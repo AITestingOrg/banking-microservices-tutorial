@@ -67,15 +67,17 @@ public class Account {
             throw new AccountInactiveException(id);
         }
         if (!AccountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
+            apply(new TransactionFailedEvent(debitAccountCommand.getTransactionId(), "Account balance not eligable for withdraw."));
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
-        apply(new AccountDebitedEvent(debitAccountCommand.getId(), balance, debitAccountCommand.getAmount(), customerId, true, debitAccountCommand.getTransactionId()));
+        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance, debitAccountCommand.getAmount(), customerId, true, debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
     public void on(CreditAccountCommand creditAccountCommand) throws AccountInactiveException {
         if (!active) {
+            apply(new TransactionFailedEvent(creditAccountCommand.getTransactionId(), "Account inactive."));
             throw new AccountInactiveException(id);
         }
         double newBalance = balance + creditAccountCommand.getAmount();
@@ -96,6 +98,7 @@ public class Account {
     @CommandHandler
     public void on(OverDraftAccountCommand overDraftAccountCommand) throws AccountInactiveException {
         if (!active) {
+            apply(new TransactionFailedEvent(overDraftAccountCommand.getTransactionId(), "Account inactive."));
             throw new AccountInactiveException(id);
         }
 

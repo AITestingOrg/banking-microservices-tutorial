@@ -8,6 +8,7 @@ import com.ultimatesoftware.banking.transactions.domain.models.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
@@ -16,8 +17,10 @@ import java.util.UUID;
 
 @Service
 public class TransactionService extends RestService {
-    private static final String BANK_ACCOUNT_QUERY_SERVICE = "accountquery:8084";
-    private static final String BANK_ACCOUNT_CMD_SERVICE = "accountcmd:8083";
+    @Value("${hosts.account-query}")
+    private String BANK_ACCOUNT_QUERY_SERVICE;
+    @Value("${hosts.account-cmd}")
+    private String BANK_ACCOUNT_CMD_SERVICE;
     private static final String BANK_ACCOUNT_GET_PATH = "/api/v1/accounts/";
     private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
 
