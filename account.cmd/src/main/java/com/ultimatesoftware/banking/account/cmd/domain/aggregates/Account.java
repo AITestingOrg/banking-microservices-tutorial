@@ -5,17 +5,7 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountInactiv
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
-import com.ultimatesoftware.banking.account.common.events.AccountCreatedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountCreditedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountDebitedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountDeletedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountOverdraftedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountUpdatedEvent;
-import com.ultimatesoftware.banking.account.common.events.TransferCanceledEvent;
-import com.ultimatesoftware.banking.account.common.events.TransferConcludedEvent;
-import com.ultimatesoftware.banking.account.common.events.TransferFailedToConcludeEvent;
-import com.ultimatesoftware.banking.account.common.events.TransferFailedToStartEvent;
-import com.ultimatesoftware.banking.account.common.events.TransferStartedEvent;
+import com.ultimatesoftware.banking.account.common.events.*;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -31,12 +21,14 @@ import static org.axonframework.commandhandling.model.AggregateLifecycle.markDel
 @Aggregate
 public class Account {
     Logger logger = LoggerFactory.getLogger(Account.class);
+
     @AggregateIdentifier
     private UUID id;
     private UUID customerId;
     private double balance;
     private boolean active;
     private final double overdraftFee = 35.0;
+    private int activeTransfers;
 
     @CommandHandler
     public Account(CreateAccountCommand createAccountCommand) {
@@ -48,14 +40,16 @@ public class Account {
         this.customerId = customerId;
         this.balance = balance;
         this.active = active;
+        activeTransfers = 0;
     }
 
     public Account(UUID customerId) {
         this.customerId = customerId;
+        activeTransfers = 0;
     }
 
     public Account() {
-
+        activeTransfers = 0;
     }
 
     public UUID getId() {
@@ -72,6 +66,10 @@ public class Account {
 
     public double getBalance() {
         return balance;
+    }
+
+    public int getActiveTransfers() {
+        return activeTransfers;
     }
 
     @CommandHandler
@@ -142,12 +140,7 @@ public class Account {
     }
 
     @CommandHandler
-    public void on(ConcludeTransferCommand concludeTransferCommand) throws AccountInactiveException {
-        if (!active) {
-            logger.info("Transfer concluded to {} failed, account not active", id);
-            apply(new TransferFailedToConcludeEvent(concludeTransferCommand.getTransactionId()));
-            throw new AccountInactiveException(id);
-        }
+    public void on(ConcludeTransferCommand concludeTransferCommand) {
         logger.info("Transfer concluded to {} successfully", id);
         double newBalance = balance + concludeTransferCommand.getAmount();
         apply(new TransferConcludedEvent(concludeTransferCommand.getTransactionId(),
@@ -156,15 +149,24 @@ public class Account {
     }
 
     @CommandHandler
-    public void on(CancelTransferCommand cancelTransferCommand) throws AccountInactiveException {
-        if (!active) {
-            apply(new TransferFailedToConcludeEvent(cancelTransferCommand.getTransactionId()));
-            throw new AccountInactiveException(id);
-        }
-        double newBalance = balance + cancelTransferCommand.getAmount();
-        apply(new TransferCanceledEvent(cancelTransferCommand.getTransactionId(),
-                                        cancelTransferCommand.getId(),
-                                        newBalance));
+    public void on(AcquireSourceAccountCommand command) {
+        logger.info("Acquired source account with id {} for transfer {}", id, command.getTransactionId());
+        apply(new SourceAccountAcquiredEvent(command.getTransactionId(),
+                command.getId()));
+    }
+
+    @CommandHandler
+    public void on(AcquireDestinationAccountCommand command) {
+        logger.info("Acquired destination account with id {} for transfer {}", id, command.getTransactionId());
+        apply(new DestinationAccountAcquiredEvent(command.getTransactionId(),
+                command.getId()));
+    }
+
+    @CommandHandler
+    public void on(ReleaseAccountCommand releaseAccountCommand) {
+        logger.info("Account Released {}", id);
+        apply(new AccountReleasedEvent(releaseAccountCommand.getTransactionId(),
+                releaseAccountCommand.getId()));
     }
 
     @EventSourcingHandler
@@ -211,7 +213,17 @@ public class Account {
     }
 
     @EventSourcingHandler
-    public void on(TransferCanceledEvent transferCanceledEvent) {
-        balance = transferCanceledEvent.getBalance();
+    public void on(DestinationAccountAcquiredEvent destinationAccountAcquiredEvent) {
+        activeTransfers++;
+    }
+
+    @EventSourcingHandler
+    public void on(SourceAccountAcquiredEvent sourceAccountAcquiredEvent) {
+        activeTransfers++;
+    }
+
+    @EventSourcingHandler
+    public void on(AccountReleasedEvent accountReleasedEvent) {
+        activeTransfers--;
     }
 }

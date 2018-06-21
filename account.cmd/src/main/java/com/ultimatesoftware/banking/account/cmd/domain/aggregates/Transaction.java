@@ -1,7 +1,8 @@
 package com.ultimatesoftware.banking.account.cmd.domain.aggregates;
 
+import com.ultimatesoftware.banking.account.cmd.domain.commands.CancelTransferCommand;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.StartTransferTransactionCommand;
-import com.ultimatesoftware.banking.account.cmd.domain.sagas.TransactionSaga;
+import com.ultimatesoftware.banking.account.common.events.TransferCanceledEvent;
 import com.ultimatesoftware.banking.account.common.events.TransferTransactionStartedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
@@ -53,12 +54,17 @@ public class Transaction {
                 command.getFromAccount(), command.getToAccount(), command.getAmount()));
     }
 
+    @CommandHandler
+    public void on(CancelTransferCommand command) {
+        apply(new TransferCanceledEvent(command.getTransactionId()));
+    }
+
     @EventSourcingHandler
-    public void on(TransferTransactionStartedEvent command) {
-        logger.info("New Transaction");
-        transactionId = command.getTransactionId();
-        fromAccount = command.getFromAccountId();
-        toAccount = command.getToAccountId();
-        amount = command.getAmount();
+    public void on(TransferTransactionStartedEvent event) {
+        transactionId = event.getTransactionId();
+        fromAccount = event.getFromAccountId();
+        toAccount = event.getToAccountId();
+        amount = event.getAmount();
+        logger.info("New Transaction {}", transactionId);
     }
 }

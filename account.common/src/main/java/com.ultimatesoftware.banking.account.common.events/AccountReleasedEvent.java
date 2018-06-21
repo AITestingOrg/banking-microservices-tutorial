@@ -2,14 +2,20 @@ package com.ultimatesoftware.banking.account.common.events;
 
 import java.util.UUID;
 
-public class TransferCanceledEvent {
+public class AccountReleasedEvent {
     private UUID transactionId;
+    private UUID id;
 
-    public TransferCanceledEvent(UUID transactionId) {
+    public AccountReleasedEvent(UUID transactionId, UUID id) {
         this.transactionId = transactionId;
+        this.id = id;
     }
 
     public UUID getTransactionId() {
         return transactionId;
+    }
+
+    public UUID getId() {
+        return id;
     }
 }

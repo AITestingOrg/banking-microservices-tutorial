@@ -4,26 +4,15 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class CancelTransferCommand extends TransactionCommand {
+public class CancelTransferCommand {
     @TargetAggregateIdentifier
-    private UUID id;
-    private double amount;
+    protected UUID transactionId;
 
-    public CancelTransferCommand(UUID transactionId, UUID id, double amount) {
-        super(transactionId);
-        this.id = id;
-        this.amount = amount;
+    public CancelTransferCommand(UUID transactionId) {
+        this.transactionId = transactionId;
     }
 
     public UUID getTransactionId() {
         return transactionId;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public double getAmount() {
-        return amount;
     }
 }

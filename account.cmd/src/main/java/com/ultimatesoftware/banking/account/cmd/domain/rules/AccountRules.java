@@ -5,6 +5,9 @@ import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
 public class AccountRules {
 
     public static boolean eligibleForDelete(Account account) {
+        if (account.getActiveTransfers() > 0) {
+            return false;
+        }
         if (account.getBalance() == 0.0) {
             return true;
         }
