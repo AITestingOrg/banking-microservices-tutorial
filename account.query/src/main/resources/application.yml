@@ -1,6 +1,6 @@
 spring:
   application:
-    name: transactions
+    name: accountquery
   data:
     mongodb:
       database: ${spring.application.name}
@@ -21,27 +21,25 @@ spring:
           auto-delete: true
           durable: false
         queue-postfix: .dlq
-      queues:
-        eventQueue-account:
-          name: eventQueue-account
-          dead-letter-enabled: true
+
+server:
+  port: 8080
 
 eureka:
   client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
     fetch-registry: false
     register-with-eureka: false
   instance:
     preferIpAddress: true
 
-server:
-  port: 8080
-
 amqp:
   events:
     host: localhost
     exchange-name: eventBus-account
-    queue-name: eventQueue-account-transactions
-    handlers: com.ultimatesoftware.banking.transactions.domain.eventhandlers
+    queue-name: eventQueue-account-query
+    handlers: com.ultimatesoftware.banking.account.query.domain.eventhandlers
 
 endpoints:
   health:
@@ -50,7 +48,3 @@ endpoints:
 management:
   security:
     enabled: false
-
-hosts:
-  account-cmd: localhost:8083
-  account-query: localhost:8084

@@ -1,4 +1,4 @@
-package ultimatesoftware.banking.transactions.service.configuration;
+package com.ultimatesoftware.banking.transactions.service.configuration;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

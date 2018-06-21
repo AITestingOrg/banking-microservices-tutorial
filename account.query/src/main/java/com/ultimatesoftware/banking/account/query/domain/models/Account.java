@@ -1,26 +1,36 @@
 package com.ultimatesoftware.banking.account.query.domain.models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class Account {
     @NotNull
-    private UUID id;
+    @Id
+    private String id;
+    @NotNull
+    @Indexed
+    private UUID accountId;
     @Min(18)
     private UUID customerId;
     private double balance;
     private boolean active;
 
-    public Account(UUID id, UUID customerId, double balance, boolean active) {
-        this.id = id;
+    public Account(UUID accountId, UUID customerId, double balance, boolean active) {
+        this.accountId = accountId;
         this.customerId = customerId;
         this.balance = balance;
         this.active = active;
     }
 
+    public Account() {
+    }
+
     public UUID getId() {
-        return id;
+        return accountId;
     }
 
     public UUID getCustomerId() {
