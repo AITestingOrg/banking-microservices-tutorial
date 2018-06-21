@@ -1,15 +1,13 @@
 package com.ultimatesoftware.banking.account.cmd.domain.commands;
 
-import java.util.UUID;
-
 public abstract class TransactionCommand implements Command {
-    protected UUID transactionId;
+    protected String transactionId;
 
-    public TransactionCommand(UUID transactionId) {
+    public TransactionCommand(String transactionId) {
         this.transactionId = transactionId;
     }
 
-    public UUID getTransactionId() {
+    public String getTransactionId() {
         return transactionId;
     }
 }

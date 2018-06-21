@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
 
+import java.util.UUID;
+
 public class AccountEventHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);
 
@@ -36,7 +38,7 @@ public class AccountEventHandlers {
     }
 
     private void updateTransaction(AccountTransactionEvent event) {
-        BankTransaction transaction = bankTransactionRepository.findOne(event.getTransactionId());
+        BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(event.getTransactionId()));
         if(transaction != null) {
             if (event.isSuccess()) {
                 transaction.setStatus(TransactionStatus.SUCCESSFUL);

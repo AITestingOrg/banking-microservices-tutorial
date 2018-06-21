@@ -53,7 +53,7 @@ public class TransactionService extends RestService {
 
         BankTransaction transaction = new BankTransaction.BankTransactionBuilder()
                 .setAccount(accountId)
-                .setType(TransactionType.WITHDRAW)
+                .setType(TransactionType.DEBIT)
                 .setAmount(amount)
                 .setCustomerId(customerId)
                 .build();
@@ -69,7 +69,7 @@ public class TransactionService extends RestService {
 
         BankTransaction transaction = new BankTransaction.BankTransactionBuilder()
             .setAccount(accountId)
-            .setType(TransactionType.DEPOSIT)
+            .setType(TransactionType.CREDIT)
             .setAmount(amount)
             .setCustomerId(customerId)
             .build();
@@ -86,6 +86,11 @@ public class TransactionService extends RestService {
                 BankTransaction.class);
         if(status.is2xxSuccessful()) {
             return;
+        }
+        if(status.value() == 404) {
+            String msg = String.format("No account with id %s exists", transaction.getAccount());
+            log.warn(msg);
+            throw new NoAccountExistsException(msg);
         }
         throw new Exception("There was a problem that occured when PUTing the transaction to the account service.");
     }

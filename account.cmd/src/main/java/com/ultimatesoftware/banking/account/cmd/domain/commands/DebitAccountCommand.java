@@ -9,7 +9,7 @@ public class DebitAccountCommand extends TransactionCommand implements Command {
     private UUID id;
     private double amount;
 
-    public DebitAccountCommand(UUID id, double amount, UUID transactionId) {
+    public DebitAccountCommand(UUID id, double amount, String transactionId) {
         super(transactionId);
         this.id = id;
         this.amount = amount;

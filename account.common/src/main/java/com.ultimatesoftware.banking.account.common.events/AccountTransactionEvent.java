@@ -1,12 +1,10 @@
 package com.ultimatesoftware.banking.account.common.events;
 
-import java.util.UUID;
-
 public abstract class AccountTransactionEvent {
     protected boolean success;
-    protected UUID transactionId;
+    protected String transactionId;
 
-    public AccountTransactionEvent(boolean success, UUID transactionId) {
+    public AccountTransactionEvent(boolean success, String transactionId) {
         this.success = success;
         this.transactionId = transactionId;
     }
@@ -15,7 +13,7 @@ public abstract class AccountTransactionEvent {
         return success;
     }
 
-    public UUID getTransactionId() {
+    public String getTransactionId() {
         return transactionId;
     }
 }

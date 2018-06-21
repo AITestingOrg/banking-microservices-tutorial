@@ -1,5 +1,7 @@
 package com.ultimatesoftware.banking.transactions.domain.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,8 @@ public abstract class RestService<T> {
         return new RestTemplate();
     }
 
+    private Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     protected RestTemplate restTemplate;
 
@@ -27,7 +31,8 @@ public abstract class RestService<T> {
 
     protected HttpStatus put(String appName, String path, T objectToPut, Class<T> type) {
         HttpEntity<T> requestUpdate = new HttpEntity<>(objectToPut);
-        ResponseEntity<T> response = restTemplate.exchange("http://" + appName + path , HttpMethod.PUT, requestUpdate, type);
+        log.info(String.format("Sending put to : http://" + appName + path));
+        ResponseEntity<String> response = restTemplate.exchange("http://" + appName + path , HttpMethod.PUT, requestUpdate, String.class);
         return response.getStatusCode();
     }
 }
