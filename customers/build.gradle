@@ -1,0 +1,10 @@
+dependencies {
+    compile project(":eventsourcing")
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+    compile('org.springframework.cloud:spring-cloud-starter-eureka')
+    compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    testCompile("org.axonframework:axon-test:${axonVersion}")
+}
+
+version = '0.0.1'
