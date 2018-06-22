@@ -145,41 +145,6 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void GivenNegativeAccount_WhenOverdraft__ThenOutputShouldBeFalse() {
-        // arrange
-
-        // act
-        boolean eligible = AccountRules.eligibleForDebitOverdraft(-10, 10);
-
-        // assert
-        Assert.assertEquals(false, eligible);
-    }
-
-    @Test
-    public void GivenMaxNegativeAccount_WhenOverdraft__ThenOutputShouldBeFalse() {
-        // arrange
-        double minDouble = Double.MIN_VALUE;
-
-        // act
-        boolean eligible = AccountRules.eligibleForDebitOverdraft(minDouble, 10.0);
-
-        // assert
-        Assert.assertEquals(false, eligible);
-    }
-
-    @Test
-    public void GivenMaxAccount_WhenOverdraft__ThenOutputShouldBeFalse() {
-        // arrange
-        double maxDouble = Double.MAX_VALUE;
-
-        // act
-        boolean eligible = AccountRules.eligibleForDebitOverdraft(maxDouble, 10.0);
-
-        // assert
-        Assert.assertEquals(false, eligible);
-    }
-
-    @Test
     public void Given50Account_WhenOverdraft50__ThenOutputShouldBeFalse() {
         // arrange
 

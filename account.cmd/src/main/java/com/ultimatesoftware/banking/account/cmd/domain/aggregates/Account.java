@@ -1,7 +1,7 @@
 package com.ultimatesoftware.banking.account.cmd.domain.aggregates;
 
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
-import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountInactiveException;
+import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountBalanceException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
+import static jdk.nashorn.internal.objects.Global.Infinity;
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 import static org.axonframework.commandhandling.model.AggregateLifecycle.markDeleted;
 
@@ -73,10 +74,7 @@ public class Account {
     }
 
     @CommandHandler
-    public void on(DebitAccountCommand debitAccountCommand) throws AccountNotEligibleForDebitException, AccountInactiveException {
-        if (!active) {
-            throw new AccountInactiveException(id);
-        }
+    public void on(DebitAccountCommand debitAccountCommand) throws AccountNotEligibleForDebitException {
         if (!AccountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
             throw new AccountNotEligibleForDebitException(id, balance);
         }
@@ -85,31 +83,25 @@ public class Account {
     }
 
     @CommandHandler
-    public void on(CreditAccountCommand creditAccountCommand) throws AccountInactiveException {
-        if (!active) {
-            throw new AccountInactiveException(id);
-        }
+    public void on(CreditAccountCommand creditAccountCommand) throws AccountBalanceException {
         double newBalance = balance + creditAccountCommand.getAmount();
+        if (newBalance == Double.POSITIVE_INFINITY || newBalance == Double.MAX_VALUE) {
+            throw new AccountBalanceException("This error is above my pay-grade, I think this guy has too much money.");
+        }
         apply(new AccountCreditedEvent(creditAccountCommand.getId(), newBalance, creditAccountCommand.getAmount(), customerId, creditAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
-    public void on(DeleteAccountCommand deleteAccountCommand) throws AccountNotEligibleForDeleteException, AccountInactiveException {
-        if (!active) {
-            throw new AccountInactiveException(id);
-        }
+    public void on(DeleteAccountCommand deleteAccountCommand) throws AccountNotEligibleForDeleteException {
         if (AccountRules.eligibleForDelete(this)) {
             apply(new AccountDeletedEvent(deleteAccountCommand.getId(), deleteAccountCommand.isActive()));
+            return;
         }
         throw new AccountNotEligibleForDeleteException(id, balance, active);
     }
 
     @CommandHandler
-    public void on(OverDraftAccountCommand overDraftAccountCommand) throws AccountInactiveException {
-        if (!active) {
-            throw new AccountInactiveException(id);
-        }
-
+    public void on(OverDraftAccountCommand overDraftAccountCommand) {
         if (AccountRules.eligibleForDebitOverdraft(balance, overDraftAccountCommand.getDebitAmount())) {
             double newBalance = balance - overdraftFee;
             apply(new AccountOverdraftedEvent(id, newBalance, overdraftFee, customerId, overDraftAccountCommand.getTransactionId()));
@@ -122,11 +114,7 @@ public class Account {
     }
 
     @CommandHandler
-    public void on(StartTransferCommand startTransferCommand) throws AccountInactiveException, AccountNotEligibleForDebitException {
-        if (!active) {
-            apply(new TransferFailedToStartEvent(startTransferCommand.getTransactionId()));
-            throw new AccountInactiveException(id);
-        }
+    public void on(StartTransferCommand startTransferCommand) throws AccountNotEligibleForDebitException {
         if (!AccountRules.eligibleForDebit(this, startTransferCommand.getAmount())) {
             apply(new TransferFailedToStartEvent(startTransferCommand.getTransactionId()));
             throw new AccountNotEligibleForDebitException(id, balance);
