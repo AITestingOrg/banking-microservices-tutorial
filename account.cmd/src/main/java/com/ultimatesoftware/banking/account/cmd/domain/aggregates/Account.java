@@ -32,7 +32,8 @@ public class Account {
 
     @CommandHandler
     public Account(CreateAccountCommand createAccountCommand) {
-        apply(new AccountCreatedEvent(createAccountCommand.getId(), createAccountCommand.getCustomerId(), createAccountCommand.getBalance(), createAccountCommand.getActive()));
+        apply(new AccountCreatedEvent(createAccountCommand.getId(), createAccountCommand.getCustomerId(),
+                                      createAccountCommand.getBalance(), createAccountCommand.getActive()));
     }
 
     public Account(UUID id, UUID customerId, double balance, boolean active) {
@@ -78,7 +79,9 @@ public class Account {
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
-        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance, debitAccountCommand.getAmount(), customerId, debitAccountCommand.getTransactionId()));
+        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance,
+                                      debitAccountCommand.getAmount(), customerId,
+                                      debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -87,7 +90,9 @@ public class Account {
         if (newBalance == Double.POSITIVE_INFINITY || newBalance == Double.MAX_VALUE) {
             throw new AccountBalanceException("This error is above my pay-grade, I think this guy has too much money.");
         }
-        apply(new AccountCreditedEvent(creditAccountCommand.getId(), newBalance, creditAccountCommand.getAmount(), customerId, creditAccountCommand.getTransactionId()));
+        apply(new AccountCreditedEvent(creditAccountCommand.getId(), newBalance,
+                                       creditAccountCommand.getAmount(), customerId,
+                                       creditAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -103,7 +108,8 @@ public class Account {
     public void on(OverDraftAccountCommand overDraftAccountCommand) {
         if (AccountRules.eligibleForDebitOverdraft(balance, overDraftAccountCommand.getDebitAmount())) {
             double newBalance = balance - overdraftFee;
-            apply(new AccountOverdraftedEvent(id, newBalance, overdraftFee, customerId, overDraftAccountCommand.getTransactionId()));
+            apply(new AccountOverdraftedEvent(id, newBalance, overdraftFee, customerId,
+                                              overDraftAccountCommand.getTransactionId()));
         }
     }
 
@@ -114,51 +120,48 @@ public class Account {
 
     @CommandHandler
     public void on(StartTransferTransactionCommand command) throws AccountNotEligibleForDebitException {
+        if (!AccountRules.eligibleForDebit(this, command.getAmount())) {
+            apply(new TransferFailedToStartEvent(command.getTransactionId()));
+            throw new AccountNotEligibleForDebitException(id, balance);
+        }
+
         logger.info("Transfer transaction started from {} successfully", id);
         apply(new TransferTransactionStartedEvent(command.getTransactionId(), command.getId(),
                                                   command.getDestinationId(), command.getAmount()));
     }
 
     @CommandHandler
-    public void on(StartTransferDepositCommand startTransferDepositCommand) throws AccountNotEligibleForDebitException {
-        if (!AccountRules.eligibleForDebit(this, startTransferDepositCommand.getAmount())) {
-            apply(new TransferFailedToStartEvent(startTransferDepositCommand.getTransactionId()));
-            throw new AccountNotEligibleForDebitException(id, balance);
-        }
-
-        logger.info("Transfer started from {} successfully", id);
+    public void on(StartTransferDepositCommand startTransferDepositCommand) {
+        logger.info("Transfer to {} successfully", id);
         double newBalance = balance - startTransferDepositCommand.getAmount();
-        apply(new TransferWithdrawConcludedEvent(newBalance, startTransferDepositCommand.getId(), startTransferDepositCommand.getTransactionId()
-        ));
+        apply(new TransferWithdrawConcludedEvent(newBalance, startTransferDepositCommand.getId(),
+                                                 startTransferDepositCommand.getTransactionId()));
     }
 
     @CommandHandler
     public void on(ConcludeTransferCommand concludeTransferCommand) {
         logger.info("Transfer concluded to {} successfully", id);
         double newBalance = balance + concludeTransferCommand.getAmount();
-        apply(new TransferDepositConcludedEvent(newBalance, concludeTransferCommand.getId(), concludeTransferCommand.getTransactionId()
-        ));
+        apply(new TransferDepositConcludedEvent(newBalance, concludeTransferCommand.getId(),
+                                                concludeTransferCommand.getTransactionId()));
     }
 
     @CommandHandler
     public void on(AcquireSourceAccountCommand command) {
         logger.info("Acquired source account with id {} for transfer {}", id, command.getTransactionId());
-        apply(new SourceAccountAcquiredEvent(command.getId(), command.getTransactionId()
-        ));
+        apply(new SourceAccountAcquiredEvent(command.getId(), command.getTransactionId()));
     }
 
     @CommandHandler
     public void on(AcquireDestinationAccountCommand command) {
         logger.info("Acquired destination account with id {} for transfer {}", id, command.getTransactionId());
-        apply(new DestinationAccountAcquiredEvent(command.getId(), command.getTransactionId()
-        ));
+        apply(new DestinationAccountAcquiredEvent(command.getId(), command.getTransactionId()));
     }
 
     @CommandHandler
     public void on(ReleaseAccountCommand releaseAccountCommand) {
         logger.info("Account Released {}", id);
-        apply(new AccountReleasedEvent(releaseAccountCommand.getId(), releaseAccountCommand.getTransactionId()
-        ));
+        apply(new AccountReleasedEvent(releaseAccountCommand.getId(), releaseAccountCommand.getTransactionId()));
     }
 
     @CommandHandler

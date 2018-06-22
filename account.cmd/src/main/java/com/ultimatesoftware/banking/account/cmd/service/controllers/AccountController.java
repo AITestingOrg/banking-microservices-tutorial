@@ -22,8 +22,6 @@ import java.util.concurrent.*;
 public class AccountController {
     @Autowired
     private CommandGateway commandGateway;
-    @Autowired
-    private ThreadPoolTaskScheduler executor;
 
     @PostMapping("accounts")
     public ResponseEntity<String> addAccount(@Valid @RequestBody AccountCreationDto account) {
@@ -59,13 +57,9 @@ public class AccountController {
     }
 
     @PostMapping("transaction/start")
-    public ResponseEntity<?> startTransaction(@Valid @RequestBody TransactionDto transaction) {
+    public void startTransaction(@Valid @RequestBody TransactionDto transaction) {
         StartTransferTransactionCommand command = new StartTransferTransactionCommand(transaction);
-        CompletableFuture.supplyAsync(() -> commandGateway.send(command), executor)
-                .acceptEither(timeoutAfter(3000),
-                        fail -> commandGateway.send(
-                                new FailToStartTransferTransactionCommand(transaction)));
-        return new ResponseEntity<>(command.getTransactionId(), HttpStatus.OK);
+        commandGateway.send(command);
     }
 
     private ResponseEntity<String> sendCommand(Command command) {
@@ -74,12 +68,5 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(command.getId().toString(), HttpStatus.OK);
-    }
-
-    private CompletableFuture timeoutAfter(long timeout) {
-        CompletableFuture result = new CompletableFuture();
-        executor.schedule(new FutureTimeoutException(result),
-                new Date(System.currentTimeMillis() + timeout));
-        return result;
     }
 }

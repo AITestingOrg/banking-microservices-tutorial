@@ -34,12 +34,10 @@ public class TransactionSaga extends CustomSaga {
         destinationAccountId = event.getDestinationAccountId();
         amount = event.getAmount();
 
-        logger.info(
-                "A new transfer transaction is started with id {}, from account {} to account {} and amount {}",
-                transactionId, sourceAccountId, destinationAccountId, amount);
+        logger.info("A new transfer transaction is started with id {}, from account {} to account {} and amount {}",
+                    transactionId, sourceAccountId, destinationAccountId, amount);
         AcquireSourceAccountCommand command = new AcquireSourceAccountCommand(sourceAccountId, transactionId);
-
-        sendWithTimeout(command, new CancelTransferCommand(sourceAccountId, transactionId));
+        commandGateway.send(command);
     }
 
     @SagaEventHandler(associationProperty = "transactionId")
@@ -59,15 +57,14 @@ public class TransactionSaga extends CustomSaga {
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferWithdrawConcludedEvent event) {
         logger.info("Transfer transaction with id {}, did transfer from {} successfully",
-                transactionId, sourceAccountId);
+                    transactionId, sourceAccountId);
         commandGateway.send(new ConcludeTransferCommand(transactionId, destinationAccountId, amount));
     }
 
+    @EndSaga
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferFailedToStartEvent event) {
-        logger.info("Account {} failed to transfer for transaction {}", sourceAccountId, transactionId);
-        commandGateway.send(new CancelTransferCommand(destinationAccountId, transactionId));
-        commandGateway.send(new CancelTransferCommand(sourceAccountId, transactionId));
+        logger.info("Transfer transaction {} failed to start", transactionId);
     }
 
     @EndSaga
