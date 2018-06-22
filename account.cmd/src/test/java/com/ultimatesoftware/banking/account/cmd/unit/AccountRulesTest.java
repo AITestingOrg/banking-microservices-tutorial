@@ -13,7 +13,7 @@ public class AccountRulesTest {
     public void GivenZeroAccount_WhenDebitMaxDouble__ThenOutputShouldBeFalse() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
-        Account account = new Account(UUID.randomUUID(), "t", 0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), 0, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, maxDouble);
@@ -25,7 +25,7 @@ public class AccountRulesTest {
     @Test
     public void GivenNegativeAccount_WhenDebit__ThenOutputShouldBeFalse() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), "t", -50.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), -50.0, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 10);
@@ -38,7 +38,7 @@ public class AccountRulesTest {
     public void GivenMaxNegativeAccount_WhenDebit__ThenOutputShouldBeFalse() {
         // arrange
         double minDouble = Double.MIN_VALUE;
-        Account account = new Account(UUID.randomUUID(), "t", minDouble, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), minDouble, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 10.0);
@@ -51,7 +51,7 @@ public class AccountRulesTest {
     public void GivenMaxAccount_WhenDebit__ThenOutputShouldBeTrue() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
-        Account account = new Account(UUID.randomUUID(), "t", maxDouble, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), maxDouble, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 10.0);
@@ -63,7 +63,7 @@ public class AccountRulesTest {
     @Test
     public void Given50Account_WhenDebit50__ThenOutputShouldBeTrue() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), "20", 50.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), 50.0, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 50.0);
@@ -76,7 +76,7 @@ public class AccountRulesTest {
     public void GivenMaxAccount_WhenDebitMaxAmountMinusOne__ThenOutputShouldBeTrue() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
-        Account account = new Account(UUID.randomUUID(), "t", maxDouble, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), maxDouble, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, maxDouble - 1);
@@ -88,7 +88,7 @@ public class AccountRulesTest {
     @Test
     public void GivenPositiveAccount_WhenDelete__ThenOutputShouldBeFalse() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), "t", 10.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), 10.0, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDelete(account);
@@ -100,7 +100,7 @@ public class AccountRulesTest {
     @Test
     public void GivenNegativeAccount_WhenDelete__ThenOutputShouldBeFalse() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), "t", -10.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), -10.0, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDelete(account);
@@ -112,7 +112,7 @@ public class AccountRulesTest {
     @Test
     public void GivenZeroAccount_WhenDelete__ThenOutputShouldBeTrue() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), "t", 0.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), 0.0, true);
 
         // act
         boolean eligible = AccountRules.eligibleForDelete(account);

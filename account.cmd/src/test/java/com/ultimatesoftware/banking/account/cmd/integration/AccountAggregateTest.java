@@ -17,6 +17,8 @@ import java.util.UUID;
 @SpringBootTest
 public class AccountAggregateTest {
     private FixtureConfiguration<Account> fixture;
+    private static final UUID customerId = UUID.fromString("123e4567-e89b-12d3-a456-426655440000");
+    private static final UUID transactionId = UUID.fromString("123e4567-e89b-12d3-a456-426655440010");
 
     @Before
     public void setUp() throws Exception {
@@ -27,7 +29,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountCreation() {
-        UUID customerId = "Doe";
+        
         double balance = 0.0;
         boolean active = true;
         CreateAccountCommand command = new CreateAccountCommand(customerId);
@@ -38,40 +40,40 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDebit() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
-        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
-        DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0);
+        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
+        DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0, transactionId);
         fixture.givenCommands(createCommand, creditCommand)
                 .when(command)
-                .expectEvents(new AccountDebitedEvent(createCommand.getId(), 90.0));
+                .expectEvents(new AccountDebitedEvent(createCommand.getId(), 90.0, 10.0, customerId, transactionId));
     }
 
     @Test
     public void OnAccountCredit() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
-        CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), 10.0);
+        CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), 10.0, transactionId);
         fixture.givenCommands(createCommand)
                 .when(command)
-                .expectEvents(new AccountCreditedEvent(createCommand.getId(), 10.0));
+                .expectEvents(new AccountCreditedEvent(createCommand.getId(), 10.0, 10.00, customerId,  transactionId));
     }
 
     @Test
     public void OnAccountOverdraft() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
-        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
-        DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0);
-        OverDraftAccountCommand command = new OverDraftAccountCommand(createCommand.getId(), 101.0);
+        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
+        DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0, transactionId);
+        OverDraftAccountCommand command = new OverDraftAccountCommand(createCommand.getId(), 101.0, transactionId);
         fixture.givenCommands(createCommand, creditCommand, debitCommand)
                 .when(command)
-                .expectEvents(new AccountOverdraftedEvent(createCommand.getId(), -36.0, 101.0));
+                .expectEvents(new AccountOverdraftedEvent(createCommand.getId(), -36.0, 101.0, customerId , transactionId));
     }
 
     @Test
     public void OnAccountDelete() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());
         fixture.givenCommands(createCommand)
@@ -83,9 +85,9 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDelete_WhenPositiveBalance_NoEventsSent() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
-        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
+        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());
         fixture.givenCommands(createCommand, creditCommand)
                 .when(command)
@@ -94,10 +96,10 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDelete_WhenNegativeBalance_NoEventsSent() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
-        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
-        DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0);
+        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
+        DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0, transactionId);
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());
         fixture.givenCommands(createCommand, creditCommand, debitCommand)
                 .when(command)
@@ -106,11 +108,11 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountOverdraft_WhenPositiveBalance_NoEventSent() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
-        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
-        DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 10.0);
-        OverDraftAccountCommand command = new OverDraftAccountCommand(createCommand.getId(), 10.0);
+        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
+        DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 10.0, transactionId);
+        OverDraftAccountCommand command = new OverDraftAccountCommand(createCommand.getId(), 10.0, transactionId);
         fixture.givenCommands(createCommand, creditCommand, debitCommand)
                 .when(command)
                 .expectNoEvents();
@@ -118,11 +120,11 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDebit_WhenNegativeBalance_NoEventSent() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
-        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0);
-        DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0);
-        DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0);
+        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
+        DebitAccountCommand debitCommand = new DebitAccountCommand(createCommand.getId(), 101.0, transactionId);
+        DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0, transactionId);
         fixture.givenCommands(createCommand, creditCommand, debitCommand)
                 .when(command)
                 .expectNoEvents();
@@ -130,10 +132,10 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDebit_WhenAccountInactive_NoEventSent() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());
-        DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0);
+        DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0, transactionId);
         fixture.givenCommands(createCommand, deleteCommand)
                 .when(command)
                 .expectNoEvents();
@@ -141,10 +143,10 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountCredit_WhenAccountInactive_NoEventSent() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());
-        CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), 10.0);
+        CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), 10.0, transactionId);
         fixture.givenCommands(createCommand, deleteCommand)
                 .when(command)
                 .expectNoEvents();
@@ -152,7 +154,7 @@ public class AccountAggregateTest {
 
     @Test
     public void OnAccountDelete_WhenAccountInactive_NoEventSent() {
-        UUID customerId = "Doe";
+        
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());

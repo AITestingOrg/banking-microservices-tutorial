@@ -81,7 +81,7 @@ public class Account {
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
-        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance, debitAccountCommand.getAmount(), customerId, true, debitAccountCommand.getTransactionId()));
+        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance, debitAccountCommand.getAmount(), customerId, debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -90,7 +90,7 @@ public class Account {
             throw new AccountInactiveException(id);
         }
         double newBalance = balance + creditAccountCommand.getAmount();
-        apply(new AccountCreditedEvent(creditAccountCommand.getId(), customerId, creditAccountCommand.getAmount(), newBalance, true, creditAccountCommand.getTransactionId()));
+        apply(new AccountCreditedEvent(creditAccountCommand.getId(), newBalance, creditAccountCommand.getAmount(), customerId, creditAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -112,7 +112,7 @@ public class Account {
 
         if (AccountRules.eligibleForDebitOverdraft(balance, overDraftAccountCommand.getDebitAmount())) {
             double newBalance = balance - overdraftFee;
-            apply(new AccountOverdraftedEvent(id, newBalance, customerId, overdraftFee, true, overDraftAccountCommand.getTransactionId()));
+            apply(new AccountOverdraftedEvent(id, newBalance, overdraftFee, customerId, overDraftAccountCommand.getTransactionId()));
         }
     }
 

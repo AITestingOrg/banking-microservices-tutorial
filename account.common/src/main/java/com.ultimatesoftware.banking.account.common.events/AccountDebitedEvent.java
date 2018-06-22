@@ -8,8 +8,8 @@ public class AccountDebitedEvent extends AccountTransactionEvent {
     private double debitAmount;
     private UUID customerId;
 
-    public AccountDebitedEvent(UUID id, double balance, double debitAmount, UUID customerId, boolean success, UUID transactionId) {
-        super(success, transactionId);
+    public AccountDebitedEvent(UUID id, double balance, double debitAmount, UUID customerId, UUID transactionId) {
+        super(transactionId);
         this.id = id;
         this.balance = balance;
         this.debitAmount = debitAmount;

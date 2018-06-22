@@ -8,8 +8,8 @@ public class AccountCreditedEvent extends AccountTransactionEvent {
     private double creditAmount;
     private double balance;
 
-    public AccountCreditedEvent(UUID id, UUID customerId, double creditAmount, double balance, boolean success, UUID transactionId) {
-        super(success, transactionId);
+    public AccountCreditedEvent(UUID id, double balance, double creditAmount, UUID customerId, UUID transactionId) {
+        super(transactionId);
         this.id = id;
         this.customerId = customerId;
         this.creditAmount = creditAmount;

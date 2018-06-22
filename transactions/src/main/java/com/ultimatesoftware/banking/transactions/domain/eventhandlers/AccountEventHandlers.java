@@ -38,11 +38,7 @@ public class AccountEventHandlers {
     private void updateTransaction(AccountTransactionEvent event) {
         BankTransaction transaction = bankTransactionRepository.findOne(event.getTransactionId());
         if(transaction != null) {
-            if (event.isSuccess()) {
-                transaction.setStatus(TransactionStatus.SUCCESSFUL);
-            } else {
-                transaction.setStatus(TransactionStatus.FAILED);
-            }
+            transaction.setStatus(TransactionStatus.SUCCESSFUL);
         }
         bankTransactionRepository.save(transaction);
     }
