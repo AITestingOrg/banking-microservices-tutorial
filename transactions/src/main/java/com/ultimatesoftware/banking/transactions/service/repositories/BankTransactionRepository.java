@@ -1,7 +1,7 @@
 package com.ultimatesoftware.banking.transactions.service.repositories;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 import java.util.UUID;

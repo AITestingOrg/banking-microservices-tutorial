@@ -8,7 +8,7 @@ public class AcquireDestinationAccountCommand extends TransactionCommand impleme
     @TargetAggregateIdentifier
     private UUID id;
 
-    public AcquireDestinationAccountCommand(UUID id, UUID transactionId) {
+    public AcquireDestinationAccountCommand(UUID id, String transactionId) {
         super(transactionId);
         this.id = id;
     }

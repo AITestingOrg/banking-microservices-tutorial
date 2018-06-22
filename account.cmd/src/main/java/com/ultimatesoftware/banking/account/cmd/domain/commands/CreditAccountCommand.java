@@ -9,7 +9,7 @@ public class CreditAccountCommand extends TransactionCommand implements Command 
     private UUID id;
     private double amount;
 
-    public CreditAccountCommand(UUID id, double balance, UUID transactionId) {
+    public CreditAccountCommand(UUID id, double balance, String transactionId) {
         super(transactionId);
         this.id = id;
         this.amount = balance;

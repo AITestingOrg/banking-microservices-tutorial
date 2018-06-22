@@ -8,7 +8,7 @@ public class AccountDebitedEvent extends AccountTransactionEvent {
     private double debitAmount;
     private UUID customerId;
 
-    public AccountDebitedEvent(UUID id, double balance, double debitAmount, UUID customerId, UUID transactionId) {
+    public AccountDebitedEvent(UUID id, UUID customerId, double debitAmount, double balance, String transactionId) {
         super(transactionId);
         this.id = id;
         this.balance = balance;
@@ -32,7 +32,7 @@ public class AccountDebitedEvent extends AccountTransactionEvent {
         return debitAmount;
     }
 
-    public UUID getTransactionId() {
+    public String getTransactionId() {
         return transactionId;
     }
 }

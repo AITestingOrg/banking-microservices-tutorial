@@ -7,7 +7,7 @@ public class AcquireSourceAccountCommand extends TransactionCommand implements C
     @TargetAggregateIdentifier
     private UUID id;
 
-    public AcquireSourceAccountCommand(UUID id, UUID transactionId) {
+    public AcquireSourceAccountCommand(UUID id, String transactionId) {
         super(transactionId);
         this.id = id;
     }

@@ -11,6 +11,27 @@ spring:
     port: 5672
     username: guest
     password: guest
+    auto-config:
+      default-exchange:
+        type: fanout
+        dead-letter-enabled: true
+      dead-letter-config:
+        dead-letter-exchange:
+          name: dead-letter-${spring.application.name}
+          auto-delete: true
+          durable: false
+        queue-postfix: .dlq
+      queues:
+        eventQueue-account:
+          name: eventQueue-account
+          dead-letter-enabled: true
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+  instance:
+    preferIpAddress: true
 
 server:
   port: 8080
@@ -19,7 +40,7 @@ amqp:
   events:
     host: localhost
     exchange-name: eventBus-account
-    queue-name: eventQueue-account
+    queue-name: eventQueue-account-transactions
     handlers: com.ultimatesoftware.banking.transactions.domain.eventhandlers
 
 endpoints:
@@ -29,3 +50,8 @@ endpoints:
 management:
   security:
     enabled: false
+
+hosts:
+  account-cmd: localhost:8083
+  account-query: localhost:8084
+  customers: localhost:8081

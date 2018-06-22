@@ -5,7 +5,7 @@ import java.util.UUID;
 public class SourceAccountAcquiredEvent extends AccountTransactionEvent {
     private UUID id;
 
-    public SourceAccountAcquiredEvent(UUID id, UUID transactionId) {
+    public SourceAccountAcquiredEvent(UUID id, String transactionId) {
         super(transactionId);
         this.id = id;
     }

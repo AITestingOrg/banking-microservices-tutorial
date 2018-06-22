@@ -8,7 +8,7 @@ public class ReleaseAccountCommand extends TransactionCommand implements Command
     @TargetAggregateIdentifier
     private UUID id;
 
-    public ReleaseAccountCommand(UUID id, UUID transactionId) {
+    public ReleaseAccountCommand(UUID id, String transactionId) {
         super(transactionId);
         this.id = id;
     }

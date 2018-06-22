@@ -1,12 +1,12 @@
 package com.ultimatesoftware.banking.transactions.domain.eventhandlers;
 
 import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
+import com.ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
-import com.ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
 
 import java.util.UUID;
@@ -56,15 +56,15 @@ public class AccountEventHandlers {
     }
 
     private void updateTransaction(AccountTransactionEvent event) {
-        BankTransaction transaction = bankTransactionRepository.findOne(event.getTransactionId());
+        BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(event.getTransactionId()));
         if(transaction != null) {
             transaction.setStatus(TransactionStatus.SUCCESSFUL);
         }
         bankTransactionRepository.save(transaction);
     }
 
-    private void updateTransaction(UUID transactionId, TransactionStatus status) {
-        BankTransaction transaction = bankTransactionRepository.findOne(transactionId);
+    private void updateTransaction(String transactionId, TransactionStatus status) {
+        BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(transactionId));
         if(transaction != null) {
             transaction.setStatus(status);
         }

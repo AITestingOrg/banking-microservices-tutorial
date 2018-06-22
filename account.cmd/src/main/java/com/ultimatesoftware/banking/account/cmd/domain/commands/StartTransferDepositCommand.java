@@ -9,14 +9,10 @@ public class StartTransferDepositCommand extends TransactionCommand {
     private UUID id;
     private double amount;
 
-    public StartTransferDepositCommand(UUID transactionId, UUID id, double amount) {
+    public StartTransferDepositCommand(double amount, UUID id, String transactionId) {
         super(transactionId);
         this.id = id;
         this.amount = amount;
-    }
-
-    public UUID getTransactionId() {
-        return transactionId;
     }
 
     public UUID getId() {

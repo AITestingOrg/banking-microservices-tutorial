@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class BankTransaction {
     @Id
-    private UUID id;
+    private String id;
     private TransactionType type;
     private UUID account;
     private UUID customerId;
@@ -15,7 +15,7 @@ public class BankTransaction {
 
     public BankTransaction() {}
 
-    public BankTransaction(UUID id, TransactionType type, UUID account, UUID customerId, double amount, UUID destinationAccount, TransactionStatus status) {
+    public BankTransaction(String id, TransactionType type, UUID account, UUID customerId, double amount, UUID destinationAccount, TransactionStatus status) {
         this.id = id;
         this.type = type;
         this.account = account;
@@ -25,7 +25,7 @@ public class BankTransaction {
         this.status = status;
     }
 
-    public BankTransaction(UUID id, TransactionType type, UUID customerId, UUID account, double amount, UUID destinationAccount) {
+    public BankTransaction(String id, TransactionType type, UUID customerId, UUID account, double amount, UUID destinationAccount) {
         this.id = id;
         this.type = type;
         this.account = account;
@@ -35,7 +35,7 @@ public class BankTransaction {
         this.status = TransactionStatus.IN_PROGRESS;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -68,7 +68,7 @@ public class BankTransaction {
     }
 
     public static class BankTransactionBuilder {
-        private UUID id;
+        private String id;
         private TransactionType type;
         private UUID account;
         private double amount;

@@ -8,7 +8,7 @@ public class AccountOverdraftedEvent extends AccountTransactionEvent {
     private UUID customerId;
     private double debitAmount;
 
-    public AccountOverdraftedEvent(UUID id, double balance, double debitAmount, UUID customerId, UUID transactionId) {
+    public AccountOverdraftedEvent(UUID id, UUID customerId, double debitAmount, double balance, String transactionId) {
         super(transactionId);
         this.id = id;
         this.balance = balance;

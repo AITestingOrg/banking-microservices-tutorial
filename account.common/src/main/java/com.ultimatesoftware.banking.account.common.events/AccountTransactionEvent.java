@@ -1,15 +1,13 @@
 package com.ultimatesoftware.banking.account.common.events;
 
-import java.util.UUID;
-
 public abstract class AccountTransactionEvent {
-    protected UUID transactionId;
+    protected String transactionId;
 
-    public AccountTransactionEvent(UUID transactionId) {
+    public AccountTransactionEvent(String transactionId) {
         this.transactionId = transactionId;
     }
 
-    public UUID getTransactionId() {
+    public String getTransactionId() {
         return transactionId;
     }
 }

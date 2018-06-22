@@ -76,12 +76,12 @@ public class Account {
     @CommandHandler
     public void on(DebitAccountCommand debitAccountCommand) throws AccountNotEligibleForDebitException {
         if (!AccountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
+            apply(new TransactionFailedEvent(debitAccountCommand.getTransactionId(), "Account balance not eligable for withdraw."));
             throw new AccountNotEligibleForDebitException(id, balance);
         }
         double newBalance = balance - debitAccountCommand.getAmount();
-        apply(new AccountDebitedEvent(debitAccountCommand.getId(), newBalance,
-                                      debitAccountCommand.getAmount(), customerId,
-                                      debitAccountCommand.getTransactionId()));
+        apply(new AccountDebitedEvent(debitAccountCommand.getId(), customerId, debitAccountCommand.getAmount(), newBalance,
+                debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -90,9 +90,9 @@ public class Account {
         if (newBalance == Double.POSITIVE_INFINITY || newBalance == Double.MAX_VALUE) {
             throw new AccountBalanceException("This error is above my pay-grade, I think this guy has too much money.");
         }
-        apply(new AccountCreditedEvent(creditAccountCommand.getId(), newBalance,
-                                       creditAccountCommand.getAmount(), customerId,
-                                       creditAccountCommand.getTransactionId()));
+        apply(new AccountCreditedEvent(creditAccountCommand.getId(), customerId,
+                                       creditAccountCommand.getAmount(), newBalance,
+                                       creditAccountCommand.getTransactionId().toString()));
     }
 
     @CommandHandler
@@ -108,8 +108,8 @@ public class Account {
     public void on(OverDraftAccountCommand overDraftAccountCommand) {
         if (AccountRules.eligibleForDebitOverdraft(balance, overDraftAccountCommand.getDebitAmount())) {
             double newBalance = balance - overdraftFee;
-            apply(new AccountOverdraftedEvent(id, newBalance, overdraftFee, customerId,
-                                              overDraftAccountCommand.getTransactionId()));
+            apply(new AccountOverdraftedEvent(id, customerId, newBalance, overdraftFee,
+                    overDraftAccountCommand.getTransactionId()));
         }
     }
 
@@ -121,29 +121,29 @@ public class Account {
     @CommandHandler
     public void on(StartTransferTransactionCommand command) throws AccountNotEligibleForDebitException {
         if (!AccountRules.eligibleForDebit(this, command.getAmount())) {
-            apply(new TransferFailedToStartEvent(command.getTransactionId()));
+            apply(new TransferFailedToStartEvent(command.getTransactionId().toString()));
             throw new AccountNotEligibleForDebitException(id, balance);
         }
 
         logger.info("Transfer transaction started from {} successfully", id);
-        apply(new TransferTransactionStartedEvent(command.getTransactionId(), command.getId(),
-                                                  command.getDestinationId(), command.getAmount()));
+        apply(new TransferTransactionStartedEvent(command.getId(), command.getDestinationId(), command.getAmount(),
+                command.getTransactionId().toString()));
     }
 
     @CommandHandler
     public void on(StartTransferDepositCommand startTransferDepositCommand) {
         logger.info("Transfer to {} successfully", id);
         double newBalance = balance - startTransferDepositCommand.getAmount();
-        apply(new TransferWithdrawConcludedEvent(newBalance, startTransferDepositCommand.getId(),
-                                                 startTransferDepositCommand.getTransactionId()));
+        apply(new TransferWithdrawConcludedEvent(startTransferDepositCommand.getId(), newBalance,
+                startTransferDepositCommand.getTransactionId().toString()));
     }
 
     @CommandHandler
     public void on(ConcludeTransferCommand concludeTransferCommand) {
         logger.info("Transfer concluded to {} successfully", id);
         double newBalance = balance + concludeTransferCommand.getAmount();
-        apply(new TransferDepositConcludedEvent(newBalance, concludeTransferCommand.getId(),
-                                                concludeTransferCommand.getTransactionId()));
+        apply(new TransferDepositConcludedEvent(concludeTransferCommand.getId(), newBalance,
+                concludeTransferCommand.getTransactionId().toString()));
     }
 
     @CommandHandler
@@ -173,7 +173,7 @@ public class Account {
     @CommandHandler
     public void on(FailToStartTransferTransactionCommand command) {
         logger.info("Transaction {} failed to start", command.getTransactionId());
-        apply(new TransferFailedToStartEvent(command.getTransactionId()));
+        apply(new TransferFailedToStartEvent(command.getTransactionId().toString()));
     }
 
     @EventSourcingHandler

@@ -20,6 +20,13 @@ amqp:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://eurekaserver:8761/eureka
+      defaultZone: http://discoveryservice:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
   instance:
     preferIpAddress: true
+
+hosts:
+  account-cmd: accountcmd:8083
+  account-query: accountquery:8084
+  customers: customers:8081

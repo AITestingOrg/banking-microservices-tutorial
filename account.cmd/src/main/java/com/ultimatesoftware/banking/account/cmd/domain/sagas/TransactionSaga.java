@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class TransactionSaga extends CustomSaga {
     private static final Logger logger = LoggerFactory.getLogger(TransactionSaga.class);
 
-    private UUID transactionId;
+    private String transactionId;
     private UUID sourceAccountId;
     private UUID destinationAccountId;
     private double amount;
@@ -51,14 +51,14 @@ public class TransactionSaga extends CustomSaga {
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(DestinationAccountAcquiredEvent event) {
         logger.info("Account {} acquired successfully for transaction {}", destinationAccountId, transactionId);
-        commandGateway.send(new StartTransferDepositCommand(transactionId, sourceAccountId, amount));
+        commandGateway.send(new StartTransferDepositCommand(amount, sourceAccountId, transactionId));
     }
 
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferWithdrawConcludedEvent event) {
         logger.info("Transfer transaction with id {}, did transfer from {} successfully",
                     transactionId, sourceAccountId);
-        commandGateway.send(new ConcludeTransferCommand(transactionId, destinationAccountId, amount));
+        commandGateway.send(new ConcludeTransferCommand(amount, destinationAccountId, transactionId));
     }
 
     @EndSaga

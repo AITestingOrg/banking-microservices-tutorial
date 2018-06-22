@@ -20,7 +20,7 @@ public class FailToStartTransferTransactionCommand extends TransactionCommand im
         return id;
     }
 
-    public UUID getTransactionId() {
+    public String getTransactionId() {
         return transactionDto.getId();
     }
 

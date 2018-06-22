@@ -9,7 +9,7 @@ public class OverDraftAccountCommand extends TransactionCommand implements Comma
     private UUID id;
     private double debitAmount;
 
-    public OverDraftAccountCommand(UUID id, double debitAmount, UUID transactionId) {
+    public OverDraftAccountCommand(UUID id, double debitAmount, String transactionId) {
         super(transactionId);
         this.id = id;
         this.debitAmount = debitAmount;

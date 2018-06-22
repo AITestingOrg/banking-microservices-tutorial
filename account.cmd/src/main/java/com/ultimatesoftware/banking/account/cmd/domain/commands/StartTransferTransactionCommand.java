@@ -20,7 +20,8 @@ public class StartTransferTransactionCommand extends TransactionCommand implemen
         return id;
     }
 
-    public UUID getTransactionId() {
+    @Override
+    public String getTransactionId() {
         return transactionDto.getId();
     }
 

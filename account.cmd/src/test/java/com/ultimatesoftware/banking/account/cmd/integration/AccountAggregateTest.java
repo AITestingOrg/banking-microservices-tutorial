@@ -56,7 +56,7 @@ public class AccountAggregateTest {
         DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0, transactionId);
         fixture.givenCommands(createCommand, creditCommand)
                 .when(command)
-                .expectEvents(new AccountDebitedEvent(createCommand.getId(), 90.0, 10.0, customerId, transactionId));
+                .expectEvents(new AccountDebitedEvent(createCommand.getId(), customerId, 10.0, 90.0, transactionId));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class AccountAggregateTest {
         fixture.givenCommands(createCommand)
                 .andGivenCommands(creditCommand)
                 .when(command)
-                .expectEvents(new AccountDebitedEvent(createCommand.getId(), 0.00, Double.MAX_VALUE / 2, customerId, transactionId));
+                .expectEvents(new AccountDebitedEvent(createCommand.getId(), customerId, Double.MAX_VALUE / 2, 0.00, transactionId));
     }
 
     @Test

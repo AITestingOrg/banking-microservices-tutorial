@@ -8,7 +8,7 @@ public class CancelTransferCommand extends TransactionCommand{
     @TargetAggregateIdentifier
     private UUID id;
 
-    public CancelTransferCommand(UUID id, UUID transactionId) {
+    public CancelTransferCommand(UUID id, String transactionId) {
         super(transactionId);
         this.id = id;
     }

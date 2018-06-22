@@ -6,7 +6,7 @@ public class TransferWithdrawConcludedEvent extends AccountTransactionEvent {
     private UUID id;
     private double balance;
 
-    public TransferWithdrawConcludedEvent(double balance, UUID id, UUID transactionId) {
+    public TransferWithdrawConcludedEvent(UUID id, double balance, String transactionId) {
         super(transactionId);
         this.id = id;
         this.balance = balance;

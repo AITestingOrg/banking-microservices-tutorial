@@ -9,7 +9,7 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TransactionDto {
     @NotNull
-    private UUID id;
+    private String id;
     @NotNull
     private UUID account;
     @NotNull
@@ -21,15 +21,14 @@ public class TransactionDto {
     public TransactionDto() {
     }
 
-    public TransactionDto(UUID id, UUID account, UUID customerId, double amount, UUID destinationAccount) {
-        this.id = id;
+    public TransactionDto(UUID account, UUID customerId, double amount, UUID destinationAccount) {
         this.account = account;
         this.customerId = customerId;
         this.amount = amount;
         this.destinationAccount = destinationAccount;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
