@@ -63,7 +63,7 @@ public class AccountController {
                                                                                       transaction.getToAccount(),
                                                                                       transaction.getAmount());
         commandGateway.send(command);
-        return new ResponseEntity<>(transaction.getTransactionId(), HttpStatus.OK);
+        return new ResponseEntity<>(command.getTransactionId(), HttpStatus.OK);
     }
 
     private ResponseEntity<String> sendCommand(Command command) {
