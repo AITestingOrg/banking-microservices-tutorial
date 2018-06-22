@@ -22,71 +22,73 @@ public class TransactionSaga extends CustomSaga {
     private static final Logger logger = LoggerFactory.getLogger(TransactionSaga.class);
 
     private UUID transactionId;
-    private UUID fromAccountId;
-    private UUID toAccountId;
+    private UUID sourceAccountId;
+    private UUID destinationAccountId;
     private double amount;
 
     @StartSaga
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferTransactionStartedEvent event) {
         transactionId = event.getTransactionId();
-        fromAccountId = event.getFromAccountId();
-        toAccountId = event.getToAccountId();
+        sourceAccountId = event.getId();
+        destinationAccountId = event.getDestinationAccountId();
         amount = event.getAmount();
 
         logger.info(
                 "A new transfer transaction is started with id {}, from account {} to account {} and amount {}",
-                transactionId, fromAccountId, toAccountId, amount);
-        AcquireSourceAccountCommand command = new AcquireSourceAccountCommand(fromAccountId, transactionId);
-        CompletableFuture.supplyAsync(() -> commandGateway.send(command), executor)
-                .acceptEither(timeoutAfter(3000),
-                        fail -> commandGateway.send(new CancelTransferCommand(command.getTransactionId())));
+                transactionId, sourceAccountId, destinationAccountId, amount);
+        AcquireSourceAccountCommand command = new AcquireSourceAccountCommand(sourceAccountId, transactionId);
+
+        sendWithTimeout(command, new CancelTransferCommand(sourceAccountId, transactionId));
     }
 
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(SourceAccountAcquiredEvent event) {
-        logger.info("Account {} acquired successfully for transaction {}", fromAccountId, transactionId);
-        AcquireDestinationAccountCommand command = new AcquireDestinationAccountCommand(toAccountId, transactionId);
+        logger.info("Account {} acquired successfully for transaction {}", sourceAccountId, transactionId);
+        AcquireDestinationAccountCommand command = new AcquireDestinationAccountCommand(destinationAccountId, transactionId);
 
-        CompletableFuture.supplyAsync(() -> commandGateway.send(command), executor)
-                .acceptEither(timeoutAfter(3000),
-                        fail -> commandGateway.send(new CancelTransferCommand(command.getTransactionId())));
+        sendWithTimeout(command, new CancelTransferCommand(sourceAccountId, transactionId));
     }
 
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(DestinationAccountAcquiredEvent event) {
-        logger.info("Account {} acquired successfully for transaction {}", toAccountId, transactionId);
-        commandGateway.send(new StartTransferCommand(transactionId, fromAccountId, amount));
+        logger.info("Account {} acquired successfully for transaction {}", destinationAccountId, transactionId);
+        commandGateway.send(new StartTransferDepositCommand(transactionId, sourceAccountId, amount));
     }
 
     @SagaEventHandler(associationProperty = "transactionId")
-    public void handle(TransferStartedEvent event) {
+    public void handle(TransferWithdrawConcludedEvent event) {
         logger.info("Transfer transaction with id {}, did transfer from {} successfully",
-                transactionId, fromAccountId);
-        commandGateway.send(new ConcludeTransferCommand(transactionId, toAccountId, amount));
+                transactionId, sourceAccountId);
+        commandGateway.send(new ConcludeTransferCommand(transactionId, destinationAccountId, amount));
     }
 
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferFailedToStartEvent event) {
-        logger.info("Account {} failed to transfer for transaction {}", fromAccountId, transactionId);
-        commandGateway.send(new ReleaseAccountCommand(fromAccountId, transactionId));
-        commandGateway.send(new ReleaseAccountCommand(toAccountId, transactionId));
-        commandGateway.send(new CancelTransferCommand(transactionId));
+        logger.info("Account {} failed to transfer for transaction {}", sourceAccountId, transactionId);
+        commandGateway.send(new CancelTransferCommand(destinationAccountId, transactionId));
+        commandGateway.send(new CancelTransferCommand(sourceAccountId, transactionId));
     }
 
     @EndSaga
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferCanceledEvent event) {
         logger.info("Transaction {} was canceled.", transactionId);
-        commandGateway.send(new ReleaseAccountCommand(fromAccountId, transactionId));
+        commandGateway.send(new ReleaseAccountCommand(sourceAccountId, transactionId));
     }
 
     @EndSaga
     @SagaEventHandler(associationProperty = "transactionId")
-    public void handle(TransferConcludedEvent event) {
+    public void handle(TransferDepositConcludedEvent event) {
         logger.info("Transaction {} concluded", transactionId);
-        commandGateway.send(new ReleaseAccountCommand(fromAccountId, transactionId));
-        commandGateway.send(new ReleaseAccountCommand(toAccountId, transactionId));
+        commandGateway.send(new ReleaseAccountCommand(sourceAccountId, transactionId));
+        commandGateway.send(new ReleaseAccountCommand(destinationAccountId, transactionId));
+    }
+
+    private void sendWithTimeout(TransactionCommand command, TransactionCommand timeoutCommand) {
+        CompletableFuture.supplyAsync(() -> commandGateway.send(command), executor)
+                .acceptEither(timeoutAfter(3000),
+                        fail -> commandGateway.send(timeoutCommand));
     }
 
     private CompletableFuture timeoutAfter(long timeout) {

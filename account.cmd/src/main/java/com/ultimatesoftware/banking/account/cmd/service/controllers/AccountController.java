@@ -1,7 +1,7 @@
 package com.ultimatesoftware.banking.account.cmd.service.controllers;
 
-import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Transaction;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
+import com.ultimatesoftware.banking.account.cmd.domain.exceptions.FutureTimeoutException;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountCreationDto;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountUpdateDto;
 import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
@@ -13,6 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.*;
 
@@ -58,11 +59,12 @@ public class AccountController {
     }
 
     @PostMapping("transaction/start")
-    public ResponseEntity<?> startTransaction(@Valid @RequestBody Transaction transaction) {
-        StartTransferTransactionCommand command = new StartTransferTransactionCommand(transaction.getFromAccount(),
-                                                                                      transaction.getToAccount(),
-                                                                                      transaction.getAmount());
-        commandGateway.send(command);
+    public ResponseEntity<?> startTransaction(@Valid @RequestBody TransactionDto transaction) {
+        StartTransferTransactionCommand command = new StartTransferTransactionCommand(transaction);
+        CompletableFuture.supplyAsync(() -> commandGateway.send(command), executor)
+                .acceptEither(timeoutAfter(3000),
+                        fail -> commandGateway.send(
+                                new FailToStartTransferTransactionCommand(transaction)));
         return new ResponseEntity<>(command.getTransactionId(), HttpStatus.OK);
     }
 
@@ -72,5 +74,12 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(command.getId().toString(), HttpStatus.OK);
+    }
+
+    private CompletableFuture timeoutAfter(long timeout) {
+        CompletableFuture result = new CompletableFuture();
+        executor.schedule(new FutureTimeoutException(result),
+                new Date(System.currentTimeMillis() + timeout));
+        return result;
     }
 }

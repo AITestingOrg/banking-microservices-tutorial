@@ -27,7 +27,7 @@ public class AccountEventHandler {
     }
 
     @EventHandler
-    public void on(TransferConcludedEvent event) {
+    public void on(TransferDepositConcludedEvent event) {
         LOG.info("Transfer concluded to {}", event.getId());
         updateBalance(event.getId(), event.getBalance());
     }
@@ -38,7 +38,7 @@ public class AccountEventHandler {
     }
 
     @EventHandler
-    public void on(TransferStartedEvent event) {
+    public void on(TransferWithdrawConcludedEvent event) {
         LOG.info("Transfer started from  {}", event.getId());
         updateBalance(event.getId(), event.getBalance());
     }

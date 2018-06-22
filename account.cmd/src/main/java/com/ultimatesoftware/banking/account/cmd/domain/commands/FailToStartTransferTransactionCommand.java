@@ -5,12 +5,12 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class StartTransferTransactionCommand extends TransactionCommand implements Command {
+public class FailToStartTransferTransactionCommand extends TransactionCommand implements Command {
     @TargetAggregateIdentifier
     private UUID id;
     private TransactionDto transactionDto;
 
-    public StartTransferTransactionCommand(TransactionDto transactionDto) {
+    public FailToStartTransferTransactionCommand(TransactionDto transactionDto) {
         super(transactionDto.getId());
         this.id = transactionDto.getAccount();
         this.transactionDto = transactionDto;

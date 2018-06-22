@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import static jdk.nashorn.internal.objects.Global.Infinity;
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 import static org.axonframework.commandhandling.model.AggregateLifecycle.markDeleted;
 
@@ -114,47 +113,64 @@ public class Account {
     }
 
     @CommandHandler
-    public void on(StartTransferCommand startTransferCommand) throws AccountNotEligibleForDebitException {
-        if (!AccountRules.eligibleForDebit(this, startTransferCommand.getAmount())) {
-            apply(new TransferFailedToStartEvent(startTransferCommand.getTransactionId()));
+    public void on(StartTransferTransactionCommand command) throws AccountNotEligibleForDebitException {
+        logger.info("Transfer transaction started from {} successfully", id);
+        apply(new TransferTransactionStartedEvent(command.getTransactionId(), command.getId(),
+                                                  command.getDestinationId(), command.getAmount()));
+    }
+
+    @CommandHandler
+    public void on(StartTransferDepositCommand startTransferDepositCommand) throws AccountNotEligibleForDebitException {
+        if (!AccountRules.eligibleForDebit(this, startTransferDepositCommand.getAmount())) {
+            apply(new TransferFailedToStartEvent(startTransferDepositCommand.getTransactionId()));
             throw new AccountNotEligibleForDebitException(id, balance);
         }
 
         logger.info("Transfer started from {} successfully", id);
-        double newBalance = balance - startTransferCommand.getAmount();
-        apply(new TransferStartedEvent(startTransferCommand.getTransactionId(),
-                                       startTransferCommand.getId(),
-                                       newBalance));
+        double newBalance = balance - startTransferDepositCommand.getAmount();
+        apply(new TransferWithdrawConcludedEvent(newBalance, startTransferDepositCommand.getId(), startTransferDepositCommand.getTransactionId()
+        ));
     }
 
     @CommandHandler
     public void on(ConcludeTransferCommand concludeTransferCommand) {
         logger.info("Transfer concluded to {} successfully", id);
         double newBalance = balance + concludeTransferCommand.getAmount();
-        apply(new TransferConcludedEvent(concludeTransferCommand.getTransactionId(),
-                                         concludeTransferCommand.getId(),
-                                         newBalance));
+        apply(new TransferDepositConcludedEvent(newBalance, concludeTransferCommand.getId(), concludeTransferCommand.getTransactionId()
+        ));
     }
 
     @CommandHandler
     public void on(AcquireSourceAccountCommand command) {
         logger.info("Acquired source account with id {} for transfer {}", id, command.getTransactionId());
-        apply(new SourceAccountAcquiredEvent(command.getTransactionId(),
-                command.getId()));
+        apply(new SourceAccountAcquiredEvent(command.getId(), command.getTransactionId()
+        ));
     }
 
     @CommandHandler
     public void on(AcquireDestinationAccountCommand command) {
         logger.info("Acquired destination account with id {} for transfer {}", id, command.getTransactionId());
-        apply(new DestinationAccountAcquiredEvent(command.getTransactionId(),
-                command.getId()));
+        apply(new DestinationAccountAcquiredEvent(command.getId(), command.getTransactionId()
+        ));
     }
 
     @CommandHandler
     public void on(ReleaseAccountCommand releaseAccountCommand) {
         logger.info("Account Released {}", id);
-        apply(new AccountReleasedEvent(releaseAccountCommand.getTransactionId(),
-                releaseAccountCommand.getId()));
+        apply(new AccountReleasedEvent(releaseAccountCommand.getId(), releaseAccountCommand.getTransactionId()
+        ));
+    }
+
+    @CommandHandler
+    public void on(CancelTransferCommand cancelTransferCommand) {
+        logger.info("Account transfer canceled from {}", id);
+        apply(new TransferCanceledEvent(cancelTransferCommand.getTransactionId()));
+    }
+
+    @CommandHandler
+    public void on(FailToStartTransferTransactionCommand command) {
+        logger.info("Transaction {} failed to start", command.getTransactionId());
+        apply(new TransferFailedToStartEvent(command.getTransactionId()));
     }
 
     @EventSourcingHandler
@@ -191,13 +207,13 @@ public class Account {
     }
 
     @EventSourcingHandler
-    public void on(TransferStartedEvent transferStartedEvent) {
-        balance = transferStartedEvent.getBalance();
+    public void on(TransferWithdrawConcludedEvent transferWithdrawConcludedEvent) {
+        balance = transferWithdrawConcludedEvent.getBalance();
     }
 
     @EventSourcingHandler
-    public void on(TransferConcludedEvent transferConcludedEvent) {
-        balance = transferConcludedEvent.getBalance();
+    public void on(TransferDepositConcludedEvent transferDepositConcludedEvent) {
+        balance = transferDepositConcludedEvent.getBalance();
     }
 
     @EventSourcingHandler

@@ -2,19 +2,14 @@ package com.ultimatesoftware.banking.account.common.events;
 
 import java.util.UUID;
 
-public class TransferStartedEvent {
-    private UUID transactionId;
+public class TransferDepositConcludedEvent extends AccountTransactionEvent{
     private UUID id;
     private double balance;
 
-    public TransferStartedEvent(UUID transactionId, UUID id, double balance) {
-        this.transactionId = transactionId;
+    public TransferDepositConcludedEvent(double balance, UUID id, UUID transactionId) {
+        super(transactionId);
         this.id = id;
         this.balance = balance;
-    }
-
-    public UUID getTransactionId() {
-        return transactionId;
     }
 
     public UUID getId() {

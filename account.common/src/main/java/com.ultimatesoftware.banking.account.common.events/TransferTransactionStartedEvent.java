@@ -4,30 +4,30 @@ import java.util.UUID;
 
 public class TransferTransactionStartedEvent {
     private UUID transactionId;
-    private UUID fromAccountId;
-    private UUID toAccountId;
-    private double ammount;
+    private UUID id;
+    private UUID destinationAccountId;
+    private double amount;
 
-    public TransferTransactionStartedEvent(UUID transactionId, UUID fromAccountId, UUID toAccountId, double ammount) {
+    public TransferTransactionStartedEvent(UUID transactionId, UUID id, UUID destinationAccountId, double amount) {
         this.transactionId = transactionId;
-        this.fromAccountId = fromAccountId;
-        this.toAccountId = toAccountId;
-        this.ammount = ammount;
+        this.id = id;
+        this.destinationAccountId = destinationAccountId;
+        this.amount = amount;
     }
 
     public UUID getTransactionId() {
         return transactionId;
     }
 
-    public UUID getFromAccountId() {
-        return fromAccountId;
+    public UUID getId() {
+        return id;
     }
 
-    public UUID getToAccountId() {
-        return toAccountId;
+    public UUID getDestinationAccountId() {
+        return destinationAccountId;
     }
 
     public double getAmount() {
-        return ammount;
+        return amount;
     }
 }

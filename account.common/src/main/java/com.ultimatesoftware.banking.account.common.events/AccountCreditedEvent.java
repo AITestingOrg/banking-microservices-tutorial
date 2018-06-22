@@ -4,16 +4,16 @@ import java.util.UUID;
 
 public class AccountCreditedEvent extends AccountTransactionEvent {
     private UUID id;
-    private UUID customerId;
-    private double creditAmount;
     private double balance;
+    private double creditAmount;
+    private UUID customerId;
 
     public AccountCreditedEvent(UUID id, double balance, double creditAmount, UUID customerId, UUID transactionId) {
         super(transactionId);
         this.id = id;
-        this.customerId = customerId;
-        this.creditAmount = creditAmount;
         this.balance = balance;
+        this.creditAmount = creditAmount;
+        this.customerId = customerId;
     }
 
     public UUID getId() {
@@ -24,11 +24,11 @@ public class AccountCreditedEvent extends AccountTransactionEvent {
         return balance;
     }
 
-    public UUID getCustomerId() {
-        return customerId;
-    }
-
     public double getCreditAmount() {
         return creditAmount;
+    }
+
+    public UUID getCustomerId() {
+        return customerId;
     }
 }
