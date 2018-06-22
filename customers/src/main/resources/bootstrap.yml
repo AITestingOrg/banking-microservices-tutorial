@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: customers
+  cloud:
+    config:
+      uri: http://configurationservice:8888

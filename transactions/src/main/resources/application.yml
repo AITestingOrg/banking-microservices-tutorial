@@ -54,3 +54,4 @@ management:
 hosts:
   account-cmd: localhost:8083
   account-query: localhost:8084
+  customers: localhost:8081

@@ -29,3 +29,4 @@ eureka:
 hosts:
   account-cmd: accountcmd:8083
   account-query: accountquery:8084
+  customers: customers:8081

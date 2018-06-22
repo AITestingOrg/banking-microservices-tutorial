@@ -1,0 +1,20 @@
+# Mongo config
+spring:
+  application:
+    name: customers
+  data:
+    mongodb:
+      database: ${spring.application.name}
+      host: localhost
+      port: 27017
+
+server:
+  port: 8080
+
+endpoints:
+  health:
+    sensitive:  false
+
+management:
+  security:
+    enabled: false
