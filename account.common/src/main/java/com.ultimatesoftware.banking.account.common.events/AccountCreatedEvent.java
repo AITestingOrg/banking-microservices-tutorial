@@ -2,21 +2,14 @@ package com.ultimatesoftware.banking.account.common.events;
 
 import java.util.UUID;
 
-public class AccountCreatedEvent {
-    private UUID id;
+public class AccountCreatedEvent extends AccountEvent {
     private UUID customerId;
     private double balance;
-    private boolean active;
 
-    public AccountCreatedEvent(UUID id, UUID customerId, double balance, boolean active) {
-        this.id = id;
+    public AccountCreatedEvent(UUID id, UUID customerId, double balance) {
+        super(id);
         this.customerId = customerId;
         this.balance = balance;
-        this.active = active;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public UUID getCustomerId() {
@@ -25,9 +18,5 @@ public class AccountCreatedEvent {
 
     public double getBalance() {
         return balance;
-    }
-
-    public boolean isActive() {
-        return active;
     }
 }

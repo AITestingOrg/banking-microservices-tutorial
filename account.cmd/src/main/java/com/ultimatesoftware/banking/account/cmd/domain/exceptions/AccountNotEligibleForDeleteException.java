@@ -5,12 +5,11 @@ import java.util.UUID;
 public class AccountNotEligibleForDeleteException extends Exception {
     private UUID id;
     private double balance;
-    private boolean active;
 
-    public AccountNotEligibleForDeleteException(UUID id, double balance, boolean active) {
+    public AccountNotEligibleForDeleteException(UUID id, double balance) {
     }
 
     public String getMessage() {
-        return String.format("Account %s not eligible for deletion: balance = %f, active = %s", id, balance, active);
+        return String.format("Account %s not eligible for deletion: balance = %f", id, balance);
     }
 }

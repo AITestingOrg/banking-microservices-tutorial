@@ -1,16 +1,13 @@
 package com.ultimatesoftware.banking.account.common.events;
 
-public class TransactionFailedEvent {
-    private String id;
+import java.util.UUID;
+
+public class TransactionFailedEvent extends AccountTransactionEvent {
     private String msg;
 
-    public TransactionFailedEvent(String id, String msg) {
-        this.id = id;
+    public TransactionFailedEvent(UUID id, String transactionId, String msg) {
+        super(id, transactionId);
         this.msg = msg;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getMsg() {

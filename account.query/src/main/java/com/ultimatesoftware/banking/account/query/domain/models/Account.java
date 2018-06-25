@@ -17,13 +17,11 @@ public class Account {
     @Min(18)
     private UUID customerId;
     private double balance;
-    private boolean active;
 
-    public Account(UUID accountId, UUID customerId, double balance, boolean active) {
+    public Account(UUID accountId, UUID customerId, double balance) {
         this.accountId = accountId;
         this.customerId = customerId;
         this.balance = balance;
-        this.active = active;
     }
 
     public Account() {
@@ -41,19 +39,11 @@ public class Account {
         return balance;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     public void setCustomerId(UUID customerId) {
         this.customerId = customerId;
     }
 
     public void setBalance(double balance) {
         this.balance = balance;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 }

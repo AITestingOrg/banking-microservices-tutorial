@@ -32,12 +32,6 @@ public class AccountEventHandlers {
     }
 
     @EventHandler
-    public void on(AccountOverdraftedEvent event) {
-        LOG.info("Account Overdraft {}", event.getId());
-        updateTransaction(event);
-    }
-
-    @EventHandler
     public void on(TransferFailedToStartEvent event) {
         LOG.info("Transfer failed {}", event.getTransactionId());
         updateTransaction(event.getTransactionId(), TransactionStatus.FAILED);

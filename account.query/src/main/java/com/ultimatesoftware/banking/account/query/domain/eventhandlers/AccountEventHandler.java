@@ -44,15 +44,9 @@ public class AccountEventHandler {
     }
 
     @EventHandler
-    public void on(AccountOverdraftedEvent event) {
-        LOG.info("Account Overdraft {}", event.getId());
-        updateBalance(event.getId(), event.getBalance());
-    }
-
-    @EventHandler
     public void on(AccountCreatedEvent event) {
         LOG.info("Account Created {}", event.getId());
-        accountRepository.save(new Account(event.getId(), event.getCustomerId(), event.getBalance(), event.isActive()));
+        accountRepository.save(new Account(event.getId(), event.getCustomerId(), event.getBalance()));
     }
 
     @EventHandler
@@ -65,7 +59,6 @@ public class AccountEventHandler {
     public void on(AccountDeletedEvent event) {
         LOG.info("Account Deleted {}", event.getId());
         Account account = accountRepository.findByAccountId(event.getId()).get();
-        account.setActive(false);
         accountRepository.save(account);
     }
 
