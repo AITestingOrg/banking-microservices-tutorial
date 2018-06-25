@@ -1,9 +1,13 @@
 package com.ultimatesoftware.banking.customer.query.unit;
 
-import com.ultimatesoftware.banking.customer.query.domain.controllers.CustomerController;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+
+import com.ultimatesoftware.banking.customer.query.service.controllers.CustomerController;
 import com.ultimatesoftware.banking.customer.query.domain.models.Customer;
 import com.ultimatesoftware.banking.customer.query.service.repositories.CustomerRepository;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,15 +16,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
-
-
 @RunWith(MockitoJUnitRunner.class)
 public class CustomerControllerUnitTests {
-
     @InjectMocks
     private CustomerController customerController;
     @Mock
@@ -86,7 +83,6 @@ public class CustomerControllerUnitTests {
         verify(customerRepository, times(1)).save(customer);
     }
 
-
     @Test
     public void onUpdateCustomersWithNonExistingId_returnNotFound() {
         //act
@@ -116,7 +112,6 @@ public class CustomerControllerUnitTests {
         //assert
         verify(customerRepository, times(1)).delete(id);
     }
-
 
     @Test
     public void onDeleteCustomersWithNonExistingId_returnNotFound() {
