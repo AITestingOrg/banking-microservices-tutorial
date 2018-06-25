@@ -1,7 +1,6 @@
 buildscript {
     ext {
         springCloudVersion = 'Edgware.SR3'
-        //springCloudStarter = '1.4.4.RELEASE'
         springBootVersion = '1.5.14.RELEASE'
         axonVersion = '3.1.2'
         aspectjVersion = '1.9.1'

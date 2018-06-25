@@ -2,26 +2,24 @@ package com.ultimatesoftware.banking.account.cmd.unit;
 
 import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.CreateAccountCommand;
+import com.ultimatesoftware.banking.account.cmd.domain.commands.CreditAccountCommand;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.DebitAccountCommand;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.DeleteAccountCommand;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
-import com.ultimatesoftware.banking.account.common.events.AccountCreatedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountDebitedEvent;
-import com.ultimatesoftware.banking.account.common.events.AccountDeletedEvent;
-import com.ultimatesoftware.banking.account.common.events.TransactionFailedEvent;
+import com.ultimatesoftware.banking.account.common.events.*;
 import org.axonframework.commandhandling.model.AggregateLifecycle;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -49,7 +47,7 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(AccountDeletedEvent.class));
+        AggregateLifecycle.apply(Matchers.<AccountDeletedEvent>any());
     }
 
     @Test(expected = AccountNotEligibleForDeleteException.class)
@@ -73,7 +71,7 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(AccountCreatedEvent.class));
+        AggregateLifecycle.apply(Matchers.<AccountCreatedEvent>any());
     }
 
     @Test
@@ -87,7 +85,7 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(AccountDebitedEvent.class));
+        AggregateLifecycle.apply(Matchers.<AccountDebitedEvent>any());
     }
 
     @Test
@@ -106,7 +104,7 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(TransactionFailedEvent.class));
+        AggregateLifecycle.apply(Matchers.<TransactionFailedEvent>any());
         Assert.assertEquals(true, exceptionThrown);
     }
 
@@ -121,7 +119,7 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(AccountDebitedEvent.class));
+        AggregateLifecycle.apply(Matchers.<AccountDebitedEvent>any());
     }
 
     @Test
@@ -140,7 +138,7 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(TransactionFailedEvent.class));
+        AggregateLifecycle.apply(Matchers.<TransactionFailedEvent>any());
         Assert.assertEquals(true, exceptionThrown);
     }
 
@@ -160,12 +158,12 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(TransactionFailedEvent.class));
+        AggregateLifecycle.apply(Matchers.<TransactionFailedEvent>any());
         Assert.assertEquals(true, exceptionThrown);
     }
 
     @Test
-    public void givenAccountWithMaxBalance_WhenDebitingMax_AccountDebittedEventEmitted() throws Exception {
+    public void givenAccountWithMaxBalance_WhenDebitingMax_AccountDebitedEventEmitted() throws Exception {
         // arrange
         UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
@@ -175,11 +173,11 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(AccountDebitedEvent.class));
+        AggregateLifecycle.apply(Matchers.<AccountDebitedEvent>any());
     }
 
     @Test
-    public void givenAccountWithMaxBalance_WhenDebitingMaxMinus1_AccountDebittedEventEmitted() throws Exception {
+    public void givenAccountWithMaxBalance_WhenDebitingMaxMinus1_AccountDebitedEventEmitted() throws Exception {
         // arrange
         UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
@@ -189,6 +187,68 @@ public class AccountTest {
 
         // assert
         verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(any(AccountDebitedEvent.class));
+        AggregateLifecycle.apply(Matchers.<AccountDebitedEvent>any());
+    }
+
+    @Test
+    public void givenAccountWithMaxBalance_WhenCrediting1_TransactionFailedIsEmitted() throws Exception {
+        // arrange
+        UUID uuid = UUID.randomUUID();
+        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
+        boolean exceptionThrown = false;
+
+        // act
+        try {
+            account.on(new CreditAccountCommand(uuid, 1.0, "test"));
+        } catch(AccountNotEligibleForDebitException e) {
+            exceptionThrown = true;
+        }
+
+        // assert
+        verifyStatic(AggregateLifecycle.class);
+        AggregateLifecycle.apply(Matchers.<TransactionFailedEvent>any());
+        Assert.assertEquals(true, exceptionThrown);
+    }
+
+    @Test
+    public void givenAccountWithMaxBalanceMinus1_WhenCrediting1_AccountCreditedIsEmitted() throws Exception {
+        // arrange
+        UUID uuid = UUID.randomUUID();
+        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1.0)));
+
+        // act
+        account.on(new CreditAccountCommand(uuid, 1.0, "test"));
+
+        // assert
+        verifyStatic(AggregateLifecycle.class);
+        AggregateLifecycle.apply(Matchers.<AccountCreditedEvent>any());
+    }
+
+    @Test
+    public void givenAccountWith0Balance_WhenCrediting1_AccountCreditedIsEmitted() throws Exception {
+        // arrange
+        UUID uuid = UUID.randomUUID();
+        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+
+        // act
+        account.on(new CreditAccountCommand(uuid, 1.0, "test"));
+
+        // assert
+        verifyStatic(AggregateLifecycle.class);
+        AggregateLifecycle.apply(Matchers.<AccountCreditedEvent>any());
+    }
+
+    @Test
+    public void givenAccountWith0Balance_WhenCreditingMax_AccountCreditedIsEmitted() throws Exception {
+        // arrange
+        UUID uuid = UUID.randomUUID();
+        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+
+        // act
+        account.on(new CreditAccountCommand(uuid, Double.MAX_VALUE, "test"));
+
+        // assert
+        verifyStatic(AggregateLifecycle.class);
+        AggregateLifecycle.apply(Matchers.<AccountCreditedEvent>any());
     }
 }

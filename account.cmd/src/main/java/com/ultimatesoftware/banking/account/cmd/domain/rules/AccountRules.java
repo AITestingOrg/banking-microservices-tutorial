@@ -23,4 +23,12 @@ public class AccountRules {
         }
         return false;
     }
+
+    public static boolean eligibleForCredit(Account account, double creditAmount) {
+        BigDecimal sum = account.getBalance().add(BigDecimal.valueOf(creditAmount));
+        if (sum.compareTo(BigDecimal.valueOf(Double.MAX_VALUE)) <= 0) {
+            return true;
+        }
+        return false;
+    }
 }
