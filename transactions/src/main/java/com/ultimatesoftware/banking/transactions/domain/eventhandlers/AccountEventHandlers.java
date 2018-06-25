@@ -38,18 +38,35 @@ public class AccountEventHandlers {
     }
 
     @EventHandler
-    public void on(TransactionFailedEvent event) {
-        BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(event.getId()));
-        if(transaction != null) {
-            transaction.setStatus(TransactionStatus.FAILED);
-        }
-        bankTransactionRepository.save(transaction);
+    public void on(TransferFailedToStartEvent event) {
+        LOG.info("Transfer failed {}", event.getTransactionId());
+        updateTransaction(event.getTransactionId(), TransactionStatus.FAILED);
+    }
+
+    @EventHandler
+    public void on(TransferCanceledEvent event) {
+        LOG.info("Transfer canceled {}", event.getTransactionId());
+        updateTransaction(event.getTransactionId(), TransactionStatus.FAILED);
+    }
+
+    @EventHandler
+    public void on(TransferDepositConcludedEvent event) {
+        LOG.info("Transfer completed {}", event.getTransactionId());
+        updateTransaction(event.getTransactionId(), TransactionStatus.SUCCESSFUL);
     }
 
     private void updateTransaction(AccountTransactionEvent event) {
         BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(event.getTransactionId()));
         if(transaction != null) {
             transaction.setStatus(TransactionStatus.SUCCESSFUL);
+        }
+        bankTransactionRepository.save(transaction);
+    }
+
+    private void updateTransaction(String transactionId, TransactionStatus status) {
+        BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(transactionId));
+        if(transaction != null) {
+            transaction.setStatus(status);
         }
         bankTransactionRepository.save(transaction);
     }

@@ -1,7 +1,6 @@
 package com.ultimatesoftware.banking.transactions.domain.models;
 
 import org.springframework.data.annotation.Id;
-
 import java.util.UUID;
 
 public class BankTransaction {

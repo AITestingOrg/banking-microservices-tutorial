@@ -47,4 +47,15 @@ public class TransactionDto {
     public UUID getCustomerId() {
         return customerId;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionDto{" +
+                "id=" + id +
+                ", account=" + account +
+                ", customerId=" + customerId +
+                ", amount=" + amount +
+                ", destinationAccount=" + destinationAccount +
+                '}';
+    }
 }
