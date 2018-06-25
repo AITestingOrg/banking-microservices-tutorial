@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customer.query.domain.controllers;
+package com.ultimatesoftware.banking.customer.query.service.controllers;
 
 import com.ultimatesoftware.banking.customer.query.domain.models.Customer;
 import com.ultimatesoftware.banking.customer.query.service.repositories.CustomerRepository;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1")
