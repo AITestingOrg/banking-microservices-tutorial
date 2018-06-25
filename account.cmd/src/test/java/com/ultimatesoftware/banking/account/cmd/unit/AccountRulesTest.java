@@ -5,6 +5,7 @@ import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class AccountRulesTest {
@@ -13,7 +14,7 @@ public class AccountRulesTest {
     public void GivenZeroAccount_WhenDebitMaxDouble__ThenOutputShouldBeFalse() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), 0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(0));
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, maxDouble);
@@ -25,7 +26,7 @@ public class AccountRulesTest {
     @Test
     public void GivenNegativeAccount_WhenDebit__ThenOutputShouldBeFalse() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), -50.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(-50.0));
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 10);
@@ -38,7 +39,7 @@ public class AccountRulesTest {
     public void GivenMaxNegativeAccount_WhenDebit__ThenOutputShouldBeFalse() {
         // arrange
         double minDouble = Double.MIN_VALUE;
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), minDouble, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(minDouble));
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 10.0);
@@ -51,7 +52,7 @@ public class AccountRulesTest {
     public void GivenMaxAccount_WhenDebit__ThenOutputShouldBeTrue() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), maxDouble, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(maxDouble));
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 10.0);
@@ -63,7 +64,7 @@ public class AccountRulesTest {
     @Test
     public void Given50Account_WhenDebit50__ThenOutputShouldBeTrue() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), 50.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(50.0));
 
         // act
         boolean eligible = AccountRules.eligibleForDebit(account, 50.0);
@@ -76,10 +77,10 @@ public class AccountRulesTest {
     public void GivenMaxAccount_WhenDebitMaxAmountMinusOne__ThenOutputShouldBeTrue() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), maxDouble, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(maxDouble));
 
         // act
-        boolean eligible = AccountRules.eligibleForDebit(account, maxDouble - 1);
+        boolean eligible = AccountRules.eligibleForDebit(account, BigDecimal.valueOf(maxDouble).subtract(BigDecimal.valueOf(1)).doubleValue());
 
         // assert
         Assert.assertEquals(true, eligible);
@@ -88,7 +89,7 @@ public class AccountRulesTest {
     @Test
     public void GivenPositiveAccount_WhenDelete__ThenOutputShouldBeFalse() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), 10.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(10.0));
 
         // act
         boolean eligible = AccountRules.eligibleForDelete(account);
@@ -100,7 +101,7 @@ public class AccountRulesTest {
     @Test
     public void GivenNegativeAccount_WhenDelete__ThenOutputShouldBeFalse() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), -10.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(-10.0));
 
         // act
         boolean eligible = AccountRules.eligibleForDelete(account);
@@ -112,60 +113,12 @@ public class AccountRulesTest {
     @Test
     public void GivenZeroAccount_WhenDelete__ThenOutputShouldBeTrue() {
         // arrange
-        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), 0.0, true);
+        Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(0.0));
 
         // act
         boolean eligible = AccountRules.eligibleForDelete(account);
 
         // assert
         Assert.assertEquals(true, eligible);
-    }
-
-    @Test
-    public void GivenZeroAccount_WhenOverdraftMaxDouble__ThenOutputShouldBeTrue() {
-        // arrange
-        double maxDouble = Double.MAX_VALUE;
-
-        // act
-        boolean eligible = AccountRules.eligibleForDebitOverdraft(0.0, maxDouble);
-
-        // assert
-        Assert.assertEquals(true, eligible);
-    }
-
-    @Test
-    public void Given10Account_WhenOverdraft15__ThenOutputShouldBeTrue() {
-        // arrange
-
-        // act
-        boolean eligible = AccountRules.eligibleForDebitOverdraft(10.0, 15.0);
-
-        // assert
-        Assert.assertEquals(true, eligible);
-    }
-
-    @Test
-    public void Given50Account_WhenOverdraft50__ThenOutputShouldBeFalse() {
-        // arrange
-
-
-        // act
-        boolean eligible = AccountRules.eligibleForDebitOverdraft(50.0, 50.0);
-
-        // assert
-        Assert.assertEquals(false, eligible);
-    }
-
-    @Test
-    public void GivenMaxAccount_WhenOverdraftMaxAmountMinusOne__ThenOutputShouldBeTrue() {
-        // arrange
-        double maxDouble = Double.MAX_VALUE;
-
-
-        // act
-        boolean eligible = AccountRules.eligibleForDebitOverdraft(maxDouble, maxDouble - 1);
-
-        // assert
-        Assert.assertEquals(false, eligible);
     }
 }

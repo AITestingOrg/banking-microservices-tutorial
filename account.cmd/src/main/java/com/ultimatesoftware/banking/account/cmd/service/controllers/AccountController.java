@@ -1,21 +1,15 @@
 package com.ultimatesoftware.banking.account.cmd.service.controllers;
 
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
-import com.ultimatesoftware.banking.account.cmd.domain.exceptions.FutureTimeoutException;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountCreationDto;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountUpdateDto;
 import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.*;
 
 @RestController
 @RequestMapping("api/v1")
