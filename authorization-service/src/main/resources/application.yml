@@ -1,0 +1,22 @@
+# Mongo config
+spring:
+  data:
+    mongodb:
+      database: authorization
+      host: ${MONGO_HOST:localhost}
+      port: 27017
+  datasource.driverClassName: com.mongodb.Mongo
+
+  application:
+    name: authorization-service
+  #jpa.hibernate.ddl-auto: true
+
+
+server:
+  port: 8080
+
+#logging
+logging:
+  level:
+    org.springframework.web: ERROR
+    com.mkyong: DEBUG
