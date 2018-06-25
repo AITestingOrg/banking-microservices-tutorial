@@ -3,7 +3,7 @@ package com.ultimatesoftware.banking.account.common.events;
 import java.util.UUID;
 
 public class TransferCanceledEvent extends AccountTransactionEvent {
-    public TransferCanceledEvent(String transactionId) {
-        super(transactionId);
+    public TransferCanceledEvent(UUID id, String transactionId) {
+        super(id, transactionId);
     }
 }

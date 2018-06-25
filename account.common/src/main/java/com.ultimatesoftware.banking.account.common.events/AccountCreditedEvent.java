@@ -3,21 +3,15 @@ package com.ultimatesoftware.banking.account.common.events;
 import java.util.UUID;
 
 public class AccountCreditedEvent extends AccountTransactionEvent {
-    private UUID id;
     private double balance;
     private double creditAmount;
     private UUID customerId;
 
     public AccountCreditedEvent(UUID id, UUID customerId, double creditAmount, double balance, String transactionId) {
-        super(transactionId);
-        this.id = id;
+        super(id, transactionId);
         this.balance = balance;
         this.creditAmount = creditAmount;
         this.customerId = customerId;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public double getBalance() {

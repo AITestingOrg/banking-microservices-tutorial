@@ -57,3 +57,6 @@ endpoints:
 management:
   security:
     enabled: false
+
+thread-pool:
+  size: 5

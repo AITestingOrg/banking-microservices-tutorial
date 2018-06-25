@@ -28,7 +28,7 @@ import java.util.UUID;
 public class AccountAggregateTest {
     private FixtureConfiguration<Account> fixture;
     private static final UUID customerId = UUID.fromString("123e4567-e89b-12d3-a456-426655440000");
-    private static final UUID transactionId = UUID.fromString("123e4567-e89b-12d3-a456-426655440010");
+    private static final String transactionId = "123e4567-e89b-12d3-a456-426655440010";
 
     @Before
     public void setUp() throws Exception {
@@ -45,7 +45,7 @@ public class AccountAggregateTest {
         CreateAccountCommand command = new CreateAccountCommand(customerId);
         fixture.given()
                 .when(command)
-                .expectEvents(new AccountCreatedEvent(command.getId(), customerId, balance, active));
+                .expectEvents(new AccountCreatedEvent(command.getId(), customerId, balance));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class AccountAggregateTest {
         CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), 10.0, transactionId);
         fixture.givenCommands(createCommand)
                 .when(command)
-                .expectEvents(new AccountCreditedEvent(createCommand.getId(), 10.0, 10.00, customerId,  transactionId));
+                .expectEvents(new AccountCreditedEvent(createCommand.getId(), customerId, 10.0, 10.00,  transactionId));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class AccountAggregateTest {
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());
         fixture.givenCommands(createCommand)
                 .when(command)
-                .expectEvents(new AccountDeletedEvent(createCommand.getId(), false));
+                .expectEvents(new AccountDeletedEvent(createCommand.getId()));
     }
 
     // Non-happy path tests

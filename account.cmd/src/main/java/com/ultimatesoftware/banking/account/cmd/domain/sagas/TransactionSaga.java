@@ -58,7 +58,7 @@ public class TransactionSaga extends CustomSaga {
     public void handle(TransferWithdrawConcludedEvent event) {
         logger.info("Transfer transaction with id {}, did transfer from {} successfully",
                     transactionId, sourceAccountId);
-        commandGateway.send(new ConcludeTransferCommand(amount, destinationAccountId, transactionId));
+        commandGateway.send(new ConcludeTransferDepositCommand(amount, destinationAccountId, transactionId));
     }
 
     @EndSaga
