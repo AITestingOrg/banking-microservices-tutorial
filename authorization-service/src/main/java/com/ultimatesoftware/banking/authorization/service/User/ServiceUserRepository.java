@@ -1,8 +1,13 @@
 package com.ultimatesoftware.banking.authorization.service.User;
 
+import com.ultimatesoftware.banking.authorization.service.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ServiceUserRepository extends MongoRepository<ServiceUser, Long> {
-    ServiceUser findByUsername(String username);
+import java.util.UUID;
+
+@Repository
+public interface ServiceUserRepository extends MongoRepository<User, UUID> {
+    User findByUserName(String userName);
 
 }
