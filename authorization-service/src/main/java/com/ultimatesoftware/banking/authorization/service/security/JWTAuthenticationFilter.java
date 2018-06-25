@@ -1,36 +1,30 @@
 package com.ultimatesoftware.banking.authorization.service.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ultimatesoftware.banking.authorization.service.model.JwtAuthenticationToken;
-import com.ultimatesoftware.banking.authorization.service.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import com.ultimatesoftware.banking.authorization.service.model.JwtAuthenticationToken;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.Authentication;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletException;
+import javax.servlet.FilterChain;
 import java.io.IOException;
-import java.util.ArrayList;
 
+import static com.ultimatesoftware.banking.authorization.service.security.SecurityConstants.LOGIN_URL;
+import static com.ultimatesoftware.banking.authorization.service.security.SecurityConstants.REGISTER_URL;
 import static com.ultimatesoftware.banking.authorization.service.security.SecurityConstants.TOKEN_PREFIX;
 
-public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    public JwtAuthenticationTokenFilter() {
-        super("/**");
+public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    }
-    public JwtAuthenticationTokenFilter(String url, AuthenticationManager authManager) {
-        super(new AntPathRequestMatcher(url));
-        setAuthenticationManager(authManager);
+    public JWTAuthenticationFilter() {
+        super(new NegatedRequestMatcher(new OrRequestMatcher(
+                new AntPathRequestMatcher(LOGIN_URL),
+                new AntPathRequestMatcher(REGISTER_URL))
+        ));
+
     }
 
     @Override
@@ -46,6 +40,7 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
 
         JwtAuthenticationToken token = new JwtAuthenticationToken(authenticationToken);
         return getAuthenticationManager().authenticate(token);
+
     }
 
 
@@ -53,6 +48,5 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         super.successfulAuthentication(request, response, chain, authResult);
         chain.doFilter(request, response);
-        //TokenAuthenticationService.addAuthentication(response,(((User)authResult.getPrincipal()).getUserName()));
     }
 }
