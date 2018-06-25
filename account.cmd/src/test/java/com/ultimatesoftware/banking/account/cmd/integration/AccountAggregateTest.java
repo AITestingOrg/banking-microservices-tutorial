@@ -45,7 +45,7 @@ public class AccountAggregateTest {
         CreateAccountCommand command = new CreateAccountCommand(customerId);
         fixture.given()
                 .when(command)
-                .expectEvents(new AccountCreatedEvent(command.getId(), customerId, balance, active));
+                .expectEvents(new AccountCreatedEvent(command.getId(), customerId, balance));
     }
 
     @Test

@@ -4,12 +4,12 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class ConcludeTransferCommand extends TransactionCommand {
+public class ConcludeTransferDepositCommand extends TransactionCommand {
     @TargetAggregateIdentifier
     private UUID id;
     private double amount;
 
-    public ConcludeTransferCommand(double amount, UUID id, String transactionId) {
+    public ConcludeTransferDepositCommand(double amount, UUID id, String transactionId) {
         super(transactionId);
         this.id = id;
         this.amount = amount;

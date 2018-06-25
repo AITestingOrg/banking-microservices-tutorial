@@ -84,6 +84,7 @@ public class Account {
     public void on(CreditAccountCommand creditAccountCommand) throws Exception {
         double newBalance = balance + creditAccountCommand.getAmount();
         if (newBalance == Double.POSITIVE_INFINITY || newBalance == Double.MAX_VALUE) {
+            apply(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, creditAccountCommand.getId(), creditAccountCommand.getTransactionId(), "This error is above my pay-grade, I think this guy has too much money."));
             throw new AccountBalanceException("This error is above my pay-grade, I think this guy has too much money.");
         }
         apply(EventFactory.createEvent(AccountEventType.CREDITED, creditAccountCommand.getId(), customerId,
@@ -126,11 +127,11 @@ public class Account {
     }
 
     @CommandHandler
-    public void on(ConcludeTransferCommand concludeTransferCommand) throws Exception {
+    public void on(ConcludeTransferDepositCommand concludeTransferDepositCommand) throws Exception {
         logger.info("Transfer concluded to {} successfully", id);
-        double newBalance = balance + concludeTransferCommand.getAmount();
+        double newBalance = balance + concludeTransferDepositCommand.getAmount();
         apply(EventFactory.createEvent(AccountEventType.TRANSFER_CONCLUDED, id, newBalance,
-                concludeTransferCommand.getTransactionId()));
+                concludeTransferDepositCommand.getTransactionId()));
     }
 
     @CommandHandler
