@@ -2,7 +2,7 @@ package com.ultimatesoftware.banking.account.cmd.integration;
 
 import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
-import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountBalanceException;
+import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForCreditException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.common.events.*;
 import org.axonframework.eventsourcing.AggregateDeletedException;
@@ -18,12 +18,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @SpringBootTest
-@TestPropertySource(locations="classpath:application-test.yml")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ContextConfiguration(initializers = ConfigFileApplicationContextInitializer.class)
 public class AccountAggregateTest {
     private FixtureConfiguration<Account> fixture;
@@ -31,14 +32,14 @@ public class AccountAggregateTest {
     private static final String transactionId = "123e4567-e89b-12d3-a456-426655440010";
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         fixture = new AggregateTestFixture<>(Account.class);
     }
 
     // Happy path tests
 
     @Test
-    public void OnAccountCreation() {
+    public void onAccountCreation() {
         
         double balance = 0.0;
         boolean active = true;
@@ -49,18 +50,19 @@ public class AccountAggregateTest {
     }
 
     @Test
-    public void OnAccountDebit() {
+    public void onAccountDebit() {
         
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
         DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0, transactionId);
-        fixture.givenCommands(createCommand, creditCommand)
+        fixture.givenCommands(createCommand)
+                .andGivenCommands(creditCommand)
                 .when(command)
                 .expectEvents(new AccountDebitedEvent(createCommand.getId(), customerId, 10.0, 90.0, transactionId));
     }
 
     @Test
-    public void OnAccountCredit() {
+    public void onAccountCredit() {
         
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), 10.0, transactionId);
@@ -70,7 +72,7 @@ public class AccountAggregateTest {
     }
 
     @Test
-    public void OnAccountDelete() {
+    public void onAccountDelete() {
         
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand command = new DeleteAccountCommand(createCommand.getId());
@@ -82,7 +84,7 @@ public class AccountAggregateTest {
     // Non-happy path tests
 
     @Test
-    public void OnAccountDelete_WhenPositiveBalance_NoEventsSent() {
+    public void onAccountDelete_WhenPositiveBalance_NoEventsSent() {
         
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
@@ -93,7 +95,7 @@ public class AccountAggregateTest {
     }
 
     @Test
-    public void OnAccountDebit_WhenAccountInactive_NoEventSent() {
+    public void onAccountDebit_WhenAccountInactive_NoEventSent() {
 
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());
@@ -105,7 +107,7 @@ public class AccountAggregateTest {
     }
 
     @Test
-    public void OnAccountCredit_WhenAccountInactive_ExceptionThrown() {
+    public void onAccountCredit_WhenAccountInactive_ExceptionThrown() {
 
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());
@@ -117,41 +119,41 @@ public class AccountAggregateTest {
     }
 
     @Test
-    public void OnAccountDebit_WhenLargeBalance_DebitSuccessful() {
-
+    public void onAccountDebit_WhenLargeBalance_DebitSuccessful() {
+        double value = BigDecimal.valueOf(Double.MAX_VALUE).divide(BigDecimal.valueOf(2.0)).doubleValue();
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
-        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), Double.MAX_VALUE / 2, transactionId);
-        DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), Double.MAX_VALUE / 2, transactionId);
+        CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), value, transactionId);
+        DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), value, transactionId);
         fixture.givenCommands(createCommand)
                 .andGivenCommands(creditCommand)
                 .when(command)
-                .expectEvents(new AccountDebitedEvent(createCommand.getId(), customerId, Double.MAX_VALUE / 2, 0.00, transactionId));
+                .expectEvents(new AccountDebitedEvent(createCommand.getId(), customerId, value, 0.00, transactionId));
     }
 
     @Test
-    public void OnAccountCredit_WhenLargeBalance_ExceptionThrown() {
+    public void onAccountCredit_WhenLargeBalance_ExceptionThrown() {
 
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), Double.MAX_VALUE / 2, transactionId);
-        CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), Double.MAX_VALUE / 2, transactionId);
+        CreditAccountCommand command = new CreditAccountCommand(createCommand.getId(), (Double.MAX_VALUE / 2) + 1, transactionId);
         fixture.givenCommands(createCommand)
                 .andGivenCommands(creditCommand)
                 .when(command)
-                .expectException(AccountBalanceException.class);
+                .expectException(AccountNotEligibleForCreditException.class);
     }
 
     @Test
-    public void OnAccountCredit_WhenCreditingMaxBalance_ExceptionThrown() {
+    public void onAccountCredit_WhenCreditingMaxBalance_CreditSuccessful() {
 
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), Double.MAX_VALUE, transactionId);
         fixture.givenCommands(createCommand)
                 .when(creditCommand)
-                .expectException(AccountBalanceException.class);
+                .expectEvents(new AccountCreditedEvent(createCommand.getId(), customerId, Double.MAX_VALUE, Double.MAX_VALUE, transactionId));
     }
 
     @Test
-    public void OnAccountDebit_WhenBalanceZero_ExceptionThrown() {
+    public void onAccountDebit_WhenBalanceZero_ExceptionThrown() {
 
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DebitAccountCommand command = new DebitAccountCommand(createCommand.getId(), 10.0, transactionId);

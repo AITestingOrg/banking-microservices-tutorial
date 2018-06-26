@@ -1,7 +1,7 @@
 package com.ultimatesoftware.banking.account.cmd.domain.aggregates;
 
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
-import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountBalanceException;
+import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForCreditException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
@@ -15,6 +15,7 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
@@ -27,17 +28,19 @@ public class Account {
     @AggregateIdentifier
     private UUID id;
     private UUID customerId;
-    private double balance;
-    private final double overdraftFee = 35.0;
+    private BigDecimal balance;
     private int activeTransfers;
 
     @CommandHandler
     public Account(CreateAccountCommand createAccountCommand) throws Exception {
-        apply(EventFactory.createEvent(AccountEventType.CREATED, createAccountCommand.getId(), createAccountCommand.getCustomerId(),
-                                      createAccountCommand.getBalance()));
+        apply(EventFactory.createEvent(
+                AccountEventType.CREATED,
+                createAccountCommand.getId(),
+                createAccountCommand.getCustomerId(),
+                createAccountCommand.getBalance()));
     }
 
-    public Account(UUID id, UUID customerId, double balance, boolean active) {
+    public Account(UUID id, UUID customerId, BigDecimal balance) {
         this.id = id;
         this.customerId = customerId;
         this.balance = balance;
@@ -61,7 +64,7 @@ public class Account {
         return customerId;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
@@ -73,22 +76,23 @@ public class Account {
     public void on(DebitAccountCommand debitAccountCommand) throws Exception {
         if (!AccountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
             apply(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, debitAccountCommand.getId(), debitAccountCommand.getTransactionId(), "Account balance not eligable for withdraw."));
-            throw new AccountNotEligibleForDebitException(id, balance);
+            throw new AccountNotEligibleForDebitException(id, balance.doubleValue());
         }
-        double newBalance = balance - debitAccountCommand.getAmount();
-        apply(EventFactory.createEvent(AccountEventType.DEBITED, debitAccountCommand.getId(), customerId, debitAccountCommand.getAmount(), newBalance,
+        BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(debitAccountCommand.getAmount()));
+        apply(EventFactory.createEvent(AccountEventType.DEBITED, debitAccountCommand.getId(), customerId, debitAccountCommand.getAmount(), newBalance.doubleValue(),
                 debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
     public void on(CreditAccountCommand creditAccountCommand) throws Exception {
-        double newBalance = balance + creditAccountCommand.getAmount();
-        if (newBalance == Double.POSITIVE_INFINITY || newBalance == Double.MAX_VALUE) {
-            apply(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, creditAccountCommand.getId(), creditAccountCommand.getTransactionId(), "This error is above my pay-grade, I think this guy has too much money."));
-            throw new AccountBalanceException("This error is above my pay-grade, I think this guy has too much money.");
+        if (!AccountRules.eligibleForCredit(this, creditAccountCommand.getAmount())) {
+            apply(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, creditAccountCommand.getId(), creditAccountCommand.getTransactionId(), "Account balance not eligable for deposit."));
+            throw new AccountNotEligibleForCreditException(id, balance.doubleValue());
         }
+
+        BigDecimal newBalance = balance.add(BigDecimal.valueOf(creditAccountCommand.getAmount()));
         apply(EventFactory.createEvent(AccountEventType.CREDITED, creditAccountCommand.getId(), customerId,
-                                       creditAccountCommand.getAmount(), newBalance,
+                                       creditAccountCommand.getAmount(), newBalance.doubleValue(),
                                        creditAccountCommand.getTransactionId().toString()));
     }
 
@@ -98,7 +102,7 @@ public class Account {
             apply(EventFactory.createEvent(AccountEventType.DELETED, deleteAccountCommand.getId()));
             return;
         }
-        throw new AccountNotEligibleForDeleteException(deleteAccountCommand.getId(), balance);
+        throw new AccountNotEligibleForDeleteException(deleteAccountCommand.getId(), balance.doubleValue());
     }
 
     @CommandHandler
@@ -109,8 +113,8 @@ public class Account {
     @CommandHandler
     public void on(StartTransferTransactionCommand command) throws Exception {
         if (!AccountRules.eligibleForDebit(this, command.getAmount())) {
-            apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, command.getTransactionId().toString()));
-            throw new AccountNotEligibleForDebitException(id, balance);
+            apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, command.getTransactionId()));
+            throw new AccountNotEligibleForDebitException(id, balance.doubleValue());
         }
 
         logger.info("Transfer transaction started from {} successfully", id);
@@ -121,16 +125,16 @@ public class Account {
     @CommandHandler
     public void on(StartTransferDepositCommand startTransferDepositCommand) throws Exception {
         logger.info("Transfer to {} successfully", id);
-        double newBalance = balance - startTransferDepositCommand.getAmount();
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_WITHDRAW_CONCLUDED, id, newBalance,
+        BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(startTransferDepositCommand.getAmount()));
+        apply(EventFactory.createEvent(AccountEventType.TRANSFER_WITHDRAW_CONCLUDED, id, newBalance.doubleValue(),
                 startTransferDepositCommand.getTransactionId()));
     }
 
     @CommandHandler
     public void on(ConcludeTransferDepositCommand concludeTransferDepositCommand) throws Exception {
         logger.info("Transfer concluded to {} successfully", id);
-        double newBalance = balance + concludeTransferDepositCommand.getAmount();
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_CONCLUDED, id, newBalance,
+        BigDecimal newBalance = balance.add(BigDecimal.valueOf(concludeTransferDepositCommand.getAmount()));
+        apply(EventFactory.createEvent(AccountEventType.TRANSFER_CONCLUDED, id, newBalance.doubleValue(),
                 concludeTransferDepositCommand.getTransactionId()));
     }
 
@@ -167,18 +171,18 @@ public class Account {
     @EventSourcingHandler
     public void on(AccountCreatedEvent accountCreatedEvent) {
         id = accountCreatedEvent.getId();
-        balance = accountCreatedEvent.getBalance();
+        balance = BigDecimal.valueOf(accountCreatedEvent.getBalance());
         customerId = accountCreatedEvent.getCustomerId();
     }
 
     @EventSourcingHandler
     public void on(AccountDebitedEvent accountDebitedEvent) {
-        balance = accountDebitedEvent.getBalance();
+        balance = BigDecimal.valueOf(accountDebitedEvent.getBalance());
     }
 
     @EventSourcingHandler
     public void on(AccountCreditedEvent accountCreditedEvent) {
-        balance = accountCreditedEvent.getBalance();
+        balance = BigDecimal.valueOf(accountCreditedEvent.getBalance());
     }
 
     @EventSourcingHandler
@@ -193,12 +197,12 @@ public class Account {
 
     @EventSourcingHandler
     public void on(TransferWithdrawConcludedEvent transferWithdrawConcludedEvent) {
-        balance = transferWithdrawConcludedEvent.getBalance();
+        balance = BigDecimal.valueOf(transferWithdrawConcludedEvent.getBalance());
     }
 
     @EventSourcingHandler
     public void on(TransferDepositConcludedEvent transferDepositConcludedEvent) {
-        balance = transferDepositConcludedEvent.getBalance();
+        balance = BigDecimal.valueOf(transferDepositConcludedEvent.getBalance());
     }
 
     @EventSourcingHandler

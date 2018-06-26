@@ -5,7 +5,7 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class DeleteAccountCommand implements Command {
+public class DeleteAccountCommand implements ICommand {
     @TargetAggregateIdentifier
     private UUID id;
     private boolean active = false;

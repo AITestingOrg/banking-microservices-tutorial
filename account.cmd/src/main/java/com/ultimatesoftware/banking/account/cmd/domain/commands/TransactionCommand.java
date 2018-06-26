@@ -1,6 +1,6 @@
 package com.ultimatesoftware.banking.account.cmd.domain.commands;
 
-public abstract class TransactionCommand implements Command {
+public abstract class TransactionCommand implements ICommand {
     protected String transactionId;
 
     public TransactionCommand(String transactionId) {

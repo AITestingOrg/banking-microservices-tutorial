@@ -5,7 +5,7 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class StartTransferTransactionCommand extends TransactionCommand implements Command {
+public class StartTransferTransactionCommand extends TransactionCommand implements ICommand {
     @TargetAggregateIdentifier
     private UUID id;
     private TransactionDto transactionDto;

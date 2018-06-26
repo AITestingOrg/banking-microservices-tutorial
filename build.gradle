@@ -1,7 +1,6 @@
 buildscript {
     ext {
         springCloudVersion = 'Edgware.SR3'
-        //springCloudStarter = '1.4.4.RELEASE'
         springBootVersion = '1.5.14.RELEASE'
         axonVersion = '3.1.2'
         aspectjVersion = '1.9.1'
@@ -10,7 +9,6 @@ buildscript {
 
 plugins {
     id "io.spring.dependency-management" version "1.0.5.RELEASE"
-    //do not enable boot here, it is enabled on the corresponding spring projects
     id "org.springframework.boot" version "1.5.14.RELEASE" apply false
 }
 

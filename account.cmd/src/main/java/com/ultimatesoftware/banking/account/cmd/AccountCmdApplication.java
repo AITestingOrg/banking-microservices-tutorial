@@ -7,8 +7,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableDiscoveryClient
 @SpringBootApplication
 public class AccountCmdApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(AccountCmdApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AccountCmdApplication.class, args);
+    }
 }

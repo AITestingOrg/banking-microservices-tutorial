@@ -5,7 +5,7 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class UpdateAccountCommand implements Command {
+public class UpdateAccountCommand implements ICommand {
     @TargetAggregateIdentifier
     private UUID id;
     private UUID customerId;
