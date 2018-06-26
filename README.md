@@ -1,5 +1,5 @@
 # Banking Microservices
-
+[![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-example.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-example)
 ## Configuration
 All services are built with Spring Boot, the configuration files are under /src/main/resources/application.properties
 
