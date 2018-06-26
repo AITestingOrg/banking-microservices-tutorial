@@ -24,19 +24,19 @@ after_success:
 - docker build -f Dockerfile -t $REPO:$TAG .
 - docker push $REPO
 - export REPO=aista/banking-account-query
-- cd account.query
+- cd ../account.query
 - docker build -f Dockerfile -t $REPO:$TAG .
 - docker push $REPO
 - export REPO=aista/banking-customers
-- cd customers
+- cd ../customers
 - docker build -f Dockerfile -t $REPO:$TAG .
 - docker push $REPO
 - export REPO=aista/banking-transactions
-- cd transactions
+- cd ../transactions
 - docker build -f Dockerfile -t $REPO:$TAG .
 - docker push $REPO
 - export REPO=aista/banking-edge
-- cd edgeservice
+- cd ../edgeservice
   fi`
 - docker build -f Dockerfile -t $REPO:$TAG .
 - docker push $REPO
