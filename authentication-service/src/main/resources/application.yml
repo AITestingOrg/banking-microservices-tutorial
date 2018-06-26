@@ -1,0 +1,24 @@
+# Mongo config
+spring:
+  data.mongodb:
+    host: ${MONGO_HOST:localhost}
+    port: 27017
+    database: authentication
+    repositories:
+      enabled: true
+
+  application:
+    name: authentication-service
+  resources:
+    chain:
+      enabled: true
+
+server:
+  port: 8080
+
+#logging
+logging:
+  level:
+    org.springframework.web: ERROR
+    com.mkyong: DEBUG
+
