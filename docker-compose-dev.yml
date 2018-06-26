@@ -6,6 +6,12 @@ services:
       - "8761:8761"
     networks:
       - bank
+  discoveryservice:
+    build: 'edgeservice/'
+    ports:
+      - "8080:8080"
+    networks:
+      - bank
   mongo:
     image: 'mongo:3.4.1'
     ports:
