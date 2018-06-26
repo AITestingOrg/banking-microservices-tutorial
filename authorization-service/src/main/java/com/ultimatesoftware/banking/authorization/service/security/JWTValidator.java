@@ -1,16 +1,16 @@
 package com.ultimatesoftware.banking.authorization.service.security;
 
 import com.ultimatesoftware.banking.authorization.service.model.User;
-import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static com.ultimatesoftware.banking.authorization.service.security.SecurityConstants.SECRET;
+import static com.ultimatesoftware.banking.authorization.service.model.SecurityConstants.SECRET;
 
 @Component
-public class JwtValidator {
+public class JWTValidator {
 
 
     public User validate(String token) {

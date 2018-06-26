@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.authorization.service.security;
+package com.ultimatesoftware.banking.authorization.service.model;
 
 public class SecurityConstants {
     public static final String SECRET = "SecretKeyToGenJWTs";

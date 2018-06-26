@@ -3,21 +3,19 @@ package com.ultimatesoftware.banking.authorization.service.model;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 
-public class JwtAuthenticationToken extends UsernamePasswordAuthenticationToken{
+public class JWTAuthenticationToken extends UsernamePasswordAuthenticationToken{
 
     private String token;
 
 
-    public JwtAuthenticationToken(String token) {
+    public JWTAuthenticationToken(String token) {
         super(null, null);
         this.token = token;
     }
-    public JwtAuthenticationToken(String token, User user) {
+    public JWTAuthenticationToken(String token, User user) {
         super(user, null, null);
         this.token = token;
     }
-
-//public JwtAuthenticationToken(String token, Object principal, Object credentials, Collection<? extends GrantedAuthority> authority){super(principal,credentials,authority);}
 
     public String getToken() {
         return token;

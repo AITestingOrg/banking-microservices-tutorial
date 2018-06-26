@@ -1,12 +1,13 @@
 package com.ultimatesoftware.banking.authorization.service.model;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.List;
-import java.util.*;
+import java.util.UUID;
 
-public class JwtUserDetails implements UserDetails {
+public class JWTUserDetails implements UserDetails {
 
     private String userName;
     private String token;
@@ -14,7 +15,7 @@ public class JwtUserDetails implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
 
-    public JwtUserDetails(String userName, UUID id, String token, List<GrantedAuthority> grantedAuthorities) {
+    public JWTUserDetails(String userName, UUID id, String token, List<GrantedAuthority> grantedAuthorities) {
 
         this.userName = userName;
         this.id = id;

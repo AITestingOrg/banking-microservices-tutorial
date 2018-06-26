@@ -1,27 +1,27 @@
 package com.ultimatesoftware.banking.authorization.service.config;
 
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import com.ultimatesoftware.banking.authorization.service.security.JwtAuthenticationEntryPoint;
+import com.ultimatesoftware.banking.authorization.service.security.JWTAuthenticationEntryPoint;
 import com.ultimatesoftware.banking.authorization.service.security.JWTAuthenticationProvider;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.ultimatesoftware.banking.authorization.service.security.JWTAuthenticationFilter;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import com.ultimatesoftware.banking.authorization.service.security.JwtSuccessHandler;
+import com.ultimatesoftware.banking.authorization.service.security.JWTAuthorization;
+import com.ultimatesoftware.banking.authorization.service.security.JWTSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Collections;
 
-import static com.ultimatesoftware.banking.authorization.service.security.SecurityConstants.LOGIN_URL;
-import static com.ultimatesoftware.banking.authorization.service.security.SecurityConstants.REGISTER_URL;
+import static com.ultimatesoftware.banking.authorization.service.model.SecurityConstants.LOGIN_URL;
+import static com.ultimatesoftware.banking.authorization.service.model.SecurityConstants.REGISTER_URL;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +31,7 @@ public class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JWTAuthenticationProvider authenticationProvider;
     @Autowired
-    private JwtAuthenticationEntryPoint entryPoint;
+    private JWTAuthenticationEntryPoint entryPoint;
 
 
     @Bean
@@ -41,10 +41,10 @@ public class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JWTAuthenticationFilter authenticationTokenFilter() {
-        JWTAuthenticationFilter filter = new JWTAuthenticationFilter();
+    public JWTAuthorization authenticationTokenFilter() {
+        JWTAuthorization filter = new JWTAuthorization();
         filter.setAuthenticationManager(authenticationManager());
-        filter.setAuthenticationSuccessHandler(new JwtSuccessHandler());
+        filter.setAuthenticationSuccessHandler(new JWTSuccessHandler());
         return filter;
     }
 

@@ -1,17 +1,17 @@
 package com.ultimatesoftware.banking.authorization.service.security;
 
-import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
-import com.ultimatesoftware.banking.authorization.service.model.JwtAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import com.ultimatesoftware.banking.authorization.service.User.ServiceUserRepository;
-import com.ultimatesoftware.banking.authorization.service.model.JwtUserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.ultimatesoftware.banking.authorization.service.model.JWTAuthenticationToken;
+import com.ultimatesoftware.banking.authorization.service.model.JWTUserDetails;
 import com.ultimatesoftware.banking.authorization.service.model.User;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.ultimatesoftware.banking.authorization.service.services.ServiceUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 public class JWTAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Autowired
-    private JwtValidator validator;
+    private JWTValidator validator;
 
     @Autowired
     private ServiceUserRepository userRepository;
@@ -35,7 +35,7 @@ public class JWTAuthenticationProvider extends AbstractUserDetailsAuthentication
     @Override
     protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
 
-        JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) usernamePasswordAuthenticationToken;
+        JWTAuthenticationToken jwtAuthenticationToken = (JWTAuthenticationToken) usernamePasswordAuthenticationToken;
         String token = jwtAuthenticationToken.getToken();
 
         User user = validator.validate(token);
@@ -47,7 +47,7 @@ public class JWTAuthenticationProvider extends AbstractUserDetailsAuthentication
         else if (userRepository.exists(user.getId())) {
             List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                     .commaSeparatedStringToAuthorityList(user.getRole());
-            return new JwtUserDetails(user.getUserName(), user.getId(),
+            return new JWTUserDetails(user.getUserName(), user.getId(),
                     token,
                     grantedAuthorities);
         }
@@ -56,6 +56,6 @@ public class JWTAuthenticationProvider extends AbstractUserDetailsAuthentication
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return (JwtAuthenticationToken.class.isAssignableFrom(aClass));
+        return (JWTAuthenticationToken.class.isAssignableFrom(aClass));
     }
 }

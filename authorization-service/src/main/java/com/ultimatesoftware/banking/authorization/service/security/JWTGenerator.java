@@ -1,15 +1,16 @@
 package com.ultimatesoftware.banking.authorization.service.security;
 
 import com.ultimatesoftware.banking.authorization.service.model.User;
-import org.springframework.stereotype.Component;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import static com.ultimatesoftware.banking.authorization.service.security.SecurityConstants.SECRET;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.stereotype.Component;
+
+import static com.ultimatesoftware.banking.authorization.service.model.SecurityConstants.SECRET;
 
 
 @Component
-public class JwtGenerator {
+public class JWTGenerator {
 
 
     public String generate(User user) {

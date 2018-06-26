@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.authorization.service.User;
+package com.ultimatesoftware.banking.authorization.service.services;
 
 import com.ultimatesoftware.banking.authorization.service.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;

@@ -1,28 +1,29 @@
-package com.ultimatesoftware.banking.authorization.service.User;
+package com.ultimatesoftware.banking.authorization.service.controllers;
 
-import com.ultimatesoftware.banking.authorization.service.security.JwtGenerator;
+import com.ultimatesoftware.banking.authorization.service.model.User;
+import com.ultimatesoftware.banking.authorization.service.security.JWTGenerator;
+import com.ultimatesoftware.banking.authorization.service.services.ServiceUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.ultimatesoftware.banking.authorization.service.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
 
 
 @RestController
 @RequestMapping(value="api/v1/auth")
-public class ServiceUserController {
+public class UserController {
 
     @Autowired
     private ServiceUserRepository serviceUserRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    private JwtGenerator generator;
+    private JWTGenerator generator;
 
-    public ServiceUserController(ServiceUserRepository serviceUserRepository,
+    public UserController(ServiceUserRepository serviceUserRepository,
                           BCryptPasswordEncoder bCryptPasswordEncoder,
-                                 JwtGenerator generator) {
+                          JWTGenerator generator) {
         this.serviceUserRepository = serviceUserRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.generator = generator;
