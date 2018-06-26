@@ -3,7 +3,7 @@ package com.ultimatesoftware.banking.account.cmd.domain.commands;
 import java.util.UUID;
 import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
-public class AcquireSourceAccountCommand extends TransactionCommand implements Command {
+public class AcquireSourceAccountCommand extends TransactionCommand implements ICommand {
     @TargetAggregateIdentifier
     private UUID id;
 

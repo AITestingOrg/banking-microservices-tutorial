@@ -112,7 +112,7 @@ public class Account {
     @CommandHandler
     public void on(StartTransferTransactionCommand command) throws Exception {
         if (!AccountRules.eligibleForDebit(this, command.getAmount())) {
-            apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, command.getTransactionId().toString()));
+            apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, command.getTransactionId()));
             throw new AccountNotEligibleForDebitException(id, balance.doubleValue());
         }
 

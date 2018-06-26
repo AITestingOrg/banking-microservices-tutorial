@@ -14,8 +14,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/v1")
 public class AccountController {
-    @Autowired
     private CommandGateway commandGateway;
+
+    public AccountController(@Autowired CommandGateway commandGateway) {
+        this.commandGateway = commandGateway;
+    }
 
     @PostMapping("accounts")
     public UUID addAccount(@Valid @RequestBody AccountCreationDto account) {

@@ -4,7 +4,7 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
 
-public class DebitAccountCommand extends TransactionCommand implements Command {
+public class DebitAccountCommand extends TransactionCommand implements ICommand {
     @TargetAggregateIdentifier
     private UUID id;
     private double amount;
