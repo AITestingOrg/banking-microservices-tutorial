@@ -3,7 +3,7 @@ package com.ultimatesoftware.banking.authorization.service.security;
 import com.ultimatesoftware.banking.authorization.service.model.JWTAuthenticationToken;
 import com.ultimatesoftware.banking.authorization.service.model.JWTUserDetails;
 import com.ultimatesoftware.banking.authorization.service.model.User;
-import com.ultimatesoftware.banking.authorization.service.services.ServiceUserRepository;
+import com.ultimatesoftware.banking.authorization.service.services.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -23,7 +23,7 @@ public class JWTAuthenticationProvider extends AbstractUserDetailsAuthentication
     private JWTValidator validator;
 
     @Autowired
-    private ServiceUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     BCryptPasswordEncoder encoder;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface ServiceUserRepository extends MongoRepository<User, UUID> {
+public interface UserRepository extends MongoRepository<User, UUID> {
     User findByUserName(String userName);
 
 }
