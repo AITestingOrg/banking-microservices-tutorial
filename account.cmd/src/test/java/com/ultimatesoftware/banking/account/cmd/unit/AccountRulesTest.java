@@ -11,7 +11,7 @@ import java.util.UUID;
 public class AccountRulesTest {
 
     @Test
-    public void GivenZeroAccount_WhenDebitMaxDouble__ThenOutputShouldBeFalse() {
+    public void givenZeroAccount_WhenDebitMaxDouble_ThenOutputShouldBeFalse() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(0));
@@ -24,7 +24,7 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void GivenNegativeAccount_WhenDebit__ThenOutputShouldBeFalse() {
+    public void givenNegativeAccount_WhenDebit_ThenOutputShouldBeFalse() {
         // arrange
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(-50.0));
 
@@ -36,7 +36,7 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void GivenMaxNegativeAccount_WhenDebit__ThenOutputShouldBeFalse() {
+    public void givenMaxNegativeAccount_WhenDebit_ThenOutputShouldBeFalse() {
         // arrange
         double minDouble = Double.MIN_VALUE;
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(minDouble));
@@ -49,7 +49,7 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void GivenMaxAccount_WhenDebit__ThenOutputShouldBeTrue() {
+    public void givenMaxAccount_WhenDebit_ThenOutputShouldBeTrue() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(maxDouble));
@@ -62,7 +62,7 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void Given50Account_WhenDebit50__ThenOutputShouldBeTrue() {
+    public void given50Account_WhenDebit50_ThenOutputShouldBeTrue() {
         // arrange
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(50.0));
 
@@ -74,7 +74,7 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void GivenMaxAccount_WhenDebitMaxAmountMinusOne__ThenOutputShouldBeTrue() {
+    public void givenMaxAccount_WhenDebitMaxAmountMinusOne_ThenOutputShouldBeTrue() {
         // arrange
         double maxDouble = Double.MAX_VALUE;
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(maxDouble));
@@ -87,7 +87,7 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void GivenPositiveAccount_WhenDelete__ThenOutputShouldBeFalse() {
+    public void givenPositiveAccount_WhenDelete_ThenOutputShouldBeFalse() {
         // arrange
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(10.0));
 
@@ -99,7 +99,7 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void GivenNegativeAccount_WhenDelete__ThenOutputShouldBeFalse() {
+    public void givenNegativeAccount_WhenDelete_ThenOutputShouldBeFalse() {
         // arrange
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(-10.0));
 
@@ -111,7 +111,7 @@ public class AccountRulesTest {
     }
 
     @Test
-    public void GivenZeroAccount_WhenDelete__ThenOutputShouldBeTrue() {
+    public void givenZeroAccount_WhenDelete_ThenOutputShouldBeTrue() {
         // arrange
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID(), BigDecimal.valueOf(0.0));
 

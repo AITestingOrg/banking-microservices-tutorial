@@ -1,7 +1,8 @@
 package com.ultimatesoftware.banking.account.cmd.domain.commands;
 
-import java.util.UUID;
 import org.axonframework.commandhandling.TargetAggregateIdentifier;
+
+import java.util.UUID;
 
 public class AcquireSourceAccountCommand extends TransactionCommand implements ICommand {
     @TargetAggregateIdentifier

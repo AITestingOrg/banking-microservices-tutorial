@@ -2,6 +2,7 @@ package com.ultimatesoftware.banking.account.cmd.unit;
 
 import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
+import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForCreditException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
@@ -92,7 +93,7 @@ public class AccountTest {
         // act
         try {
             account.on(new DebitAccountCommand(uuid, 50.0, "test"));
-        } catch(AccountNotEligibleForDebitException e) {
+        } catch (AccountNotEligibleForDebitException e) {
             exceptionThrown = true;
         }
 
@@ -114,7 +115,7 @@ public class AccountTest {
         // act
         try {
             account.on(new CreditAccountCommand(uuid, 1.0, "test"));
-        } catch(AccountNotEligibleForDebitException e) {
+        } catch (AccountNotEligibleForCreditException e) {
             exceptionThrown = true;
         }
 

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
-    protected static final UUID customerId = UUID.randomUUID();
+    protected static final UUID CUSTOMER_ID = UUID.randomUUID();
 
     @Mock
     protected CommandGateway commandGateway;
@@ -32,7 +32,7 @@ public class AccountControllerTest {
     @Test
     public void givenCorrectParamters_whenCreateEndpointCalled_thenCorrectCommandSent() {
         // arrange
-        AccountCreationDto accountCreationDto = new AccountCreationDto(customerId);
+        AccountCreationDto accountCreationDto = new AccountCreationDto(CUSTOMER_ID);
 
         // act
         UUID uuid = accountController.addAccount(accountCreationDto);
@@ -45,7 +45,7 @@ public class AccountControllerTest {
     public void givenCorrectParamters_whenUpdateEndpointCalled_thenCorrectCommandSent() {
         // arrange
         UUID id = UUID.randomUUID();
-        AccountUpdateDto accountUpdateDto = new AccountUpdateDto(customerId);
+        AccountUpdateDto accountUpdateDto = new AccountUpdateDto(CUSTOMER_ID);
 
         // act
         accountController.updateAccount(id, accountUpdateDto);

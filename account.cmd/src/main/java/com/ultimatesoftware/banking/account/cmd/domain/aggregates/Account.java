@@ -1,6 +1,7 @@
 package com.ultimatesoftware.banking.account.cmd.domain.aggregates;
 
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
+import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForCreditException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
@@ -86,7 +87,7 @@ public class Account {
     public void on(CreditAccountCommand creditAccountCommand) throws Exception {
         if (!AccountRules.eligibleForCredit(this, creditAccountCommand.getAmount())) {
             apply(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, creditAccountCommand.getId(), creditAccountCommand.getTransactionId(), "Account balance not eligable for deposit."));
-            throw new AccountNotEligibleForDebitException(id, balance.doubleValue());
+            throw new AccountNotEligibleForCreditException(id, balance.doubleValue());
         }
 
         BigDecimal newBalance = balance.add(BigDecimal.valueOf(creditAccountCommand.getAmount()));

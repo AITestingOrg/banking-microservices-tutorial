@@ -2,6 +2,7 @@ package com.ultimatesoftware.banking.account.cmd.integration;
 
 import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
+import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForCreditException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
@@ -96,7 +97,7 @@ public class AccountTest {
         // act
         try {
             account.on(new DebitAccountCommand(uuid, 50, "test"));
-        } catch(AccountNotEligibleForDebitException e) {
+        } catch (AccountNotEligibleForDebitException e) {
             exceptionThrown = true;
         }
 
@@ -130,7 +131,7 @@ public class AccountTest {
         // act
         try {
             account.on(new DebitAccountCommand(uuid, 1, "test"));
-        } catch(AccountNotEligibleForDebitException e) {
+        } catch (AccountNotEligibleForDebitException e) {
             exceptionThrown = true;
         }
 
@@ -150,7 +151,7 @@ public class AccountTest {
         // act
         try {
             account.on(new DebitAccountCommand(uuid, Double.MAX_VALUE, "test"));
-        } catch(AccountNotEligibleForDebitException e) {
+        } catch (AccountNotEligibleForDebitException e) {
             exceptionThrown = true;
         }
 
@@ -198,7 +199,7 @@ public class AccountTest {
         // act
         try {
             account.on(new CreditAccountCommand(uuid, 1.0, "test"));
-        } catch(AccountNotEligibleForDebitException e) {
+        } catch (AccountNotEligibleForCreditException e) {
             exceptionThrown = true;
         }
 
@@ -260,7 +261,7 @@ public class AccountTest {
         // act
         try {
             account.on(new StartTransferTransactionCommand(new TransactionDto(uuid, uuid, 10.0, uuid)));
-        } catch(AccountNotEligibleForDebitException e) {
+        } catch (AccountNotEligibleForDebitException e) {
             exceptionThrown = true;
         }
 
