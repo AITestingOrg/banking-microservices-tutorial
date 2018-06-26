@@ -35,8 +35,9 @@ public class LoggingHandler {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < joinPoint.getArgs().length; i++) {
                 sb.append(signatureArgs[i]);
-                if (i < joinPoint.getArgs().length - 1)
+                if (i < joinPoint.getArgs().length - 1) {
                     sb.append(", ");
+                }
             }
             log.info("\n{}.{} \nwas called with args:\n{}",
                      joinPoint.getTarget().getClass().getCanonicalName(), method.getName(), sb.toString());

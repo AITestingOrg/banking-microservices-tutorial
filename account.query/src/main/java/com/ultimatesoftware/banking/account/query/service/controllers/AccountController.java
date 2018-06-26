@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public class AccountController {
     @GetMapping("accounts/{id}")
     public ResponseEntity<Account> getAccount(@Valid @PathVariable("id") UUID id) {
         Optional<Account> account = accountRepository.findByAccountId(id);
-        if(account.isPresent()) {
+        if (account.isPresent()) {
             return new ResponseEntity<>(account.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

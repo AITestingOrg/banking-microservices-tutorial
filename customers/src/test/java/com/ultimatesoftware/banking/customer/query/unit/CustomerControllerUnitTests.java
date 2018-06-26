@@ -1,13 +1,9 @@
 package com.ultimatesoftware.banking.customer.query.unit;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
-
-import com.ultimatesoftware.banking.customer.query.service.controllers.CustomerController;
 import com.ultimatesoftware.banking.customer.query.domain.models.Customer;
+import com.ultimatesoftware.banking.customer.query.service.controllers.CustomerController;
 import com.ultimatesoftware.banking.customer.query.service.repositories.CustomerRepository;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,6 +11,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CustomerControllerUnitTests {

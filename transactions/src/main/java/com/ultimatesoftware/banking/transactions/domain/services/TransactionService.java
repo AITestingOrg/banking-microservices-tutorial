@@ -6,32 +6,34 @@ import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExis
 import com.ultimatesoftware.banking.transactions.domain.models.BankAccount;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 import com.ultimatesoftware.banking.transactions.domain.models.TransactionType;
+import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
 
 import java.util.UUID;
 
 @Service
 public class TransactionService extends RestService {
     @Value("${hosts.account-query}")
-    private String BANK_ACCOUNT_QUERY_SERVICE;
+    private String bankAccountQueryService;
     @Value("${hosts.account-cmd}")
-    private String BANK_ACCOUNT_CMD_SERVICE;
+    private String bankAccountCmdService;
     @Value("${hosts.customers}")
-    private String BANK_CUSTOMER_SERVICE;
-    private static final String BANK_ACCOUNT_GET_PATH = "/api/v1/accounts/";
-    private static final String BANK_CUSTOMER_GET_PATH = "/api/v1/customers/";
-    private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
+    private String bankCustomerService;
+    private static final String API_V1_ACCOUNTS = "/api/v1/accounts/";
+    private static final String API_V1_CUSTOMERS = "/api/v1/customers/";
+    private static final Logger LOG = LoggerFactory.getLogger(TransactionService.class);
 
-    @Autowired
     private BankTransactionRepository bankTransactionRepository;
 
-    public TransactionService() {}
+    public TransactionService(@Autowired BankTransactionRepository bankTransactionRepository) {
+        this.bankTransactionRepository = bankTransactionRepository;
+    }
 
     public String transfer(UUID customerId, UUID accountId, UUID destAccountId, double amount) throws Exception {
         BankAccount account = validateAccount(accountId, customerId);
@@ -88,15 +90,15 @@ public class TransactionService extends RestService {
     }
 
     private void updateAccount(BankTransaction transaction) throws Exception {
-        HttpStatus status = put(BANK_ACCOUNT_CMD_SERVICE, BANK_ACCOUNT_GET_PATH + transaction.getType().toString().toLowerCase(),
+        HttpStatus status = put(bankAccountCmdService, API_V1_ACCOUNTS + transaction.getType().toString().toLowerCase(),
                 transaction,
                 BankTransaction.class);
-        if(status.is2xxSuccessful()) {
+        if (status.is2xxSuccessful()) {
             return;
         }
-        if(status.value() == 404) {
+        if (status.value() == 404) {
             String msg = String.format("No account with id %s exists", transaction.getAccount());
-            log.warn(msg);
+            LOG.warn(msg);
             throw new NoAccountExistsException(msg);
         }
         throw new Exception("There was a problem that occured when PUTing the transaction to the account service.");
@@ -104,18 +106,18 @@ public class TransactionService extends RestService {
 
     private BankAccount getAccount(UUID accountId) {
         try {
-            return (BankAccount) get(BANK_ACCOUNT_QUERY_SERVICE, BANK_ACCOUNT_GET_PATH + accountId, BankAccount.class);
+            return (BankAccount) get(bankAccountQueryService, API_V1_ACCOUNTS + accountId, BankAccount.class);
         } catch (Exception e) {
-            log.warn(e.getMessage());
+            LOG.warn(e.getMessage());
             return null;
         }
     }
 
     private void getCustomer(UUID customerId) throws CustomerDoesNotExistException {
         try {
-            get(BANK_CUSTOMER_SERVICE, BANK_CUSTOMER_GET_PATH + customerId);
+            get(bankCustomerService, API_V1_CUSTOMERS + customerId);
         } catch (Exception e) {
-            log.warn(e.getMessage());
+            LOG.warn(e.getMessage());
             throw new CustomerDoesNotExistException(String.format("No customer with id %s exists", customerId));
         }
     }
@@ -123,7 +125,7 @@ public class TransactionService extends RestService {
     private void validateAccountBalance(BankAccount account, double amount) throws InsufficientBalanceException {
         if (account.getBalance() < amount) {
             String msg = "Insufficient balance on account.";
-            log.warn(msg);
+            LOG.warn(msg);
             throw new InsufficientBalanceException(msg);
         }
     }
@@ -137,7 +139,7 @@ public class TransactionService extends RestService {
         BankAccount account = getAccount(accountId);
         if (account == null) {
             String msg = String.format("No account with id %s exists", accountId);
-            log.warn(msg);
+            LOG.warn(msg);
             throw new NoAccountExistsException(msg);
         }
 

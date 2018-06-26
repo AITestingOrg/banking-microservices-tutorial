@@ -11,8 +11,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 @EnableZuulProxy
 @EnableHystrix
 public class EdgeServiceApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(EdgeServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EdgeServiceApplication.class, args);
+    }
 }

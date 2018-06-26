@@ -26,14 +26,13 @@ dependencies {
     compile project('account.cmd')
     compile project('account.query')
     compile project('transactions')
-    compile project('eureka')
     compile project('edgeservice')
 }
 
 assemble.dependsOn(clean)
 
 def springProjects = subprojects.findAll { project -> project.name.indexOf('cmd') != -1 || project.name.indexOf('query') != -1}
-def supportProjects = subprojects.findAll { project -> project.name.equals('eureka') || project.name.equals('edgeservice') }
+def supportProjects = subprojects.findAll { project -> project.name.equals('edgeservice') }
 def crudProjects = subprojects.findAll { project -> project.name.equals('customers') }
 
 springProjects.addAll(supportProjects)

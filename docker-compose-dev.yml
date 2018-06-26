@@ -1,7 +1,7 @@
 version: '2'
 services:
   discoveryservice:
-    build: 'eureka/'
+    image: 'aista/eureka'
     ports:
       - "8761:8761"
     networks:
