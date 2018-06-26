@@ -29,6 +29,8 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 public class AccountTest {
     private Account account;
 
+    private static final UUID uuid = UUID.randomUUID();
+
     @Before
     public void setup() {
         mockStatic(AggregateLifecycle.class);
@@ -38,7 +40,6 @@ public class AccountTest {
     @Test
     public void givenAccountIsEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
 
         // act
@@ -52,7 +53,6 @@ public class AccountTest {
     @Test(expected = AccountNotEligibleForDeleteException.class)
     public void givenAccountIsNotEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(50.0));
 
         // act
@@ -62,7 +62,6 @@ public class AccountTest {
     @Test
     public void givenAccountDoesntExist_WhenCreating_CreatedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account();
 
         // act
@@ -76,7 +75,6 @@ public class AccountTest {
     @Test
     public void givenAccountWith50Balance_WhenDebiting50_AccountDebittedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(50.0));
 
         // act
@@ -90,7 +88,6 @@ public class AccountTest {
     @Test
     public void givenAccountWith49Balance_WhenDebiting50_TransactionFailedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(49.0));
         boolean exceptionThrown = false;
 
@@ -110,7 +107,6 @@ public class AccountTest {
     @Test
     public void givenAccountWith51Balance_WhenDebiting50_AccountDebittedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(51.0));
 
         // act
@@ -124,7 +120,6 @@ public class AccountTest {
     @Test
     public void givenAccountWith0Balance_WhenDebiting1_TransactionFailedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
         boolean exceptionThrown = false;
 
@@ -144,7 +139,6 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxMinus1Balance_WhenDebitingMax_TransactionFailedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1)));
         boolean exceptionThrown = false;
 
@@ -164,7 +158,6 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxBalance_WhenDebitingMax_AccountDebitedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
 
         // act
@@ -178,7 +171,6 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxBalance_WhenDebitingMaxMinus1_AccountDebitedEventEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
 
         // act
@@ -192,7 +184,6 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxBalance_WhenCrediting1_TransactionFailedIsEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
         boolean exceptionThrown = false;
 
@@ -212,7 +203,6 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxBalanceMinus1_WhenCrediting1_AccountCreditedIsEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1.0)));
 
         // act
@@ -226,7 +216,6 @@ public class AccountTest {
     @Test
     public void givenAccountWith0Balance_WhenCrediting1_AccountCreditedIsEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
 
         // act
@@ -240,7 +229,6 @@ public class AccountTest {
     @Test
     public void givenAccountWith0Balance_WhenCreditingMax_AccountCreditedIsEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
 
         // act
@@ -254,7 +242,6 @@ public class AccountTest {
     @Test
     public void givenAccountWith0Balance_WhenStartingTransaction_TransactionFailedToStartIsEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
         boolean exceptionThrown = false;
 
@@ -274,7 +261,6 @@ public class AccountTest {
     @Test
     public void givenAccountWith10Balance_WhenStartingTransactionFor10_TransactionFailedToStartIsEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(10.0));
 
         // act

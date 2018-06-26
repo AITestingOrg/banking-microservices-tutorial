@@ -31,6 +31,8 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 public class AccountTest {
     private Account account;
 
+    private static final UUID uuid = UUID.randomUUID();
+
     @Before
     public void setup() throws Exception {
         mockStatic(AggregateLifecycle.class);
@@ -41,7 +43,7 @@ public class AccountTest {
     public void givenAccountIsEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        UUID uuid = UUID.randomUUID();
+
         account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
         when(AccountRules.eligibleForDelete(account)).thenReturn(true);
 
@@ -57,7 +59,6 @@ public class AccountTest {
     public void givenAccountIsNotEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(50.0));
         when(AccountRules.eligibleForDelete(account)).thenReturn(false);
 
@@ -69,7 +70,6 @@ public class AccountTest {
     public void givenAccountEligibleForDebit_WhenDebiting_AccountDebitedEventEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(50.0));
         when(AccountRules.eligibleForDebit(account, anyDouble())).thenReturn(true);
 
@@ -85,7 +85,6 @@ public class AccountTest {
     public void givenAccountInEligibleForDebit_WhenDebiting_TransactionFailedEventEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(49.0));
         boolean exceptionThrown = false;
         when(AccountRules.eligibleForDebit(account, anyDouble())).thenReturn(false);
@@ -107,7 +106,6 @@ public class AccountTest {
     public void givenAccountInEligibleForCredit_WhenCrediting_TransactionFailedIsEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
         boolean exceptionThrown = false;
         when(AccountRules.eligibleForCredit(account, anyDouble())).thenReturn(false);
@@ -129,7 +127,6 @@ public class AccountTest {
     public void givenAccountEligibleForCredit_WhenCrediting_AccountCreditedIsEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1.0)));
         when(AccountRules.eligibleForCredit(account, anyDouble())).thenReturn(true);
 
@@ -144,7 +141,6 @@ public class AccountTest {
     @Test
     public void givenAccountExists_WhenUpdating_AccountUpdatedIsEmitted() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
 
         // act
@@ -159,7 +155,6 @@ public class AccountTest {
     @Test
     public void givenAcountCreatedEmitted_whenHandling_ThenUpdateIdBalanceCustomerId() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         UUID customerId = UUID.randomUUID();
         account = new Account();
 
@@ -175,7 +170,6 @@ public class AccountTest {
     @Test
     public void givenAcountDebitedEmitted_whenHandling_ThenUpdateBalance() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         UUID customerId = UUID.randomUUID();
         account = new Account();
 
@@ -189,7 +183,6 @@ public class AccountTest {
     @Test
     public void givenAcountCreditedEmitted_whenHandling_ThenUpdateBalance() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         UUID customerId = UUID.randomUUID();
         account = new Account();
 
@@ -204,7 +197,6 @@ public class AccountTest {
     public void givenAcountDeletedEmitted_whenHandling_ThenMarkDeleted() throws Exception {
         // arrange
         PowerMockito.doNothing().when(AggregateLifecycle.class, "markDeleted");
-        UUID uuid = UUID.randomUUID();
         account = new Account();
 
         // act
@@ -218,7 +210,6 @@ public class AccountTest {
     @Test
     public void givenAcountUpdatedEmitted_whenHandling_ThenUpdateCustomerId() throws Exception {
         // arrange
-        UUID uuid = UUID.randomUUID();
         UUID customerId = UUID.randomUUID();
         account = new Account();
 
