@@ -84,7 +84,6 @@ public class TransactionSagaTest {
     @Test
     public void onTransferDepositConcluded_timerIsCanceled() throws Exception {
         // arrange
-        // arrange
         when(threadPoolTaskScheduler.schedule(any(FutureCommandSend.class), any(Date.class)))
                 .thenReturn(cancellationTimer);
 
@@ -101,7 +100,6 @@ public class TransactionSagaTest {
     }
     @Test
     public void onTransferDepositConcluded_releasesAreDispatched() throws Exception {
-        // arrange
         // arrange
         when(threadPoolTaskScheduler.schedule(any(FutureCommandSend.class), any(Date.class)))
                 .thenReturn(cancellationTimer);
