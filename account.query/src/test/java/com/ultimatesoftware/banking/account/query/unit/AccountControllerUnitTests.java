@@ -1,7 +1,5 @@
 package com.ultimatesoftware.banking.account.query.unit;
 
-
-import com.ultimatesoftware.banking.account.query.domain.models.Account;
 import com.ultimatesoftware.banking.account.query.service.controllers.AccountController;
 import com.ultimatesoftware.banking.account.query.service.repositories.AccountRepository;
 import org.junit.Assert;
@@ -14,8 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
-import java.util.UUID;
 
+import static com.ultimatesoftware.banking.account.query.utils.TestConstants.ACCOUNT;
+import static com.ultimatesoftware.banking.account.query.utils.TestConstants.ID;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,42 +27,38 @@ public class AccountControllerUnitTests {
     @Mock
     private AccountRepository accountRepository;
 
-    private final UUID id = UUID.randomUUID();
-    private final UUID customerId = UUID.randomUUID();
-    private final Account account = new Account(id, customerId, 0);
-
     @Test
     public void whenGetAccountIsCalled_thenRepositoryFindByAccountIdCalled() {
         // arrange
-        when(accountRepository.findByAccountId(id)).thenReturn(Optional.of(account));
+        when(accountRepository.findByAccountId(ID)).thenReturn(Optional.of(ACCOUNT));
 
         // act
-        accountController.getAccount(id);
+        accountController.getAccount(ID);
 
         // verify
-        verify(accountRepository, times(1)).findByAccountId(id);
+        verify(accountRepository, times(1)).findByAccountId(ID);
     }
 
     @Test
     public void whenGetAccountIsCalledWithExistingId_thenAccountIsRetrievedAndReturnedWithOkStatus() {
         // arrange
-        when(accountRepository.findByAccountId(id)).thenReturn(Optional.of(account));
+        when(accountRepository.findByAccountId(ID)).thenReturn(Optional.of(ACCOUNT));
 
         // act
-        ResponseEntity response = accountController.getAccount(id);
+        ResponseEntity response = accountController.getAccount(ID);
 
         // verify
         Assert.assertEquals(response.getStatusCode(), HttpStatus.OK);
-        Assert.assertEquals(response.getBody(), account);
+        Assert.assertEquals(response.getBody(), ACCOUNT);
     }
 
     @Test
     public void whenGetAccountIsCalledWithNonExistingId_thenAccountReturnedWithNotFoundStatus() {
         // arrange
-        when(accountRepository.findByAccountId(id)).thenReturn(Optional.ofNullable(null));
+        when(accountRepository.findByAccountId(ID)).thenReturn(Optional.ofNullable(null));
 
         // act
-        ResponseEntity response = accountController.getAccount(id);
+        ResponseEntity response = accountController.getAccount(ID);
 
         // verify
         Assert.assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
