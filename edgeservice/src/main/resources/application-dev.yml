@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    include: default
   application:
     name: edgeservice
 zuul:
@@ -15,7 +13,7 @@ zuul:
     transactions:
       path: /transactions/**
       url: http://transactions:8080/
-    transactions:
+    customers:
       path: /customers/**
       url: http://customers:8080/
 eureka:
@@ -26,7 +24,13 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://discoveryservice:8761/eureka/
-management:
-  security:
-    enabled: false
-  context-path: /actuator
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000
