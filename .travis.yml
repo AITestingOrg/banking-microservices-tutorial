@@ -19,6 +19,7 @@ after_success:
   fi
 - docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
 - export TAG=`if [ "$ACTUAL_BRANCH" == "master" ]; then echo "latest";else echo ""`;
+  fi
 - export REPO=aista/banking-account-cmd
 - cd account.cmd
 - docker build -f Dockerfile -t $REPO:$TAG .
