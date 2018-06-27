@@ -30,7 +30,7 @@ public class AccountControllerUnitTests {
 
     private final UUID id = UUID.randomUUID();
     private final UUID customerId = UUID.randomUUID();
-    private final Account account = new Account(id, customerId, 0, true);
+    private final Account account = new Account(id, customerId, 0);
 
     @Test
     public void whenGetAccountIsCalled_thenRepositoryFindByAccountIdCalled() {

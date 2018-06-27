@@ -1,8 +1,6 @@
 package com.ultimatesoftware.banking.account.cmd.integration;
 
-import com.ultimatesoftware.banking.account.cmd.domain.commands.ConcludeTransferDepositCommand;
-import com.ultimatesoftware.banking.account.cmd.domain.commands.ReleaseAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.domain.commands.StartTransferWithdrawCommand;
+import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
 import com.ultimatesoftware.banking.account.cmd.domain.sagas.TransactionSaga;
 import com.ultimatesoftware.banking.account.cmd.service.scheduling.FutureCommandSend;
 import com.ultimatesoftware.banking.account.common.events.TransferDepositConcludedEvent;
@@ -33,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @SpringBootTest
-@TestPropertySource(locations="classpath:application-test.yml")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ContextConfiguration(initializers = ConfigFileApplicationContextInitializer.class)
 public class TransactionSagaTest {
     private static final UUID accountId = UUID.randomUUID();
@@ -91,7 +89,7 @@ public class TransactionSagaTest {
                                                                                                        destinationId,
                                                                                                        amount,
                                                                                                        transactionId))
-                .andThenAPublished(new TransferWithdrawConcludedEvent(accountId, amount,transactionId))
+                .andThenAPublished(new TransferWithdrawConcludedEvent(accountId, amount, transactionId))
                 .whenAggregate(accountId.toString()).publishes(new TransferDepositConcludedEvent(destinationId,
                                                                                                  amount,
                                                                                                  transactionId));
@@ -108,7 +106,7 @@ public class TransactionSagaTest {
                                                                                                        destinationId,
                                                                                                        amount,
                                                                                                        transactionId))
-                .andThenAPublished(new TransferWithdrawConcludedEvent(accountId, amount,transactionId))
+                .andThenAPublished(new TransferWithdrawConcludedEvent(accountId, amount, transactionId))
                 .whenAggregate(accountId.toString()).publishes(new TransferDepositConcludedEvent(destinationId,
                                                                                                  amount,
                                                                                                  transactionId))
