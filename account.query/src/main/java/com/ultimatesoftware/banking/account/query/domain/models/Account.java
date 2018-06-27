@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
 import java.util.UUID;
 
 public class Account {

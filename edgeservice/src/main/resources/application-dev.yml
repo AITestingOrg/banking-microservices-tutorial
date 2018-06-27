@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    include: default
+  application:
+    name: edgeservice
+zuul:
+  prefix: /api
+  routes:
+    account-cmd:
+      path: /cmd/accounts/**
+      url: http://accountcmd:8080/api/v1
+    account-query:
+      path: /query/accounts/**
+      url: http://accountquery:8080/api/v1
+    transactions:
+      path: /transactions/**
+      url: http://transactions:8080/
+    transactions:
+      path: /customers/**
+      url: http://customers:8080/
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://discoveryservice:8761/eureka/
+management:
+  security:
+    enabled: false
+  context-path: /actuator
