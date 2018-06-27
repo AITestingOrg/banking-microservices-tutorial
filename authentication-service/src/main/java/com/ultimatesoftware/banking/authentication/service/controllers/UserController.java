@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping(value = "api/v1/auth")
 public class UserController {
@@ -16,12 +15,12 @@ public class UserController {
 
     @PostMapping(value = "register")
     public ResponseEntity register(@RequestBody User user) {
-        return service.createUser(user);
+        return service.registerUser(user);
     }
 
     @PostMapping(value = "login")
     public ResponseEntity login(@RequestBody User user) {
-        return service.authenticateUser(user);
+        return service.loginUser(user);
     }
 
     @GetMapping(value = "test")

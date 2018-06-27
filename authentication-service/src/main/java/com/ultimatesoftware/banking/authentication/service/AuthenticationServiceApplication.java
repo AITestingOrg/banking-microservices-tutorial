@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
-public class AuthenticationService {
+public class AuthenticationServiceApplication {
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -14,6 +14,6 @@ public class AuthenticationService {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(AuthenticationService.class, args);
+        SpringApplication.run(AuthenticationServiceApplication.class, args);
     }
 }

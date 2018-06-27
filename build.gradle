@@ -28,7 +28,7 @@ dependencies {
     compile project('account-cmd')
     compile project('account-query')
     compile project('transactions')
-    compile project('authorization-service')
+    compile project('authentication-service')
 }
 
 assemble.dependsOn(clean)
