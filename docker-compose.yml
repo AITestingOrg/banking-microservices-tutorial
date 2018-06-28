@@ -1,36 +1,27 @@
-version: '2.1'
+version: '3'
 services:
   customers:
-    build: customers/
-    mem_limit: 800m
+    image: aista/banking-customers
     ports:
-      - "8081:8080"
-    networks:
-      - banking-microservices-example_bank
+      - "8080:8080"
     restart: on-failure
     environment:
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   accountcmd:
-    build: account.cmd/
-    mem_limit: 800m
+    build: aista/banking-account-cmd
     ports:
-      - "8083:8080"
-    networks:
-      - banking-microservices-example_bank
+      - "8080:8080"
     restart: on-failure
     environment:
       - MONGO_HOST=mongo
       - RABBIT_HOST=rabbitmq
 
   accountquery1:
-    build: account.query/
-    mem_limit: 800m
+    build: aista/banking-account-query
     ports:
-      - "8084:8080"
-    networks:
-      - banking-microservices-example_bank
+      - "8080:8080"
     restart: on-failure
     environment:
       - MONGO_HOST=mongo
@@ -38,20 +29,13 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   transactionserver:
-    build: transactions/
-    mem_limit: 800m
+    build: aista/banking-transactions
     ports:
-      - "8086:8080"
+      - "8080:8080"
     environment:
       - MONGO_HOST=mongo
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-    networks:
-      - banking-microservices-example_bank
     restart: on-failure
-
-networks:
-  banking-microservices-example_bank:
-    external: true
 
 volumes:
   mongo:

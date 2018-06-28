@@ -1,7 +1,22 @@
 dependencies {
+    compile('org.springframework.security:spring-security-test')
+    compile('org.springframework.cloud:spring-cloud-starter-zuul')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.data:spring-data-rest-hal-browser')
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
 	compile('org.springframework.cloud:spring-cloud-starter-zuul')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile ('org.springframework.cloud:spring-cloud-starter-eureka-server')
+    testCompile ('org.springframework.cloud:spring-cloud-starter-contract-stub-runner')
+    testCompile ('com.palantir.docker.compose:docker-compose-rule-junit4:0.33.0')
 }
 
 version = '0.0.1'
+
+contracts {
+    baseClassMappings {
+        baseClassMapping(".*", "com.ultimatesoftware.banking.edgeservice.providers.EdgeServiceContractBase")
+    }
+}
