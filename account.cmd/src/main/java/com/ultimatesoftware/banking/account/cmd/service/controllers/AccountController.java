@@ -30,7 +30,7 @@ public class AccountController {
 
     @PutMapping("accounts/{id}")
     public void updateAccount(@PathVariable("id") UUID id,
-                                                @Valid @RequestBody AccountUpdateDto account) {
+                              @Valid @RequestBody AccountUpdateDto account) {
         UpdateAccountCommand command = new UpdateAccountCommand(id, account);
         commandGateway.send(command);
     }
