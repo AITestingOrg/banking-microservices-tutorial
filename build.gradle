@@ -9,6 +9,8 @@ buildscript {
 
     dependencies {
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:${verifierVersion}"
+        classpath("com.jayway.restassured:rest-assured:2.5.0")
+        classpath("com.jayway.restassured:spring-mock-mvc:2.5.0")
     }
 }
 
@@ -32,6 +34,8 @@ dependencies {
     compile project('account.query')
     compile project('transactions')
     compile project('edgeservice')
+    testCompile ('com.jayway.restassured:rest-assured:2.5.0')
+    testCompile ('com.jayway.restassured:spring-mock-mvc:2.5.0')
 }
 
 assemble.dependsOn(clean)
@@ -50,6 +54,9 @@ allprojects {
 
 	repositories {
 		mavenCentral()
+        maven {
+            url 'https://dl.bintray.com/palantir/releases'
+        }
 	}
     apply plugin: 'java'
     apply plugin: 'checkstyle'
