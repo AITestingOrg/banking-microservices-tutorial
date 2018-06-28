@@ -50,12 +50,12 @@ public class AccountController {
     }
 
     @DeleteMapping("accounts/{id}")
-    public void deleteAccount(@Valid @PathVariable("id") UUID id) {
+    public void deleteAccount(@PathVariable("id") UUID id) {
         DeleteAccountCommand command = new DeleteAccountCommand(id);
         commandGateway.send(command);
     }
 
-    @PostMapping("transaction/start")
+    @PostMapping("accounts/transfer")
     public void startTransaction(@Valid @RequestBody TransactionDto transaction) {
         StartTransferTransactionCommand command = new StartTransferTransactionCommand(transaction);
         commandGateway.send(command);
