@@ -112,22 +112,23 @@ public class Account {
 
     @CommandHandler
     public void on(StartTransferTransactionCommand command) throws Exception {
+        logger.info("Transfer transaction started from {} successfully", id);
+        apply(EventFactory.createEvent(AccountEventType.TRANSACTION_STARTED, id, command.getDestinationId(), command.getAmount(),
+                command.getTransactionId()));
+
+    }
+
+    @CommandHandler
+    public void on(StartTransferWithdrawCommand command) throws Exception {
         if (!AccountRules.eligibleForDebit(this, command.getAmount())) {
             apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, command.getTransactionId()));
             throw new AccountNotEligibleForDebitException(id, balance.doubleValue());
         }
 
-        logger.info("Transfer transaction started from {} successfully", id);
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_STARTED, id, command.getDestinationId(), command.getAmount(),
-                command.getTransactionId()));
-    }
-
-    @CommandHandler
-    public void on(StartTransferDepositCommand startTransferDepositCommand) throws Exception {
-        logger.info("Transfer to {} successfully", id);
-        BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(startTransferDepositCommand.getAmount()));
+        logger.info("Transfer concluded from {} successfully", id);
+        BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(command.getAmount()));
         apply(EventFactory.createEvent(AccountEventType.TRANSFER_WITHDRAW_CONCLUDED, id, newBalance.doubleValue(),
-                startTransferDepositCommand.getTransactionId()));
+                command.getTransactionId()));
     }
 
     @CommandHandler
@@ -139,18 +140,6 @@ public class Account {
     }
 
     @CommandHandler
-    public void on(AcquireSourceAccountCommand command) throws Exception {
-        logger.info("Acquired source account with id {} for transfer {}", id, command.getTransactionId());
-        apply(EventFactory.createEvent(AccountEventType.SOURCE_AQUIRED, command.getId(), command.getTransactionId()));
-    }
-
-    @CommandHandler
-    public void on(AcquireDestinationAccountCommand command) throws Exception {
-        logger.info("Acquired destination account with id {} for transfer {}", id, command.getTransactionId());
-        apply(EventFactory.createEvent(AccountEventType.DESTINATION_AQUIRED, command.getId(), command.getTransactionId()));
-    }
-
-    @CommandHandler
     public void on(ReleaseAccountCommand releaseAccountCommand) throws Exception {
         logger.info("Account Released {}", id);
         apply(EventFactory.createEvent(AccountEventType.RELEASED, releaseAccountCommand.getId(), releaseAccountCommand.getTransactionId()));
@@ -159,7 +148,9 @@ public class Account {
     @CommandHandler
     public void on(CancelTransferCommand cancelTransferCommand) throws Exception {
         logger.info("Account transfer canceled from {}", id);
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_CANCELLED, cancelTransferCommand.getId(), cancelTransferCommand.getTransactionId()));
+        BigDecimal newBalance = balance.add(BigDecimal.valueOf(cancelTransferCommand.getAmount()));
+        apply(EventFactory.createEvent(AccountEventType.TRANSFER_CANCELLED, cancelTransferCommand.getId(),
+                newBalance.doubleValue(), cancelTransferCommand.getTransactionId()));
     }
 
     @CommandHandler
@@ -197,22 +188,19 @@ public class Account {
 
     @EventSourcingHandler
     public void on(TransferWithdrawConcludedEvent transferWithdrawConcludedEvent) {
+        activeTransfers++;
         balance = BigDecimal.valueOf(transferWithdrawConcludedEvent.getBalance());
     }
 
     @EventSourcingHandler
     public void on(TransferDepositConcludedEvent transferDepositConcludedEvent) {
+        activeTransfers++;
         balance = BigDecimal.valueOf(transferDepositConcludedEvent.getBalance());
     }
-
     @EventSourcingHandler
-    public void on(DestinationAccountAcquiredEvent destinationAccountAcquiredEvent) {
-        activeTransfers++;
-    }
-
-    @EventSourcingHandler
-    public void on(SourceAccountAcquiredEvent sourceAccountAcquiredEvent) {
-        activeTransfers++;
+    public void on(TransferCanceledEvent transferCanceledEvent) {
+        activeTransfers--;
+        balance = BigDecimal.valueOf(transferCanceledEvent.getBalance());
     }
 
     @EventSourcingHandler

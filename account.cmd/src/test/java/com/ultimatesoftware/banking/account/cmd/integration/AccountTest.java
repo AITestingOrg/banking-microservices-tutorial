@@ -247,7 +247,7 @@ public class AccountTest {
 
         // act
         try {
-            account.on(new StartTransferTransactionCommand(new TransactionDto(uuid, uuid, 10.0, uuid)));
+            account.on(new StartTransferWithdrawCommand(uuid, 10.0, uuid.toString()));
         } catch (AccountNotEligibleForDebitException e) {
             exceptionThrown = true;
         }
