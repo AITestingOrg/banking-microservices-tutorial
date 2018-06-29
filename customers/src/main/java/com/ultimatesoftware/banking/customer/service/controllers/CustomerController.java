@@ -1,7 +1,7 @@
-package com.ultimatesoftware.banking.customer.query.service.controllers;
+package com.ultimatesoftware.banking.customer.service.controllers;
 
-import com.ultimatesoftware.banking.customer.query.domain.models.Customer;
-import com.ultimatesoftware.banking.customer.query.service.repositories.CustomerRepository;
+import com.ultimatesoftware.banking.customer.domain.models.Customer;
+import com.ultimatesoftware.banking.customer.service.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class CustomerController {
     }
 
     @PutMapping("customers/{id}")
-    public ResponseEntity<String> updateCustomer(@PathVariable("id") String id, @Valid @RequestBody Customer customer) {
+    public ResponseEntity updateCustomer(@PathVariable("id") String id, @Valid @RequestBody Customer customer) {
         Customer customerFromDB = customerRepository.findOne(id);
         if (customerFromDB != null) {
             customerRepository.save(customer);

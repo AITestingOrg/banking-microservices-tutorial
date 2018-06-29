@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customer.query.domain.models;
+package com.ultimatesoftware.banking.customer.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Customer {
     @Id
+    @NotNull
     private String id;
     @NotNull
     private String firstName;
