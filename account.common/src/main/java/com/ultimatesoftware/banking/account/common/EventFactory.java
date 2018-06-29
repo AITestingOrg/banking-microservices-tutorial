@@ -19,22 +19,20 @@ public class EventFactory {
                 return new AccountReleasedEvent(id, transactionId);
             case UPDATED:
                 return new AccountUpdatedEvent(id, customerId);
-            case DESTINATION_AQUIRED:
-                return new DestinationAccountAcquiredEvent(id, transactionId);
-            case SOURCE_AQUIRED:
-                return new SourceAccountAcquiredEvent(id, transactionId);
             case TRANSACTION_FAILED:
                 return new TransactionFailedEvent(id, transactionId, msg);
             case TRANSFER_CANCELLED:
-                return new TransferCanceledEvent(id, transactionId);
+                return new TransferCanceledEvent(id, balance, transactionId);
             case TRANSFER_CONCLUDED:
                 return new TransferDepositConcludedEvent(id, balance, transactionId);
             case TRANSFER_FAILED_TO_START:
                 return new TransferFailedToStartEvent(id, transactionId);
-            case TRANSFER_STARTED:
+            case TRANSACTION_STARTED:
                 return new TransferTransactionStartedEvent(id, destinationAccountId, amount, transactionId);
             case TRANSFER_WITHDRAW_CONCLUDED:
                 return new TransferWithdrawConcludedEvent(id, balance, transactionId);
+            case TRANSFER_DEPOSIT_CONCLUDED:
+                return new TransferDepositConcludedEvent(id, balance, transactionId);
             default:
                 throw new Exception(String.format("No event of type \"%s\" exists!", type.toString()));
         }

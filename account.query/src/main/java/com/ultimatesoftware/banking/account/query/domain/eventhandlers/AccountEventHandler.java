@@ -44,6 +44,12 @@ public class AccountEventHandler {
     }
 
     @EventHandler
+    public void on(TransferCanceledEvent event) {
+        LOG.info("Transfer started from  {}", event.getId());
+        updateBalance(event.getId(), event.getBalance());
+    }
+
+    @EventHandler
     public void on(AccountCreatedEvent event) {
         LOG.info("Account Created {}", event.getId());
         accountRepository.save(new Account(event.getId(), event.getCustomerId(), event.getBalance()));

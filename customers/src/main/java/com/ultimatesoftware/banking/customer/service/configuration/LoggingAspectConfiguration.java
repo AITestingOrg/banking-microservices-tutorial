@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customer.query.service.configuration;
+package com.ultimatesoftware.banking.customer.service.configuration;
 
 import com.ultimatesoftware.banking.eventsourcing.configurations.ControllerLoggingAspectConfiguration;
 import org.springframework.context.annotation.Configuration;

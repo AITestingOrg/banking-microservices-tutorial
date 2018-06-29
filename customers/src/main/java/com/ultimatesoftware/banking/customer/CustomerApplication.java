@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customer.query;
+package com.ultimatesoftware.banking.customer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-public class CustomerQueryApplication {
+public class CustomerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CustomerQueryApplication.class, args);
+        SpringApplication.run(CustomerApplication.class, args);
     }
 }
