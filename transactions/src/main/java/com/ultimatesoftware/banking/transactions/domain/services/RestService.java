@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -31,7 +32,7 @@ public abstract class RestService {
         return restTemplate.getForObject("http://" + appName + path, type);
     }
 
-    protected void get(String appName, String path) {
+    protected void get(String appName, String path) throws HttpClientErrorException {
         restTemplate.getForObject("http://" + appName + path, String.class);
     }
 

@@ -1,5 +1,6 @@
 package com.ultimatesoftware.banking.transactions.service.controllers;
 
+import com.ultimatesoftware.banking.transactions.domain.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
 import com.ultimatesoftware.banking.transactions.domain.services.TransactionService;
@@ -23,7 +24,7 @@ public class ActionsController {
     public ResponseEntity<String> withdraw(@RequestHeader double amount, @RequestHeader UUID accountId, @RequestHeader UUID customerId) {
         try {
             return new ResponseEntity<>(transactionService.withdraw(customerId, accountId, amount).toString(), HttpStatus.OK);
-        } catch (NoAccountExistsException | InsufficientBalanceException e) {
+        } catch (NoAccountExistsException | InsufficientBalanceException | CustomerDoesNotExistException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
@@ -35,7 +36,7 @@ public class ActionsController {
     public ResponseEntity<String> deposit(@RequestHeader double amount, @RequestHeader UUID accountId, @RequestHeader UUID customerId) {
         try {
             return new ResponseEntity<>(transactionService.deposit(customerId, accountId, amount).toString(), HttpStatus.OK);
-        } catch (NoAccountExistsException e) {
+        } catch (NoAccountExistsException | CustomerDoesNotExistException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,7 +48,7 @@ public class ActionsController {
     public ResponseEntity<String> transfer(@RequestHeader double amount, @RequestHeader UUID accountId, @RequestHeader UUID customerId, @RequestHeader UUID destinationAccountId) {
         try {
             return new ResponseEntity<>(transactionService.transfer(customerId, accountId, destinationAccountId, amount).toString(), HttpStatus.OK);
-        } catch (NoAccountExistsException | InsufficientBalanceException e) {
+        } catch (NoAccountExistsException | InsufficientBalanceException | CustomerDoesNotExistException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
