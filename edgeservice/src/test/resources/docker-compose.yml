@@ -1,0 +1,88 @@
+version: '3'
+services:
+  customers:
+    image: aista/banking-customers
+    ports:
+      - "8081:8080"
+    restart: on-failure
+    environment:
+      - MONGO_HOST=mongo
+      - ES_JAVA_OPTS="-Xms450mb -Xmx450mb"
+      - SPRING_PROFILES_ACTIVE=test
+    depends_on:
+      - discoveryservice
+
+  accountcmd:
+    image: aista/banking-account-cmd
+    ports:
+      - "8083:8080"
+    restart: on-failure
+    environment:
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS="-Xms450mb -Xmx450mb"
+      - SPRING_PROFILES_ACTIVE=test
+    depends_on:
+      - discoveryservice
+
+  accountquery:
+    image: aista/banking-account-query
+    ports:
+      - "8084:8080"
+    restart: on-failure
+    environment:
+      - MONGO_HOST=mongo
+      - RABBIT_HOST=rabbitmq
+      - ES_JAVA_OPTS="-Xms450mb -Xmx450mb"
+      - SPRING_PROFILES_ACTIVE=test
+    depends_on:
+      - discoveryservice
+
+  transactionserver:
+    image: aista/banking-transactions
+    ports:
+      - "8086:8080"
+    environment:
+      - MONGO_HOST=mongo
+      - ES_JAVA_OPTS="-Xms450mb -Xmx450mb"
+      - SPRING_PROFILES_ACTIVE=test
+    restart: on-failure
+    depends_on:
+      - discoveryservice
+
+  discoveryservice:
+    image: aista/eureka
+    ports:
+      - "8761:8761"
+
+  edgeservice:
+    image: aista/banking-edgeservice
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discoveryservice
+    environment:
+      - SPRING_PROFILES_ACTIVE=test
+
+  mongo:
+    image: mongo:3.4.1
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/db'
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  #configurationservice:
+  #  image: aista/configuration-service
+  #  ports:
+  #     - '8888:8080'
+  #  depends_on:
+  #    - discoveryservice
+
+volumes:
+  mongo:

@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: default
   application:
     name: edgeservice
 zuul:

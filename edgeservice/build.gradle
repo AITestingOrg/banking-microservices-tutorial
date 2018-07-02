@@ -14,9 +14,3 @@ dependencies {
 }
 
 version = '0.0.1'
-
-contracts {
-    baseClassMappings {
-        baseClassMapping(".*", "com.ultimatesoftware.banking.edgeservice.providers.EdgeServiceContractBase")
-    }
-}

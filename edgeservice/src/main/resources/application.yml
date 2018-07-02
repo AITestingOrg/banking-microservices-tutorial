@@ -34,3 +34,7 @@ hystrix:
 ribbon:
   ConnectTimeout: 3000
   ReadTimeout: 60000
+
+endpoints:
+  routes:
+    sensitive: false

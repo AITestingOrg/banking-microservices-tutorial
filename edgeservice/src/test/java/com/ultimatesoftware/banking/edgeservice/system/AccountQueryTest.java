@@ -4,8 +4,7 @@ import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.connection.DockerPort;
 import com.palantir.docker.compose.connection.waiting.HealthChecks;
 import com.ultimatesoftware.banking.edgeservice.EdgeServiceApplication;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.ultimatesoftware.banking.edgeservice.utils.TestConstants;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -19,13 +18,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.springframework.cloud.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = EdgeServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AccountQueryTest {
-    /*protected static final Logger LOG = LoggerFactory.getLogger(AccountQueryTest.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(AccountQueryTest.class);
 
     private static String accountQueryURL;
     private static String accountCmdURL;
+    private static String edgeServiceURL;
 
     //Wait for all services to have ports open
     @ClassRule
@@ -34,23 +36,31 @@ public class AccountQueryTest {
             .waitingForService("mongo", HealthChecks.toHaveAllPortsOpen())
             .waitingForService("rabbitmq", HealthChecks.toHaveAllPortsOpen())
             .waitingForService("accountquery", HealthChecks.toHaveAllPortsOpen())
-            .waitingForService("discovery-service", HealthChecks.toHaveAllPortsOpen())
-            .waitingForService("discovery-service", HealthChecks.toRespondOverHttp(8761,
-                    (port) -> port.inFormat("http://localhost:8761")))
+            .waitingForService("discoveryservice", HealthChecks.toHaveAllPortsOpen())
+            .waitingForService("discoveryservice", HealthChecks.toRespondOverHttp(TestConstants.SERVICE_DISCOVERY_PORT,
+                    (port) -> port.inFormat(String.format("http://localhost:%s", TestConstants.SERVICE_DISCOVERY_PORT))))
             .build();
 
     //Get IP addresses and ports to run tests on
     @BeforeClass
     public static void initialize() {
         LOG.info("Initializing ports from Docker");
+        DockerPort edgeServiceCommand = docker.containers().container("edgeservice")
+                .port(TestConstants.EDGE_SERVICE_PORT);
+        edgeServiceURL = String.format("http://%s:%s", edgeServiceCommand.getIp(),
+                edgeServiceCommand.getExternalPort());
+        LOG.info("EdgeService url found: " + edgeServiceURL);
+
+        LOG.info("Initializing ports from Docker");
         DockerPort accountQueryCommand = docker.containers().container("accountquery")
-                .port(8080);
+                .port(TestConstants.ACCOUNT_QUERY_PORT);
         accountQueryURL = String.format("http://%s:%s", accountQueryCommand.getIp(),
                 accountQueryCommand.getExternalPort());
-        LOG.info("Trip Command url found: " + accountQueryURL);
+        LOG.info("Account Query url found: " + accountQueryURL);
 
         DockerPort accountCmdCommand = docker.containers().container("accountcmd")
-                .port(8080);
+                .port(TestConstants.ACCOUNT_COMMAND_PORT);
+        LOG.info("Account Cmd url found: " + accountQueryURL);
 
         accountCmdURL = String.format("http://%s:%s", accountCmdCommand.getIp(),
                 accountCmdCommand.getExternalPort());
@@ -70,14 +80,13 @@ public class AccountQueryTest {
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
         //when:
-        ResponseEntity<String> response = restTemplate.postForEntity(accountCmdURL + "/api/v1/trip", request,
-                String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(edgeServiceURL + "/cmd/accounts", request, String.class);
 
         //then:
-        assertThat(response.getStatusCodeValue()).isEqualTo(201);
+        assertThat(response.getStatusCodeValue()).isEqualTo(200);
     }
 
-    @Test
+    /*@Test
     public void tripQueryGETSpecificTripRequestSuccess() throws JSONException {
         //given:
         HttpHeaders headers = new HttpHeaders();
