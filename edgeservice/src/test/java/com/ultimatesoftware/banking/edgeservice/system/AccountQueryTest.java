@@ -80,7 +80,7 @@ public class AccountQueryTest {
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
         //when:
-        ResponseEntity<String> response = restTemplate.postForEntity(edgeServiceURL + "/cmd/accounts", request, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(accountQueryURL + "/api/v1/accounts", request, String.class);
 
         //then:
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
