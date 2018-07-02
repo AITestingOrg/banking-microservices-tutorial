@@ -9,12 +9,11 @@ public class ConcludeTransferDepositCommand extends TransactionCommand {
     private UUID id;
     private double amount;
 
-    public ConcludeTransferDepositCommand(double amount, UUID id, String transactionId) {
+    public ConcludeTransferDepositCommand(UUID id, double amount, String transactionId) {
         super(transactionId);
         this.id = id;
         this.amount = amount;
     }
-
 
     public UUID getId() {
         return id;

@@ -30,7 +30,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void givenCorrectParamters_whenCreateEndpointCalled_thenCorrectCommandSent() {
+    public void givenCorrectParameters_whenCreateEndpointCalled_thenCorrectCommandSent() {
         // arrange
         AccountCreationDto accountCreationDto = new AccountCreationDto(CUSTOMER_ID);
 
@@ -42,7 +42,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void givenCorrectParamters_whenUpdateEndpointCalled_thenCorrectCommandSent() {
+    public void givenCorrectParameters_whenUpdateEndpointCalled_thenCorrectCommandSent() {
         // arrange
         UUID id = UUID.randomUUID();
         AccountUpdateDto accountUpdateDto = new AccountUpdateDto(CUSTOMER_ID);
@@ -55,7 +55,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void givenCorrectParamters_whenDebitEndpointCalled_thenCorrectCommandSent() {
+    public void givenCorrectParameters_whenDebitEndpointCalled_thenCorrectCommandSent() {
         // arrange
         TransactionDto transactionDto = new TransactionDto();
 
@@ -67,7 +67,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void givenCorrectParamters_whenCreditEndpointCalled_thenCorrectCommandSent() {
+    public void givenCorrectParameters_whenCreditEndpointCalled_thenCorrectCommandSent() {
         // arrange
         TransactionDto transactionDto = new TransactionDto();
 
@@ -80,7 +80,7 @@ public class AccountControllerTest {
 
 
     @Test
-    public void givenCorrectParamters_whenDeleteEndpointCalled_thenCorrectCommandSent() {
+    public void givenCorrectParameters_whenDeleteEndpointCalled_thenCorrectCommandSent() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -92,7 +92,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void givenCorrectParamters_whenTransactionEndpointCalled_thenCorrectCommandSent() {
+    public void givenCorrectParameters_whenTransactionEndpointCalled_thenCorrectCommandSent() {
         // arrange
         TransactionDto transactionDto = new TransactionDto();
 

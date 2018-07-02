@@ -1,8 +1,8 @@
-package com.ultimatesoftware.banking.customer.query.unit;
+package com.ultimatesoftware.banking.customer.unit;
 
-import com.ultimatesoftware.banking.customer.query.domain.models.Customer;
-import com.ultimatesoftware.banking.customer.query.service.controllers.CustomerController;
-import com.ultimatesoftware.banking.customer.query.service.repositories.CustomerRepository;
+import com.ultimatesoftware.banking.customer.domain.models.Customer;
+import com.ultimatesoftware.banking.customer.service.controllers.CustomerController;
+import com.ultimatesoftware.banking.customer.service.repositories.CustomerRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

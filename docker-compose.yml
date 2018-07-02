@@ -4,7 +4,7 @@ services:
     build: customers/
     mem_limit: 800m
     ports:
-      - "8081:8080"
+      - "8082:8080"
     networks:
       - banking-microservices-example_bank
     restart: on-failure

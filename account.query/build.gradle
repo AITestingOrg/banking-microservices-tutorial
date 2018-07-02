@@ -11,6 +11,6 @@ version = '0.0.1'
 
 contracts {
     baseClassMappings {
-        baseClassMapping(".*accountquerycontracts.*", "com.ultimatesoftware.banking.account.query.provider.AccountQueryContractBase")
+        baseClassMapping(".*", "com.ultimatesoftware.banking.account.query.provider.AccountQueryContractBase")
     }
 }

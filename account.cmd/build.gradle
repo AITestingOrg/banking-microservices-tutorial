@@ -36,3 +36,11 @@ jacocoTestCoverageVerification {
     }
 }
 test.finalizedBy(jacocoTestCoverageVerification)
+
+
+contracts {
+    baseClassMappings {
+        baseClassMapping(".*", "com.ultimatesoftware.banking.account.cmd.provider.AccountCmdContractBase")
+    }
+}
+
