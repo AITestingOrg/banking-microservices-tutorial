@@ -3,7 +3,7 @@ package com.ultimatesoftware.banking.authentication.service.security;
 import com.ultimatesoftware.banking.authentication.service.model.JWTAuthenticationToken;
 import com.ultimatesoftware.banking.authentication.service.model.JWTUserDetails;
 import com.ultimatesoftware.banking.authentication.service.model.User;
-import com.ultimatesoftware.banking.authentication.service.services.UserRepository;
+import com.ultimatesoftware.banking.authentication.service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;

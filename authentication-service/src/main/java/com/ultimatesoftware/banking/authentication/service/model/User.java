@@ -1,6 +1,7 @@
 package com.ultimatesoftware.banking.authentication.service.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
@@ -12,6 +13,8 @@ public class User {
 
     @Id
     private UUID id;
+
+    @Indexed(unique = true)
     @NotNull(message = "userName field is required.")
     private String userName;
     @NotNull(message = "password field if required.")

@@ -1,6 +1,8 @@
 package com.ultimatesoftware.banking.authentication.service.services;
 
 import com.ultimatesoftware.banking.authentication.service.model.User;
+import com.ultimatesoftware.banking.authentication.service.repository.UserRepository;
+import com.ultimatesoftware.banking.authentication.service.repository.UserRepositoryImpl;
 import com.ultimatesoftware.banking.authentication.service.security.JWTGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +11,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
 
 @Service
 public class AuthenticationService {
@@ -20,6 +21,9 @@ public class AuthenticationService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private JWTGenerator generator;
+    @Autowired
+    private UserRepositoryImpl userRepositoryImpl;
+
 
     public ResponseEntity registerUser(User creds) {
         if (creds.getUserName() == null || creds.getUserName().isEmpty()) {
@@ -32,36 +36,31 @@ public class AuthenticationService {
         user.setPassword(bCryptPasswordEncoder.encode(creds.getPassword()));
         userRepository.save(user);
 
-        String account = "{\n \"id\": \"" + user.getId() + "\",\n\"userName\": \""
+        String account = "Account id: " + user.getId() + "\n{\n\"userName\": \""
                 + user.getUserName() + "\",\n\"password\": \"insertYourPassword\"\n}";
         return new ResponseEntity<>(account, HttpStatus.ACCEPTED);
     }
 
     public ResponseEntity loginUser(User userObj) {
 
-        if (isUserValid(userObj)) {
-            return new ResponseEntity<>(generator.generate(getUserById(userObj.getId())), HttpStatus.ACCEPTED);
+        if (isUserNamePassValid(userObj)) {
+            return new ResponseEntity<>(generator.generate(userRepositoryImpl
+                    .findByUserName(userObj.getUserName())), HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("User Not Found", HttpStatus.ACCEPTED);
     }
 
-    private User getUserById(UUID id) {
-        return userRepository.findOne(id);
-    }
 
-    private boolean isUserValid(User userObj) {
+    public boolean isUserNamePassValid(User userObj) {
 
-        User dbUser = getUserById(userObj.getId());
+        User dbUser = findByUserName(userObj.getUserName());
         return bCryptPasswordEncoder.matches(userObj.getPassword(), dbUser.getPassword())
-                && userObj.getId().equals(dbUser.getId())
-                && userObj.getPassword().equalsIgnoreCase(dbUser.getPassword())
                 && userObj.getUserName().equalsIgnoreCase(dbUser.getUserName());
-
     }
 
-
-
-
-
+    private User findByUserName(String userName) {
+       return userRepositoryImpl.findByUserName(userName);
+    }
 
 }
