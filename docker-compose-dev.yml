@@ -6,7 +6,7 @@ services:
       - "8761:8761"
     networks:
       - bank
-  discoveryservice:
+  edgeservice:
     build: 'edgeservice/'
     ports:
       - "8080:8080"
