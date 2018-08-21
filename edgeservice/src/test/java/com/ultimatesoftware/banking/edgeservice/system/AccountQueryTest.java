@@ -69,7 +69,6 @@ public class AccountQueryTest {
     private TestRestTemplate restTemplate = new TestRestTemplate();
     private String tripId;
 
-
     @Test
     public void accountCmd_POSTAccount_AccountCreatedInQuery() {
         //given:
