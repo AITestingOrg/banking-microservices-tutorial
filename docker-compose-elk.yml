@@ -1,6 +1,6 @@
 version: '2.1'
 services:
-  customerquery:
+  customers:
     build: customers/
     depends_on:
       - mongo
@@ -16,24 +16,6 @@ services:
       options:
         syslog-address: "tcp://:5000"
         tag: "customer-query-server"
-
-  customercmd:
-    build: customer.cmd/
-    depends_on:
-      - mongo
-      - rabbitmq
-    mem_limit: 700m
-    ports:
-      - "8079:8080"
-    environment:
-      - RABBIT_HOST=rabbitmq
-      - MONGO_HOST=mongo
-      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-    logging:
-      driver: syslog
-      options:
-        syslog-address: "tcp://:5000"
-        tag: "customer-cmd-server"
 
   accountcmd:
     build: account.cmd/

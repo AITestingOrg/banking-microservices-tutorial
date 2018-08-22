@@ -27,7 +27,7 @@ See each services readme for detailed requirement information
 # Assemble the binaries
 gradle assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
-docker-compse -f docker-compose-dev.yml up
+docker-compose -f docker-compose-dev.yml up
 # After the backing services have succesfully loaded, start the domain services
 docker-compose up
 ```

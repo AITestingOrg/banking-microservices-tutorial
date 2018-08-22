@@ -18,7 +18,6 @@ import static com.ultimatesoftware.banking.account.query.utils.TestConstants.ACC
 @ActiveProfiles("test")
 @SpringBootTest(classes = Application.class)
 public abstract class AccountQueryContractBase {
-
     @Autowired
     private WebApplicationContext webApplicationContext;
 

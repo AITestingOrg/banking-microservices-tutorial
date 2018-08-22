@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springCloudVersion = 'Edgware.SR3'
+        springCloudVersion = 'Edgware.SR4'
         springBootVersion = '1.5.14.RELEASE'
         axonVersion = '3.1.2'
         aspectjVersion = '1.9.1'
@@ -13,7 +13,7 @@ buildscript {
 }
 
 plugins {
-    id "io.spring.dependency-management" version "1.0.5.RELEASE"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
     id "org.springframework.boot" version "1.5.14.RELEASE" apply false
 }
 
@@ -50,6 +50,9 @@ allprojects {
 
 	repositories {
 		mavenCentral()
+        maven {
+            url 'https://dl.bintray.com/palantir/releases'
+        }
 	}
     apply plugin: 'java'
     apply plugin: 'checkstyle'

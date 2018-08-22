@@ -7,17 +7,17 @@ zuul:
   prefix: /api
   routes:
     account-cmd:
-      path: /cmd/accounts/**
-      url: http://accountcmd:8080/api/v1
+      path: /cmd/v1/accounts
+      url: http://localhost:8083/api/v1
     account-query:
-      path: /query/accounts/**
-      url: http://accountquery:8080/api/v1
+      path: /query/v1/accounts/**
+      url: http://localhost:8084/api/v1
     transactions:
-      path: /transactions/**
-      url: http://transactions:8080/
-    transactions:
-      path: /customers/**
-      url: http://customers:8080/
+      path: /v1/transactions/**
+      url: http://localhost:8086/api/v1
+    customers:
+      path: /v1/customers/**
+      url: http://localhost:8081/api/v1
 eureka:
   instance:
     prefer-ip-address: true
@@ -26,7 +26,13 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://discoveryservice:8761/eureka/
-management:
-  security:
-    enabled: false
-  context-path: /actuator
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000

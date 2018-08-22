@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: default
   application:
     name: edgeservice
 zuul:
@@ -34,10 +36,3 @@ hystrix:
 ribbon:
   ConnectTimeout: 3000
   ReadTimeout: 60000
-
-endpoints:
-  routes:
-    sensitive: false
-
-server:
-  port: 8080

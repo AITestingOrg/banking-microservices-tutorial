@@ -24,7 +24,7 @@ services:
       - MONGO_HOST=mongo
       - RABBIT_HOST=rabbitmq
 
-  accountquery1:
+  accountquery:
     build: account.query/
     mem_limit: 800m
     ports:

@@ -18,7 +18,7 @@ after_success:
 - if [[ "$ACTUAL_BRANCH" == "master" ]]; then echo -e "Push Container to Docker Hub";
   fi
 - docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-- export TAG=`if [ "$ACTUAL_BRANCH" == "master" ]; then echo "latest";else echo "";
+- export TAG=`if [ "$ACTUAL_BRANCH" == "master" ]; then echo "latest";else echo ""; fi`
 - export REPO=aista/banking-account-cmd
 - cd account.cmd
 - docker build -f Dockerfile -t $REPO:$TAG .
@@ -37,7 +37,6 @@ after_success:
 - docker push $REPO
 - export REPO=aista/banking-edge
 - cd ../edgeservice
-  fi`
 - docker build -f Dockerfile -t $REPO:$TAG .
 - docker push $REPO
 env:
