@@ -65,7 +65,7 @@ public class AccountEventHandler {
     public void on(AccountDeletedEvent event) {
         LOG.info("Account Deleted {}", event.getId());
         Account account = accountRepository.findByAccountId(event.getId()).get();
-        accountRepository.save(account);
+        accountRepository.delete(account);
     }
 
     private void updateBalance(UUID id, double balance) {

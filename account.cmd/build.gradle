@@ -10,6 +10,8 @@ dependencies {
     compile("org.axonframework:axon-test:${axonVersion}")
     compile("org.powermock:powermock-module-junit4:1.7.4")
     compile("org.powermock:powermock-api-mockito:1.7.4")
+
+    testCompile('org.springframework.boot:spring-boot-starter-data-mongodb')
 }
 
 version = '0.0.1'
