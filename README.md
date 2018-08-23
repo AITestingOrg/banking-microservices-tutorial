@@ -1,5 +1,4 @@
 # Banking Microservices Example
-[![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-example.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-example)
 
 The Banking Microservices Example project is a small system used to show how microservices can be implemented with Netflix's Zuul / Eureka framework and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 

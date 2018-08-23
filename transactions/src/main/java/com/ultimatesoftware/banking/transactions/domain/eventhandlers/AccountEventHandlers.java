@@ -54,15 +54,19 @@ public class AccountEventHandlers {
         BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(event.getTransactionId()));
         if (transaction != null) {
             transaction.setStatus(TransactionStatus.SUCCESSFUL);
+            bankTransactionRepository.save(transaction);
+            return;
         }
-        bankTransactionRepository.save(transaction);
+        LOG.warn("Attempted to update transaction that does not exist {}.", event.getTransactionId());
     }
 
     private void updateTransaction(String transactionId, TransactionStatus status) {
         BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(transactionId));
         if (transaction != null) {
             transaction.setStatus(status);
+            bankTransactionRepository.save(transaction);
+            return;
         }
-        bankTransactionRepository.save(transaction);
+        LOG.warn("Attempted to update transaction that does not exist {}.", transactionId);
     }
 }
