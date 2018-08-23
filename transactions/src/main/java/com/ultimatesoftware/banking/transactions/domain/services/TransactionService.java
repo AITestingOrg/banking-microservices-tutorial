@@ -101,7 +101,7 @@ public class TransactionService extends RestService {
             LOG.warn(msg);
             throw new NoAccountExistsException(msg);
         }
-        throw new Exception("There was a problem that occured when PUTing the transaction to the account service.");
+        throw new Exception("There was a problem that occurred when PUTing the transaction to the account service.");
     }
 
     private BankAccount getAccount(UUID accountId) {

@@ -68,3 +68,55 @@ To run with centralized logging and logging visualizations follow the steps belo
 * `docker-compose up -f docker-compose-elk.yml`
 * Refresh Kibana to see the logs.
 
+### Checking the bank:
+
+These request can be done using an application like postman or insomnia, directly with curl or using the provided swagger UI.
+Go to the [swagger](http://localhost:8082/swagger-ui.html) for the port that customer application is running. By default it is 8082 but it can be changed in the docker-compose files.
+
+![alt text](images/customer-swagger.png "Swagger")
+
+From there click on the customer-controller drop down, expand the post endpoint and click the try it out button:
+![alt text](images/customer-create.png "Post customer")
+
+Then a body can be provided to make a request to the service, here is an example valid body, feel free to put your name here:
+```json
+{
+     "firstName": "John",
+     "id": "f6e0ef7e-93af-47e0-b665-e9fbdc184b43",
+     "lastName": "Doe"
+}
+```
+
+Then click on the execute button
+
+![alt text](images/customer-post.png "Post customer")
+
+And scroll down to see what the response was:
+
+![alt text](images/customer-response.png "Response")
+Now to create some accounts for this user: 
+
+Go to the ui for account-cmd, running on 8083. And open account-controller post [endpoint](http://localhost:8083/swagger-ui.html#/account-controller/addAccountUsingPOST)
+
+Put the previous customerId in the body for the request and execute it. 
+
+![alt text](images/account-post.png "create account")
+The response should have the generated Id for the account just created. 
+Copy it somewhere, then execute again and copy the second account id too, both will be used for transactions in a moment.
+
+First quickly check the accounts got created checking the [account query side](http://localhost:8084/swagger-ui.html#/account-controller/getAccountUsingGET)
+
+Check the two account ids against the get endpoint, they return a 200 response with the account info and balances of 0.
+![alt text](images/account-get.png "check accounts")
+
+Now, making some transactions lets first make a [deposit](http://localhost:8086/swagger-ui.html#/actions-controller/depositUsingGET)
+
+Provide an amount along with the previous obtained ids for account and customer. This will respond with a transaction id that is not important for now. 
+![alt text](images/transaction-deposit.png "put some money in")
+
+If the same account is now check on the account query side the balance should shown as the deposited account.
+
+Now, going to the transfer endpoint and making a transaction to pass some of that balance to the other account
+![alt text](images/transaction-transfer.png "transfer some money")
+
+Check that the response was a 200 and the balances changed
