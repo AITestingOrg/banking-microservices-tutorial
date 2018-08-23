@@ -55,7 +55,7 @@ public class AccountController {
         commandGateway.send(command);
     }
 
-    @PostMapping("accounts/transfer")
+    @PutMapping("accounts/transfer")
     public void startTransaction(@Valid @RequestBody TransactionDto transaction) {
         StartTransferTransactionCommand command = new StartTransferTransactionCommand(transaction);
         commandGateway.send(command);

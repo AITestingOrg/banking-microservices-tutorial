@@ -2,14 +2,27 @@ language: java
 jdk:
 - oraclejdk8
 sudo: required
-services:
-- mongodb
-- rabbitmq
+addons:
+  apt:
+    packages:
+      - docker-ce
 before_install:
+- sudo rm /usr/local/bin/docker-compose
+- curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` > docker-compose
+- chmod +x docker-compose
+- sudo mv docker-compose /usr/local/bin
+- sudo apt-get update
+- sudo apt-get -y install docker-ce
 - echo "Testing Docker Hub credentials"
-- docker -v
 - docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
 - echo "Docker Hub credentials are working"
+before_script:
+- docker -v
+- docker-compose -v
+- docker-compose -f docker-compose-dev.yml up -d
+- sleep 10s
+- docker-compose up --build -d
+- sleep 10s
 after_success:
 - export ACTUAL_BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH;
   else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
