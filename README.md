@@ -70,7 +70,7 @@ To run with centralized logging and logging visualizations follow the steps belo
 ### Checking the bank:
 
 These request can be done using an application like postman or insomnia, directly with curl or using the provided swagger UI.
-Go to the [swagger](http://localhost:8082/swagger-ui.html) for the port that customer application is running. By default it is 8082 but it can be changed in the docker-compose files.
+Go to the [swagger](http://localhost:8082/swagger-ui.html) for the port that customer application is running. By default, it is 8082 but it can be changed in the docker-compose files.
 
 ![alt text](images/customer-swagger.png "Swagger")
 
