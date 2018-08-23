@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.UUID;
 
@@ -116,7 +117,7 @@ public class TransactionService extends RestService {
     private void getCustomer(UUID customerId) throws CustomerDoesNotExistException {
         try {
             get(bankCustomerService, API_V1_CUSTOMERS + customerId);
-        } catch (Exception e) {
+        } catch (HttpClientErrorException e) {
             LOG.warn(e.getMessage());
             throw new CustomerDoesNotExistException(String.format("No customer with id %s exists", customerId));
         }
