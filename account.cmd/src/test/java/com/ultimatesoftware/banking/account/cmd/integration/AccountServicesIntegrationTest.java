@@ -20,7 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AccountServicesIntegrationTest {
     private final String accountCmd = "http://localhost:8083/api/v1/accounts";
     private final String accountQuery = "http://localhost:8084/api/v1/accounts";
@@ -121,7 +121,7 @@ public class AccountServicesIntegrationTest {
 
     private HttpStatus checkForAccountStatusCode(UUID accountId) throws InterruptedException {
         int i = 0;
-        ResponseEntity<Account> queryResponse ;
+        ResponseEntity<Account> queryResponse;
         do {
             queryResponse = restTemplate.getForEntity(URI.create(accountQuery + "/" + accountId), Account.class);
             if (queryResponse.getStatusCode() == HttpStatus.OK) {
@@ -137,11 +137,11 @@ public class AccountServicesIntegrationTest {
 
     private double checkForBalance(UUID accountId, double balance) throws InterruptedException {
         double currentBalance = 0;
-        for (int i = 0; i < 3  ; i++) {
+        for (int i = 0; i < 3; i++) {
             ResponseEntity<Account> queryResponse = restTemplate.getForEntity(URI.create(accountQuery + "/" + accountId), Account.class);
-            if (queryResponse.getStatusCode() == HttpStatus.OK ) {
+            if (queryResponse.getStatusCode() == HttpStatus.OK) {
                 currentBalance = queryResponse.getBody().getBalance().doubleValue();
-                if(currentBalance == balance){
+                if (currentBalance == balance){
                     return balance;
                 }
             } else {
