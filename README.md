@@ -26,7 +26,7 @@ See each services readme for detailed requirement information
 # Assemble the binaries
 gradle assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
-docker-compose -f docker-compose-dev.yml up
+docker-compose -f docker-compose-backing.yml up
 # After the backing services have succesfully loaded, start the domain services
 docker-compose up
 ```
@@ -36,7 +36,7 @@ docker-compose up
 # Assemble the binaries
 gradle assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
-docker-compse -f docker-compose-dev.yml up
+docker-compse -f docker-compose-backing.yml up
 # While the backing services are starting, start the ELK stack, note you will need to also follow the ELK steps below
 docker-compose -f elk/docker-compose.yml up
 # Once all the supporting services are loaded, start the domain services configured to log to ELK
@@ -47,7 +47,7 @@ docker-compose -f docker-compose-elk.yml up
 ```bash
 docker-compose down
 docker-compose -f docker-compose-elk.yml down
-docker-compose -f docker-compose-dev.yml down
+docker-compose -f docker-compose-backing.yml down
 
 ```
 

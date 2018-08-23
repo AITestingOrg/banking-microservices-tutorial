@@ -19,7 +19,7 @@ before_install:
 before_script:
 - docker -v
 - docker-compose -v
-- docker-compose -f docker-compose-dev.yml up -d
+- docker-compose -f docker-compose-backing.yml up -d
 - sleep 10s
 - docker-compose up --build -d
 - sleep 10s

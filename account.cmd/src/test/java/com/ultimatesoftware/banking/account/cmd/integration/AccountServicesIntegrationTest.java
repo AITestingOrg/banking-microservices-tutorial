@@ -38,7 +38,7 @@ public class AccountServicesIntegrationTest {
     // Happy tests
 
     @Test
-    public void testWhenCreateAccount_ResultsInAccountCreation() throws InterruptedException {
+    public void testWhenCreateAccount_thenAccountIsCreated() throws InterruptedException {
         // Arrange
 
         // Act
@@ -49,7 +49,7 @@ public class AccountServicesIntegrationTest {
     }
 
     @Test
-    public void testGivenAccountExists_WhenCreditAccount_ResultsInBalanceChange() throws InterruptedException {
+    public void givenAccountExists_WhenCreditAccount_thenBalanceChanges() throws InterruptedException {
         // Arrange
         double balance = 25;
         UUID customerId = UUID.randomUUID();
@@ -64,11 +64,11 @@ public class AccountServicesIntegrationTest {
     }
 
     @Test
-    public void testGivenAccountWithEnoughBalance_WhenDebit_ResultsInBalanceChange() throws InterruptedException {
+    public void givenAccountWithEnoughBalance_WhenDebit_thenBalanceChanges() throws InterruptedException {
         // Arrange
         double balance = 40;
-        double transferAmount = 25;
-        double remainingBalance = balance - transferAmount;
+        double withdrawAmount = 25;
+        double remainingBalance = balance - withdrawAmount;
         UUID customerId = UUID.randomUUID();
         UUID accountId = createAndGetAccountId(customerId);;
 
@@ -77,14 +77,14 @@ public class AccountServicesIntegrationTest {
 
         // Act
         restTemplate.put(URI.create(accountCmd + "/debit"),
-                generateTransactionRequest(accountId, customerId, transferAmount, null));
+                generateTransactionRequest(accountId, customerId, withdrawAmount, null));
 
         // Assert
         Assert.assertEquals(remainingBalance, checkForBalance(accountId, remainingBalance), 1);
     }
 
     @Test
-    public void testGivenAccountWithEnoughBalance_WhenTransfer_ResultsInBalanceTransfer() throws InterruptedException {
+    public void givenAccountWithEnoughBalance_WhenTransfer_thenBalanceIsTransfered() throws InterruptedException {
         // Arrange
         double balance = 40;
         double transferAmount = 25;
@@ -97,9 +97,8 @@ public class AccountServicesIntegrationTest {
                          generateTransactionRequest(sourceAccountId, customerId, balance, null));
 
         // Act
-        restTemplate.postForEntity(URI.create(accountCmd + "/transfer"),
-                generateTransactionRequest(sourceAccountId, customerId, transferAmount, destinationAccountId),
-                String.class);
+        restTemplate.put(URI.create(accountCmd + "/transfer"),
+                generateTransactionRequest(sourceAccountId, customerId, transferAmount, destinationAccountId));
 
         // Assert
         Assert.assertEquals(remainingBalance, checkForBalance(sourceAccountId, remainingBalance), 1);
@@ -107,7 +106,7 @@ public class AccountServicesIntegrationTest {
     }
 
     @Test
-    public void testGivenAccountExists_WhenDeleteAccount_ResultsInAccountDeletion() throws InterruptedException {
+    public void givenAccountExists_WhenDeleteAccount_thenAccountIsDeleted() throws InterruptedException {
         // Arrange
         UUID accountId = createAndGetAccountId(UUID.randomUUID());
         HttpStatus accountCreatedStatus = checkForAccountStatusCode(accountId);
