@@ -5,6 +5,7 @@ buildscript {
         axonVersion = '3.1.2'
         aspectjVersion = '1.9.1'
         verifierVersion = '1.2.3.RELEASE'
+        springfoxVersion = '2.8.0'
     }
 
     dependencies {
@@ -49,7 +50,8 @@ allprojects {
     sourceCompatibility = 1.8
 
 	repositories {
-		mavenCentral()
+        jcenter()
+        mavenCentral()
         maven {
             url 'https://dl.bintray.com/palantir/releases'
         }
@@ -86,6 +88,8 @@ configure(springProjects) {
         compile 'org.springframework.boot:spring-boot-starter-actuator'
         compile 'org.springframework.boot:spring-boot-starter-aop'
         compile 'org.springframework.cloud:spring-cloud-starter-config'
+        compile("io.springfox:springfox-swagger2:${springfoxVersion}")
+        compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
 
         testCompile 'junit:junit:4.12'
         testCompile('org.springframework.boot:spring-boot-starter-test')

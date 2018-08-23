@@ -217,9 +217,9 @@ import org.springframework.cloud.contract.spec.Contract
         }
     },
     Contract.make {
-        description("When a POST request to /api/v1/accounts/transfer with a valid transaction body should return 200")
+        description("When a PUT request to /api/v1/accounts/transfer with a valid transaction body should return 200")
         request {
-            method 'POST'
+            method 'PUT'
             url '/api/v1/accounts/transfer'
             headers{
                 contentType(applicationJson())
