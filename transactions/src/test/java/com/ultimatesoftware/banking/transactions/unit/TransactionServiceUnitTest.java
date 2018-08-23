@@ -38,11 +38,6 @@ public class TransactionServiceUnitTest {
     @Mock
     protected RestTemplate restTemplate;
 
-    @After
-    public void tearDown() {
-        reset(restTemplate);
-    }
-
     @Test
     public void givenAcountAndCustomerExist_whenDebitingAAValidAmount_thenTheAmountIsDebited() throws Exception {
         // Arrange

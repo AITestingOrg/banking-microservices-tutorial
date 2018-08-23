@@ -15,18 +15,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-@Service
 public abstract class RestService {
-    @Bean
-    @LoadBalanced
-    RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
     protected RestTemplate restTemplate;
+
+    public RestService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     protected BankAccount get(String appName, String path, Class<BankAccount> type) {
         return restTemplate.getForObject("http://" + appName + path, type);
