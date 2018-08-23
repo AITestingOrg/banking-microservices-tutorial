@@ -49,6 +49,10 @@ public class TransactionDto {
         return customerId;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "TransactionDto{" +

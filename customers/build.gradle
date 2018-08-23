@@ -9,6 +9,14 @@ dependencies {
 
 version = '0.0.1'
 
+apply plugin: "jacoco"
+
+jacocoTestReport {
+    reports {
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+
 contracts {
     baseClassMappings {
         baseClassMapping(".*", "com.ultimatesoftware.banking.customer.provider.CustomerContractBase")
