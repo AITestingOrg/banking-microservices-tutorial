@@ -39,7 +39,7 @@ public class TransactionServiceUnitTest {
     protected RestTemplate restTemplate;
 
     @Test
-    public void givenAcountAndCustomerExist_whenDebitingAAValidAmount_thenTheAmountIsDebited() throws Exception {
+    public void givenAcountAndCustomerExist_whenDebitingAValidAmount_thenTheAmountIsDebited() throws Exception {
         // Arrange
         ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
         when(restTemplate.<BankTransaction>exchange(
@@ -68,7 +68,7 @@ public class TransactionServiceUnitTest {
     }
 
     @Test(expected = NoAccountExistsException.class)
-    public void givenAccountDoesNotExist_whenDebitingAAValidAmount_thenThrowNoAccountExists() throws Exception {
+    public void givenAccountDoesNotExist_whenDebitingAValidAmount_thenThrowNoAccountExists() throws Exception {
         // Arrange
         ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
         when(restTemplate.<BankTransaction>exchange(
@@ -84,7 +84,7 @@ public class TransactionServiceUnitTest {
     }
 
     @Test(expected = CustomerDoesNotExistException.class)
-    public void givenCustomerDoesNotExist_whenDebitingAAValidAmount_thenThrowNoCustomerExists() throws Exception {
+    public void givenCustomerDoesNotExist_whenDebitingAValidAmount_thenThrowNoCustomerExists() throws Exception {
         // Arrange
         ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
         when(restTemplate.<BankTransaction>exchange(
