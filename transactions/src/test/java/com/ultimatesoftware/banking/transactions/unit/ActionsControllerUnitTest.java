@@ -27,133 +27,139 @@ public class ActionsControllerUnitTest {
 
     @Test
     public void whenWithdrawIsCalled_thenServiceCalledWithParams() throws Exception {
-        // act
+        // Arrange
+
+        // Act
         actionsController.withdraw(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
 
-        // assert
+        // Assert
         verify(transactionService, times(1)).withdraw(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT);
     }
 
     @Test
     public void whenWithdrawIsCalled_thenReturnTransactionIdAndStatusOk() throws Exception {
-        // arrange
+        // Arrange
         when(transactionService.withdraw(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT)).thenReturn(TRANSACTION_ID);
 
-        // act
+        // Act
         ResponseEntity response = actionsController.withdraw(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
 
-        // assert
+        // Assert
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assert.assertEquals(TRANSACTION_ID, response.getBody());
     }
 
     @Test
     public void whenWithdrawIsCalledAndAccountDoesNotExist_thenReturnStatusBadRequest() throws Exception {
-        // arrange
+        // Arrange
         when(transactionService.withdraw(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT)).thenThrow(ACCOUNT_EXISTS_EXCEPTION);
 
-        // act
+        // Act
         ResponseEntity response = actionsController.withdraw(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
 
-        // assert
+        // Assert
         Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assert.assertEquals(ACCOUNT_EXISTS_EXCEPTION.getMessage(), response.getBody());
     }
 
     @Test
     public void whenWithdrawIsCalledAndAccountDoesNotHaveEnoughBalance_thenReturnStatusBadRequest() throws Exception {
-        // arrange
+        // Arrange
         when(transactionService.withdraw(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT)).thenThrow(INSUFFICIENT_BALANCE_EXCEPTION);
 
-        // act
+        // Act
         ResponseEntity response = actionsController.withdraw(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
 
-        // assert
+        // Assert
         Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assert.assertEquals(INSUFFICIENT_BALANCE_EXCEPTION.getMessage(), response.getBody());
     }
 
     @Test
     public void whenDepositIsCalled_thenServiceCalledWithParams() throws Exception {
-        // act
+        // Arrange
+
+        // Act
         actionsController.deposit(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
 
-        // assert
+        // Assert
         verify(transactionService, times(1)).deposit(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT);
     }
 
     @Test
     public void whenDepositIsCalled_thenReturnTransactionIdAndStatusOk() throws Exception {
-        // arrange
+        // Arrange
         when(transactionService.deposit(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT)).thenReturn(TRANSACTION_ID);
 
-        // act
+        // Act
         ResponseEntity response = actionsController.deposit(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
 
-        // assert
+        // Assert
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assert.assertEquals(TRANSACTION_ID, response.getBody());
     }
 
     @Test
     public void whenDepositIsCalledAndAccountDoesNotExist_thenReturnStatusBadRequest() throws Exception {
-        // arrange
+        // Arrange
         when(transactionService.deposit(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT)).thenThrow(ACCOUNT_EXISTS_EXCEPTION);
 
-        // act
+        // Act
         ResponseEntity response = actionsController.deposit(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
 
-        // assert
+        // Assert
         Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assert.assertEquals(ACCOUNT_EXISTS_EXCEPTION.getMessage(), response.getBody());
     }
 
     @Test
     public void whenTransferIsCalled_thenServiceCalledWithParams() throws Exception {
-        // act
+        // Arrange
+        
+        // Act
         actionsController.transfer(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID, DESTINATION_ID);
 
-        // assert
+        // Assert
         verify(transactionService, times(1)).transfer(CUSTOMER_ID, ACCOUNT_ID, DESTINATION_ID, BASE_AMOUNT);
     }
 
     @Test
     public void whenTransferIsCalled_thenReturnTransactionIdAndStatusOk() throws Exception {
-        // arrange
+        // Arrange
         when(transactionService.transfer(CUSTOMER_ID, ACCOUNT_ID, DESTINATION_ID, BASE_AMOUNT)).thenReturn(TRANSACTION_ID);
 
-        // act
+        // Act
         ResponseEntity response = actionsController.transfer(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID, DESTINATION_ID);
 
-        // assert
+        // Assert
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assert.assertEquals(TRANSACTION_ID, response.getBody());
     }
 
     @Test
     public void whenTransferIsCalledAndAccountDoesNotHaveEnoughBalance_thenReturnStatusBadRequest() throws Exception {
-        // arrange
+        // Arrange
         when(transactionService.transfer(CUSTOMER_ID, ACCOUNT_ID, DESTINATION_ID, BASE_AMOUNT))
                 .thenThrow(INSUFFICIENT_BALANCE_EXCEPTION);
 
-        // act
+        // Act
         ResponseEntity response = actionsController.transfer(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID, DESTINATION_ID);
 
-        // assert
+        // Assert
         Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assert.assertEquals(INSUFFICIENT_BALANCE_EXCEPTION.getMessage(), response.getBody());
     }
 
     @Test
     public void whenTransferIsCalledAndAccountDoesNotExist_thenReturnStatusBadRequest() throws Exception {
-        // arrange
+        // Arrange
         when(transactionService.transfer(CUSTOMER_ID, ACCOUNT_ID, DESTINATION_ID, BASE_AMOUNT))
                 .thenThrow(ACCOUNT_EXISTS_EXCEPTION);
 
-        // act
+        // Act
         ResponseEntity response = actionsController.transfer(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID, DESTINATION_ID);
 
-        // assert
+        // Assert
         Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assert.assertEquals(ACCOUNT_EXISTS_EXCEPTION.getMessage(), response.getBody());
     }
