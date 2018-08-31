@@ -16,9 +16,3 @@ jacocoTestReport {
         html.destination file("${buildDir}/jacocoHtml")
     }
 }
-
-contracts {
-    baseClassMappings {
-        baseClassMapping(".*", "com.ultimatesoftware.banking.customer.provider.CustomerContractBase")
-    }
-}
