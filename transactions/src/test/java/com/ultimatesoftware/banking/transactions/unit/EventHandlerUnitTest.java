@@ -33,10 +33,8 @@ public class EventHandlerUnitTest {
     @Mock
     private BankTransactionRepository bankTransactionRepository;
 
-    // given the account transaction exists
-
     @Test
-    public void whenAccountCreditedEventReceived_thenTheTransactionShouldBeUpdated() {
+    public void givenAccountTransactionExists_whenAccountCreditedEventReceived_thenTheTransactionShouldBeUpdated() {
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
                 .findOne(UUID.fromString(TestConstants.TRANSACTION_ID)))
@@ -65,7 +63,7 @@ public class EventHandlerUnitTest {
     }
 
     @Test
-    public void whenTransferFailedToStartEvent_thenTheTransactionShouldBeUpdated() {
+    public void givenAccountTransactionExists_whenTransferFailedToStartEvent_thenTheTransactionShouldBeUpdated() {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
@@ -92,7 +90,7 @@ public class EventHandlerUnitTest {
     }
 
     @Test
-    public void whenAccountDebitedEventReceived_thenTheTransactionShouldBeUpdated() {
+    public void givenAccountTransactionExists_whenAccountDebitedEventReceived_thenTheTransactionShouldBeUpdated() {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
@@ -122,7 +120,7 @@ public class EventHandlerUnitTest {
     }
 
     @Test
-    public void whenTransferCanceledEventReceived_thenTheTransactionShouldBeUpdated() {
+    public void givenAccountTransactionExists_whenTransferCanceledEventReceived_thenTheTransactionShouldBeUpdated() {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
@@ -150,7 +148,7 @@ public class EventHandlerUnitTest {
     }
 
     @Test
-    public void whenTransferDepositConcludedEventReceived_thenTheTransactionShouldBeUpdated() {
+    public void givenAccountTransactionExists_whenTransferDepositConcludedEventReceived_thenTheTransactionShouldBeUpdated() {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
@@ -177,10 +175,8 @@ public class EventHandlerUnitTest {
         assertEquals(TransactionStatus.SUCCESSFUL, transaction.getStatus());
     }
 
-    // given the transaction does not exist
-
     @Test
-    public void whenAccountCreditedEventReceived_thenNothingShouldBeDone() {
+    public void givenNoAccountTransactionExists_whenAccountCreditedEventReceived_thenNothingShouldBeDone() {
         // Arrange
         when(bankTransactionRepository.findOne(UUID.fromString(TestConstants.TRANSACTION_ID))).thenReturn(null);
 
@@ -198,7 +194,7 @@ public class EventHandlerUnitTest {
     }
 
     @Test
-    public void whenTransferFailedToStartEvent_thenNothingShouldBeDone() {
+    public void givenNoAccountTransactionExists_whenTransferFailedToStartEvent_thenNothingShouldBeDone() {
         // Arrange
         when(bankTransactionRepository.findOne(UUID.fromString(TestConstants.TRANSACTION_ID))).thenReturn(null);
 
@@ -213,7 +209,7 @@ public class EventHandlerUnitTest {
     }
 
     @Test
-    public void whenAccountDebitedEventReceived_thenNothingShouldBeDone() {
+    public void givenNoAccountTransactionExists_whenAccountDebitedEventReceived_thenNothingShouldBeDone() {
         // Arrange
         when(bankTransactionRepository.findOne(UUID.fromString(TestConstants.TRANSACTION_ID))).thenReturn(null);
 
@@ -231,7 +227,7 @@ public class EventHandlerUnitTest {
     }
 
     @Test
-    public void whenTransferCanceledEventReceived_thenNothingShouldBeDone() {
+    public void givenNoAccountTransactionExists_whenTransferCanceledEventReceived_thenNothingShouldBeDone() {
         // Arrange
         when(bankTransactionRepository.findOne(UUID.fromString(TestConstants.TRANSACTION_ID))).thenReturn(null);
 
@@ -247,7 +243,7 @@ public class EventHandlerUnitTest {
     }
 
     @Test
-    public void whenTransferDepositConcludedEventReceived_thenNothingShouldBeDone() {
+    public void givenNoAccountTransactionExists_whenTransferDepositConcludedEventReceived_thenNothingShouldBeDone() {
         // Arrange
         when(bankTransactionRepository.findOne(UUID.fromString(TestConstants.TRANSACTION_ID))).thenReturn(null);
 
