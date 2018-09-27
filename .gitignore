@@ -10,6 +10,8 @@ out/
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+**/coverage/**
+**/jacoco/**
 
 ### STS ###
 .apt_generated
