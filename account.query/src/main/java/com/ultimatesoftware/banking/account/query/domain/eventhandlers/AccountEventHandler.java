@@ -1,6 +1,6 @@
 package com.ultimatesoftware.banking.account.query.domain.eventhandlers;
 
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.account.query.domain.models.Account;
 import com.ultimatesoftware.banking.account.query.service.repositories.AccountRepository;
 import org.axonframework.eventhandling.EventHandler;

@@ -6,7 +6,7 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotElig
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.*;
 import org.axonframework.commandhandling.model.AggregateLifecycle;
 import org.junit.Before;
 import org.junit.Test;

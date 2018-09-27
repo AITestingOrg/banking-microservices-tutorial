@@ -5,9 +5,9 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotElig
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
-import com.ultimatesoftware.banking.account.common.AccountEventType;
-import com.ultimatesoftware.banking.account.common.EventFactory;
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.factories.AccountEventType;
+import com.ultimatesoftware.banking.events.factories.EventFactory;
+import com.ultimatesoftware.banking.events.*;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;

@@ -1,6 +1,6 @@
 package com.ultimatesoftware.banking.transactions.domain.eventhandlers;
 
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 import com.ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;

@@ -1,5 +1,0 @@
-version '0.0.1'
-
-dependencies {
-    testCompile 'junit:junit:4.12'
-}

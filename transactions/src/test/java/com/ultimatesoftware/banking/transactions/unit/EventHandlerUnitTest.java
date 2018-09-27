@@ -1,6 +1,6 @@
 package com.ultimatesoftware.banking.transactions.unit;
 
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.transactions.TestConstants;
 import com.ultimatesoftware.banking.transactions.domain.eventhandlers.AccountEventHandlers;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;

@@ -1,4 +1,6 @@
-package com.ultimatesoftware.banking.account.common.events;
+package com.ultimatesoftware.banking.events;
+
+import com.ultimatesoftware.banking.events.AccountTransactionEvent;
 
 import java.util.UUID;
 
