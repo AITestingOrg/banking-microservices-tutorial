@@ -1,6 +1,6 @@
-package com.ultimatesoftware.banking.account.common;
+package com.ultimatesoftware.banking.events.factories;
 
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.*;
 
 import java.util.UUID;
 

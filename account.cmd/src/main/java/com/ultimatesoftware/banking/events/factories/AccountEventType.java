@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.account.common;
+package com.ultimatesoftware.banking.events.factories;
 
 public enum AccountEventType {
     CREATED,
