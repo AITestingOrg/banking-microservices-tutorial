@@ -15,28 +15,6 @@ dependencies {
 
 version = '0.0.1'
 
-jacocoTestReport {
-    reports {
-        html.destination file("${buildDir}/jacocoHtml")
-    }
-}
-
-jacocoTestCoverageVerification {
-    afterEvaluate {
-        classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: "${project.buildDir}/classes/main",
-                    exclude: ['**/service/services/ApiService*'])
-        })
-    }
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.85
-            }
-        }
-    }
-}
-
 
 contracts {
     baseClassMappings {

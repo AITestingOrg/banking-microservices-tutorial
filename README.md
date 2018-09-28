@@ -20,6 +20,8 @@ See each services readme for detailed requirement information
 * https://docs.docker.com/compose/install/
 * /data/db directory created and accessible to "everyone"
 
+# Running the Project
+
 ## Start the Microservices
 ** Build JARs for each project (You will need to build a JAR anytime changes are made to a project, then rebuild either the container or all containers)
 ```bash
@@ -56,6 +58,8 @@ docker-compose -f docker-compose-backing.yml down
 docker-compose build
 ```
 
+# Executing Tests
+
 ## Running Unit Tests
 The Gradle task 'test' executes the JUnit tests for each project.
 ```bash
@@ -78,21 +82,35 @@ The Gradle task 'test' executes the JUnit tests for each project.
 ## Running Code Coverage: Integration
 JaCoCo is used for code coverage and can be run after the unit and integraiton tests for each service have been executed.
 ```bash
-./gradlew cleanTest test --tests "*.integration*"
+./gradlew cleanTest test --tests "*.integration.*"
 ./gradlew jacocoTestReport
 ```
 
 ## Running API Tests
+```bash
+./gradlew cleanTest :test:test --tests "*.api.*"
+```
+
 
 ## Running Service Readiness Tests
+```bash
+./gradlew cleanTest test --tests "*.ready.*"
+```
 
 ## Running Cross-Service Integration Tests
+```bash
+./gradlew cleanTest :test:test --tests "*.integration.*"
+```
 
 ## Running Edge API Tests
+```bash
+./gradlew cleanTest :edgeservice:test
+```
 
 ## Service Readiness Endpoints
 
-## API Documentation:
+
+# API Documentation:
 
 These request can be done using an application like postman or insomnia, directly with curl or using the provided swagger UI.
 Go to the [swagger](http://localhost:8082/swagger-ui.html) for the port that customer application is running. By default, it is 8082 but it can be changed in the docker-compose files.
