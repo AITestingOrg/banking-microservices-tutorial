@@ -72,7 +72,6 @@ allprojects {
     }
 
     test {
-
         exclude '**/service/configuration/**'
         exclude '**/service/repositories/**'
 
@@ -95,11 +94,10 @@ allprojects {
                     println "\n ${'-' * repeat} \n | ${results} | \n ${'-' * repeat}"
                 }
         }
-
     }
 
     jacoco {
-        toolVersion = "0.7.6.201602180812"
+        toolVersion = "0.8.2"
         reportsDir = file("./coverage")
     }
 
@@ -114,12 +112,17 @@ allprojects {
                 fileTree(dir: it,
                         exclude: [
                                 '**/service/configuration/**',
-                                '**/service/repositories/**'
+                                '**/service/repositories/**',
+                                '**/events/**',
+                                '**/exceptions/**',
+                                '**/models/**'
                         ]
                 )
             })
         }
     }
+
+    test.finalizedBy(jacocoTestCoverageVerification)
 
 }
 
@@ -150,7 +153,7 @@ configure(springProjects) {
     }
 }
 
-task wrapper(type: Wrapper) {
+wrapper {
     gradleVersion = '4.8'
 }
 

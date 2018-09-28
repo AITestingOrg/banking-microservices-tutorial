@@ -25,4 +25,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+test.enabled = false
+
 version = '0.0.1'

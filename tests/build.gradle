@@ -3,4 +3,6 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
+test.enabled = false
+
 version = '0.0.1'

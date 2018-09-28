@@ -22,7 +22,7 @@ public abstract class CustomCommandHandler<T> {
      * @param commandBus CommandBus
      * @param type Aggregate Type
      */
-    public CustomCommandHandler(EventSourcingRepository repository, CommandBus commandBus, Class<T> type) {
+    public CustomCommandHandler(EventSourcingRepository<T> repository, CommandBus commandBus, Class<T> type) {
         log.info("Creating Command Handler.");
          handler = new AggregateAnnotationCommandHandler<T>(type, repository);
          this.commandBus = commandBus;
