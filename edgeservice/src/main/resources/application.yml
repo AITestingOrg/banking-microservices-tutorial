@@ -6,7 +6,7 @@ zuul:
   routes:
     account-cmd:
       path: /cmd/v1/accounts
-      url: http://localhost:8083/api/v1
+      url: http://localhost:8089/api/v1
     account-query:
       path: /query/v1/accounts/**
       url: http://localhost:8084/api/v1

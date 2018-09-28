@@ -15,7 +15,7 @@ services:
   accountcmd:
     image: aista/banking-account-cmd
     ports:
-      - "8083:8080"
+      - "8089:8080"
     restart: on-failure
     environment:
       - MONGO_HOST=mongo

@@ -25,7 +25,6 @@ spring:
         eventQueue-account:
           name: eventQueue-account
           dead-letter-enabled: true
-
 eureka:
   client:
     fetch-registry: false
@@ -50,8 +49,16 @@ endpoints:
 management:
   security:
     enabled: false
+  endpoint:
+    health:
+      show-details: always
+    web:
+      exposure:
+        include: health,info
+    shutdown:
+      enabled: true
 
 hosts:
-  account-cmd: localhost:8083
+  account-cmd: localhost:8089
   account-query: localhost:8084
   customers: localhost:8081

@@ -24,7 +24,7 @@ services:
       - rabbitmq
     mem_limit: 700m
     ports:
-      - "8083:8080"
+      - "8089:8080"
     environment:
       - RABBIT_HOST=rabbitmq
       - MONGO_HOST=mongo

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AccountServicesIntegrationTest {
-    private final String accountCmd = "http://localhost:8083/api/v1/accounts";
+    private final String accountCmd = "http://localhost:8089/api/v1/accounts";
     private final String accountQuery = "http://localhost:8084/api/v1/accounts";
 
     @Autowired
