@@ -2,7 +2,6 @@ apply plugin: "jacoco"
 
 dependencies {
     compile project(":eventsourcing")
-    compile project(":account.common")
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
     compile('org.springframework.cloud:spring-cloud-starter-eureka')
     compile("org.springframework.boot:spring-boot-starter-actuator")
@@ -37,7 +36,6 @@ jacocoTestCoverageVerification {
         }
     }
 }
-test.finalizedBy(jacocoTestCoverageVerification)
 
 
 contracts {
