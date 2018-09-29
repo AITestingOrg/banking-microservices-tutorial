@@ -86,15 +86,19 @@ JaCoCo is used for code coverage and can be run after the unit and integraiton t
 ./gradlew jacocoTestReport
 ```
 
+## Running Contract Tests
+```bash
+./gradlew cleanTest :test:test --tests "*.api.*"
+```
+
 ## Running API Tests
 ```bash
 ./gradlew cleanTest :test:test --tests "*.api.*"
 ```
 
-
 ## Running Service Readiness Tests
 ```bash
-./gradlew cleanTest test --tests "*.ready.*"
+./gradlew cleanTest :transactions:test --tests "*.readiness.*"
 ```
 
 ## Running Cross-Service Integration Tests
