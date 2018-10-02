@@ -21,7 +21,7 @@ public class ServiceReadinessTests {
         given().
             accept("application/json").
         when().
-                get("http://localhost:8081/health").
+                get("http://localhost:8086/health").
                 then().
                 statusCode(200).
                 body("status", equalTo("UP"));
@@ -33,7 +33,7 @@ public class ServiceReadinessTests {
         RequestSpecification request = given().
             accept("application/json");
         Response response = request.when().
-            get("http://localhost:8081/health");
+            get("http://localhost:8086/health");
 
         response.
             then().
@@ -48,7 +48,7 @@ public class ServiceReadinessTests {
         given().
             accept("application/json").
         when().
-                get("http://localhost:8081/health").
+                get("http://localhost:8086/health").
                 then().
                 statusCode(200).
                 body("rabbit.status", equalTo("UP"),
@@ -61,7 +61,7 @@ public class ServiceReadinessTests {
         given().
             accept("application/json").
         when().
-                get("http://localhost:8081/metrics").
+                get("http://localhost:8086/metrics").
                 then().
                 statusCode(200).
                 body("processors", greaterThan(1),
@@ -74,7 +74,7 @@ public class ServiceReadinessTests {
         given().
             accept("application/json").
         when().
-                get("http://localhost:8081/health").
+                get("http://localhost:8086/health").
                 then().
                 statusCode(200).
                 body("discoveryComposite.eureka.status", equalTo("UP"));
