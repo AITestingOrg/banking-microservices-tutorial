@@ -59,6 +59,7 @@ allprojects {
 	}
     apply plugin: 'java'
     apply plugin: 'checkstyle'
+    apply plugin: 'jacoco'
 
     checkstyle {
         configFile = new File(rootDir, "checkstyles.xml")
@@ -69,6 +70,60 @@ allprojects {
             excludes = ['*.yml', '*contracts/org/springframework/cloud/contract/verifier/tests*']
         }
     }
+
+    test {
+        exclude '**/service/configuration/**'
+        exclude '**/service/repositories/**'
+
+        jacoco {
+            append = false
+            destinationFile = file("./jacoco/jacocoTest.exec")
+            classDumpDir = file("./jacoco/classpathdumps")
+        }
+        def testCount = 0
+        afterTest {
+            desc, result ->
+                println "${++testCount}.\t[$result.resultType]\t${desc.className.split(/\./)[-1]}.'$desc.name'"
+        }
+        afterSuite {
+            desc, result ->
+                // match outer-most suite
+                if (!desc.parent) {
+                    def results = "Results: $result.resultType ($result.testCount tests, $result.successfulTestCount successes, $result.failedTestCount failures, $result.skippedTestCount skipped)"
+                    def repeat = results.length() + 4
+                    println "\n ${'-' * repeat} \n | ${results} | \n ${'-' * repeat}"
+                }
+        }
+    }
+
+    jacoco {
+        toolVersion = "0.8.2"
+        reportsDir = file("./coverage")
+    }
+
+    jacocoTestReport {
+        reports {
+            html {
+                enabled true
+            }
+        }
+        afterEvaluate {
+            classDirectories = files(classDirectories.files.collect {
+                fileTree(dir: it,
+                        exclude: [
+                                '**/service/configuration/**',
+                                '**/service/repositories/**',
+                                '**/events/**',
+                                '**/exceptions/**',
+                                '**/models/**'
+                        ]
+                )
+            })
+        }
+    }
+
+    test.finalizedBy(jacocoTestCoverageVerification)
+
 }
 
 configure(springProjects) {
@@ -91,7 +146,6 @@ configure(springProjects) {
         compile 'org.springframework.cloud:spring-cloud-starter-config'
         compile("io.springfox:springfox-swagger2:${springfoxVersion}")
         compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
-
         testCompile 'junit:junit:4.12'
         testCompile('org.springframework.boot:spring-boot-starter-test')
         testCompile "org.springframework.cloud:spring-cloud-starter-contract-verifier"
@@ -99,7 +153,7 @@ configure(springProjects) {
     }
 }
 
-task wrapper(type: Wrapper) {
+wrapper {
     gradleVersion = '4.8'
 }
 

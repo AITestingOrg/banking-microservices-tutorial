@@ -15,11 +15,11 @@ public class Account {
     @NotNull
     @Indexed
     private UUID accountId;
-    @Min(18)
-    private UUID customerId;
+    @NotNull
+    private String customerId;
     private double balance;
 
-    public Account(UUID accountId, UUID customerId, double balance) {
+    public Account(UUID accountId, String customerId, double balance) {
         this.accountId = accountId;
         this.customerId = customerId;
         this.balance = balance;
@@ -32,7 +32,7 @@ public class Account {
         return accountId;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 
@@ -40,7 +40,7 @@ public class Account {
         return balance;
     }
 
-    public void setCustomerId(UUID customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
 

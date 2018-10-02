@@ -6,7 +6,7 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotElig
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.*;
 import org.axonframework.commandhandling.model.AggregateLifecycle;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +30,7 @@ public class AccountTest {
     private Account account;
 
     private static final UUID uuid = UUID.randomUUID();
+    private static final String customerId = UUID.randomUUID().toString();
 
     @Before
     public void setup() {
@@ -40,7 +41,7 @@ public class AccountTest {
     @Test
     public void givenAccountIsEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
 
         // act
         account.on(new DeleteAccountCommand(uuid));
@@ -53,7 +54,7 @@ public class AccountTest {
     @Test(expected = AccountNotEligibleForDeleteException.class)
     public void givenAccountIsNotEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(50.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(50.0));
 
         // act
         account.on(new DeleteAccountCommand(uuid));
@@ -65,7 +66,7 @@ public class AccountTest {
         account = new Account();
 
         // act
-        new Account(new CreateAccountCommand(uuid));
+        new Account(new CreateAccountCommand(customerId));
 
         // assert
         verifyStatic(AggregateLifecycle.class);
@@ -75,7 +76,7 @@ public class AccountTest {
     @Test
     public void givenAccountWith50Balance_WhenDebiting50_AccountDebittedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(50.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(50.0));
 
         // act
         account.on(new DebitAccountCommand(uuid, 50, "test"));
@@ -88,7 +89,7 @@ public class AccountTest {
     @Test
     public void givenAccountWith49Balance_WhenDebiting50_TransactionFailedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(49.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(49.0));
         boolean exceptionThrown = false;
 
         // act
@@ -107,7 +108,7 @@ public class AccountTest {
     @Test
     public void givenAccountWith51Balance_WhenDebiting50_AccountDebittedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(51.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(51.0));
 
         // act
         account.on(new DebitAccountCommand(uuid, 50, "test"));
@@ -120,7 +121,7 @@ public class AccountTest {
     @Test
     public void givenAccountWith0Balance_WhenDebiting1_TransactionFailedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
         boolean exceptionThrown = false;
 
         // act
@@ -139,7 +140,7 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxMinus1Balance_WhenDebitingMax_TransactionFailedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1)));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1)));
         boolean exceptionThrown = false;
 
         // act
@@ -158,7 +159,7 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxBalance_WhenDebitingMax_AccountDebitedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE));
 
         // act
         account.on(new DebitAccountCommand(uuid, Double.MAX_VALUE, "test"));
@@ -171,7 +172,7 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxBalance_WhenDebitingMaxMinus1_AccountDebitedEventEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE));
 
         // act
         account.on(new DebitAccountCommand(uuid, Double.MAX_VALUE - 1, "test"));
@@ -184,7 +185,7 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxBalance_WhenCrediting1_TransactionFailedIsEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE));
         boolean exceptionThrown = false;
 
         // act
@@ -203,7 +204,7 @@ public class AccountTest {
     @Test
     public void givenAccountWithMaxBalanceMinus1_WhenCrediting1_AccountCreditedIsEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1.0)));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1.0)));
 
         // act
         account.on(new CreditAccountCommand(uuid, 1.0, "test"));
@@ -216,7 +217,7 @@ public class AccountTest {
     @Test
     public void givenAccountWith0Balance_WhenCrediting1_AccountCreditedIsEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
 
         // act
         account.on(new CreditAccountCommand(uuid, 1.0, "test"));
@@ -229,7 +230,7 @@ public class AccountTest {
     @Test
     public void givenAccountWith0Balance_WhenCreditingMax_AccountCreditedIsEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
 
         // act
         account.on(new CreditAccountCommand(uuid, Double.MAX_VALUE, "test"));
@@ -242,7 +243,7 @@ public class AccountTest {
     @Test
     public void givenAccountWith0Balance_WhenStartingTransaction_TransactionFailedToStartIsEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
         boolean exceptionThrown = false;
 
         // act
@@ -261,10 +262,10 @@ public class AccountTest {
     @Test
     public void givenAccountWith10Balance_WhenStartingTransactionFor10_TransactionFailedToStartIsEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(10.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(10.0));
 
         // act
-        account.on(new StartTransferTransactionCommand(new TransactionDto(uuid, uuid, 10.0, uuid)));
+        account.on(new StartTransferTransactionCommand(new TransactionDto(uuid, customerId, 10.0, uuid)));
 
         // assert
         verifyStatic(AggregateLifecycle.class);

@@ -14,7 +14,7 @@ public class TransactionDto {
     @NotNull
     private UUID account;
     @NotNull
-    private UUID customerId;
+    private String customerId;
     @Min(1)
     private double amount;
     private UUID destinationAccount;
@@ -22,7 +22,7 @@ public class TransactionDto {
     public TransactionDto() {
     }
 
-    public TransactionDto(UUID account, UUID customerId, double amount, UUID destinationAccount) {
+    public TransactionDto(UUID account, String customerId, double amount, UUID destinationAccount) {
         this.account = account;
         this.customerId = customerId;
         this.amount = amount;
@@ -45,7 +45,7 @@ public class TransactionDto {
         return amount;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 

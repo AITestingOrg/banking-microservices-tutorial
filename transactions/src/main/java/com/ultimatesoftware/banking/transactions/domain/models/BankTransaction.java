@@ -9,14 +9,14 @@ public class BankTransaction {
     private String id;
     private TransactionType type;
     private UUID account;
-    private UUID customerId;
+    private String customerId;
     private double amount;
     private UUID destinationAccount;
     private TransactionStatus status;
 
     public BankTransaction() {}
 
-    public BankTransaction(String id, TransactionType type, UUID account, UUID customerId, double amount, UUID destinationAccount, TransactionStatus status) {
+    public BankTransaction(String id, TransactionType type, UUID account, String customerId, double amount, UUID destinationAccount, TransactionStatus status) {
         this.id = id;
         this.type = type;
         this.account = account;
@@ -26,7 +26,7 @@ public class BankTransaction {
         this.status = status;
     }
 
-    public BankTransaction(String id, TransactionType type, UUID customerId, UUID account, double amount, UUID destinationAccount) {
+    public BankTransaction(String id, TransactionType type, String customerId, UUID account, double amount, UUID destinationAccount) {
         this.id = id;
         this.type = type;
         this.account = account;
@@ -56,7 +56,7 @@ public class BankTransaction {
         return amount;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 
@@ -74,14 +74,14 @@ public class BankTransaction {
         private UUID account;
         private double amount;
         private UUID destinationAccount;
-        private UUID customerId;
+        private String customerId;
 
         public BankTransactionBuilder setType(TransactionType type) {
             this.type = type;
             return this;
         }
 
-        public BankTransactionBuilder setCustomerId(UUID customerId) {
+        public BankTransactionBuilder setCustomerId(String customerId) {
             this.customerId = customerId;
             return this;
         }

@@ -16,7 +16,7 @@ services:
     build: account.cmd/
     mem_limit: 800m
     ports:
-      - "8083:8080"
+      - "8089:8080"
     networks:
       - banking-microservices-example_bank
     restart: on-failure

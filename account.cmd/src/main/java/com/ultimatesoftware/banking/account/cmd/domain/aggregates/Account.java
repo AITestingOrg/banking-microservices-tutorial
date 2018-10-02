@@ -5,9 +5,9 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotElig
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
-import com.ultimatesoftware.banking.account.common.AccountEventType;
-import com.ultimatesoftware.banking.account.common.EventFactory;
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.*;
+import com.ultimatesoftware.banking.events.factories.AccountEventType;
+import com.ultimatesoftware.banking.events.factories.EventFactory;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -27,7 +27,7 @@ public class Account {
 
     @AggregateIdentifier
     private UUID id;
-    private UUID customerId;
+    private String customerId;
     private BigDecimal balance;
     private int activeTransfers;
 
@@ -40,14 +40,14 @@ public class Account {
                 createAccountCommand.getBalance()));
     }
 
-    public Account(UUID id, UUID customerId, BigDecimal balance) {
+    public Account(UUID id, String customerId, BigDecimal balance) {
         this.id = id;
         this.customerId = customerId;
         this.balance = balance;
         activeTransfers = 0;
     }
 
-    public Account(UUID customerId) {
+    public Account(String customerId) {
         this.customerId = customerId;
         activeTransfers = 0;
     }
@@ -60,7 +60,7 @@ public class Account {
         return id;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 
@@ -121,7 +121,7 @@ public class Account {
     @CommandHandler
     public void on(StartTransferWithdrawCommand command) throws Exception {
         if (!AccountRules.eligibleForDebit(this, command.getAmount())) {
-            apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, command.getTransactionId()));
+            apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, "", command.getTransactionId(), ""));
             throw new AccountNotEligibleForDebitException(id, balance.doubleValue());
         }
 
@@ -142,7 +142,7 @@ public class Account {
     @CommandHandler
     public void on(ReleaseAccountCommand releaseAccountCommand) throws Exception {
         logger.info("Account Released {}", id);
-        apply(EventFactory.createEvent(AccountEventType.RELEASED, releaseAccountCommand.getId(), releaseAccountCommand.getTransactionId()));
+        apply(EventFactory.createEvent(AccountEventType.RELEASED, releaseAccountCommand.getId(), "", releaseAccountCommand.getTransactionId(), ""));
     }
 
     @CommandHandler
@@ -156,7 +156,7 @@ public class Account {
     @CommandHandler
     public void on(FailToStartTransferTransactionCommand command) throws Exception {
         logger.info("Transaction {} failed to start", command.getTransactionId());
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, command.getId(), command.getTransactionId()));
+        apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, command.getId(), "", command.getTransactionId(), ""));
     }
 
     @EventSourcingHandler

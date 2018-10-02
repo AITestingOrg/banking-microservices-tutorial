@@ -2,7 +2,7 @@ package com.ultimatesoftware.banking.account.cmd.domain.sagas;
 
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
 import com.ultimatesoftware.banking.account.cmd.service.scheduling.FutureCommandSend;
-import com.ultimatesoftware.banking.account.common.events.*;
+import com.ultimatesoftware.banking.events.*;
 
 import com.ultimatesoftware.banking.eventsourcing.sagas.CustomSaga;
 

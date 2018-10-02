@@ -19,10 +19,11 @@ before_install:
 before_script:
 - docker -v
 - docker-compose -v
-- docker-compose -f docker-compose-dev.yml up -d
+- docker-compose -f docker-compose-backing.yml up -d
 - sleep 10s
 - docker-compose up --build -d
-- sleep 10s
+- sleep 20s
+- docker ps
 after_success:
 - export ACTUAL_BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH;
   else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)

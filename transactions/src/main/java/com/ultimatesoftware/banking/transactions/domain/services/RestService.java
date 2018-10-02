@@ -26,10 +26,12 @@ public abstract class RestService {
     }
 
     protected BankAccount get(String appName, String path, Class<BankAccount> type) {
+        log.info(String.format("Sending getbankaccount to: %s", "http://" + appName + path));
         return restTemplate.getForObject("http://" + appName + path, type);
     }
 
     protected void get(String appName, String path) throws HttpClientErrorException {
+        log.info(String.format("Sending get to: %s", "http://" + appName + path));
         restTemplate.getForObject("http://" + appName + path, String.class);
     }
 

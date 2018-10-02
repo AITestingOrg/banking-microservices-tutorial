@@ -52,4 +52,3 @@ public class LoggingHandler {
         return result;
     }
 }
-

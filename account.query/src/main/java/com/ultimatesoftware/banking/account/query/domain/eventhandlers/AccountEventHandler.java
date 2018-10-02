@@ -1,8 +1,8 @@
 package com.ultimatesoftware.banking.account.query.domain.eventhandlers;
 
-import com.ultimatesoftware.banking.account.common.events.*;
 import com.ultimatesoftware.banking.account.query.domain.models.Account;
 import com.ultimatesoftware.banking.account.query.service.repositories.AccountRepository;
+import com.ultimatesoftware.banking.events.*;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class AccountEventHandler {
 
     @EventHandler
     public void on(TransferDepositConcludedEvent event) {
-        LOG.info("Transfer concluded to {}", event.getId());
+        LOG.info("Transfer deposit concluded to {}", event.getId());
         updateBalance(event.getId(), event.getBalance());
     }
     @EventHandler
@@ -39,13 +39,13 @@ public class AccountEventHandler {
 
     @EventHandler
     public void on(TransferWithdrawConcludedEvent event) {
-        LOG.info("Transfer started from  {}", event.getId());
+        LOG.info("Transfer withdraw concluded from  {}", event.getId());
         updateBalance(event.getId(), event.getBalance());
     }
 
     @EventHandler
     public void on(TransferCanceledEvent event) {
-        LOG.info("Transfer started from  {}", event.getId());
+        LOG.info("Transfer cancelled from  {}", event.getId());
         updateBalance(event.getId(), event.getBalance());
     }
 

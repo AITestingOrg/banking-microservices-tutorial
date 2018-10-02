@@ -8,9 +8,9 @@ import java.util.UUID;
 public class UpdateAccountCommand implements ICommand {
     @TargetAggregateIdentifier
     private UUID id;
-    private UUID customerId;
+    private String customerId;
 
-    public UpdateAccountCommand(UUID id, UUID customerId) {
+    public UpdateAccountCommand(UUID id, String customerId) {
         this.id = id;
         this.customerId = customerId;
     }
@@ -24,7 +24,7 @@ public class UpdateAccountCommand implements ICommand {
         return id;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 }

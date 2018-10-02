@@ -20,13 +20,16 @@ See each services readme for detailed requirement information
 * https://docs.docker.com/compose/install/
 * /data/db directory created and accessible to "everyone"
 
+# Running the Project
+
 ## Start the Microservices
 ** Build JARs for each project (You will need to build a JAR anytime changes are made to a project, then rebuild either the container or all containers)
 ```bash
+export SPRING_PROFILES_ACTIVE=default
 # Assemble the binaries
 gradle assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
-docker-compose -f docker-compose-dev.yml up
+docker-compose -f docker-compose-backing.yml up
 # After the backing services have succesfully loaded, start the domain services
 docker-compose up
 ```
@@ -36,7 +39,7 @@ docker-compose up
 # Assemble the binaries
 gradle assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
-docker-compse -f docker-compose-dev.yml up
+docker-compse -f docker-compose-backing.yml up
 # While the backing services are starting, start the ELK stack, note you will need to also follow the ELK steps below
 docker-compose -f elk/docker-compose.yml up
 # Once all the supporting services are loaded, start the domain services configured to log to ELK
@@ -47,7 +50,7 @@ docker-compose -f docker-compose-elk.yml up
 ```bash
 docker-compose down
 docker-compose -f docker-compose-elk.yml down
-docker-compose -f docker-compose-dev.yml down
+docker-compose -f docker-compose-backing.yml down
 
 ```
 
@@ -56,18 +59,63 @@ docker-compose -f docker-compose-dev.yml down
 docker-compose build
 ```
 
-## Running with Centralized Logging (ELK stack)
-To run with centralized logging and logging visualizations follow the steps below.
+# Executing Tests
 
-### Start the ELK stack
-* `cd elk`
-* `docker-compose up` wait for everything to start
-* Check that http://localhost:5601 is accessible in your browser, you can read about configuration Kibana here https://www.elastic.co/guide/en/kibana/4.0/setup.html
-* `cd ../`
-* `docker-compose up -f docker-compose-elk.yml`
-* Refresh Kibana to see the logs.
+## Running Unit Tests
+The Gradle task 'test' executes the JUnit tests for each project.
+```bash
+./gradlew cleanTest test --tests "*.unit.*"
+```
 
-### Checking the bank:
+## Running Code Coverage: Unit
+JaCoCo is used for code coverage and can be run after the unit and integraiton tests for each service have been executed.
+```bash
+./gradlew cleanTest test --tests "*.unit.*"
+./gradlew jacocoTestReport
+```
+
+## Running Integration Tests (No cross service calls)
+The Gradle task 'test' executes the JUnit tests for each project.
+```bash
+./gradlew cleanTest test --tests "*.integration.*"
+```
+
+## Running Code Coverage: Integration
+JaCoCo is used for code coverage and can be run after the unit and integraiton tests for each service have been executed.
+```bash
+./gradlew cleanTest test --tests "*.integration.*"
+./gradlew jacocoTestReport
+```
+
+## Running Contract Tests
+```bash
+./gradlew cleanTest :test:test --tests "*.api.*"
+```
+
+## Running API Tests
+```bash
+./gradlew cleanTest :test:test --tests "*.api.*"
+```
+
+## Running Service Readiness Tests
+```bash
+./gradlew cleanTest :transactions:test --tests "*.readiness.*"
+```
+
+## Running Cross-Service Integration Tests
+```bash
+./gradlew cleanTest :test:test --tests "*.integration.*"
+```
+
+## Running Edge API Tests
+```bash
+./gradlew cleanTest :edgeservice:test
+```
+
+## Service Readiness Endpoints
+
+
+# API Documentation:
 
 These request can be done using an application like postman or insomnia, directly with curl or using the provided swagger UI.
 Go to the [swagger](http://localhost:8082/swagger-ui.html) for the port that customer application is running. By default, it is 8082 but it can be changed in the docker-compose files.
@@ -95,7 +143,7 @@ And scroll down to see what the response was:
 ![alt text](images/customer-response.png "Response")
 Now to create some accounts for this user: 
 
-Go to the ui for account-cmd, running on 8083. And open account-controller post [endpoint](http://localhost:8083/swagger-ui.html#/account-controller/addAccountUsingPOST)
+Go to the ui for account-cmd, running on 8089. And open account-controller post [endpoint](http://localhost:8089/swagger-ui.html#/account-controller/addAccountUsingPOST)
 
 Put the previous customerId in the body for the request and execute it. 
 
@@ -119,3 +167,14 @@ Now, going to the transfer endpoint and making a transaction to pass some of tha
 ![alt text](images/transaction-transfer.png "transfer some money")
 
 Check that the response was a 200 and the balances changed
+
+## Running with Centralized Logging (ELK stack)
+To run with centralized logging and logging visualizations follow the steps below.
+
+### Start the ELK stack
+* `cd elk`
+* `docker-compose up` wait for everything to start
+* Check that http://localhost:5601 is accessible in your browser, you can read about configuration Kibana here https://www.elastic.co/guide/en/kibana/4.0/setup.html
+* `cd ../`
+* `docker-compose up -f docker-compose-elk.yml`
+* Refresh Kibana to see the logs.

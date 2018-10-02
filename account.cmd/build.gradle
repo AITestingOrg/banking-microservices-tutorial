@@ -2,7 +2,6 @@ apply plugin: "jacoco"
 
 dependencies {
     compile project(":eventsourcing")
-    compile project(":account.common")
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
     compile('org.springframework.cloud:spring-cloud-starter-eureka')
     compile("org.springframework.boot:spring-boot-starter-actuator")
@@ -15,29 +14,6 @@ dependencies {
 }
 
 version = '0.0.1'
-
-jacocoTestReport {
-    reports {
-        html.destination file("${buildDir}/jacocoHtml")
-    }
-}
-
-jacocoTestCoverageVerification {
-    afterEvaluate {
-        classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: "${project.buildDir}/classes/main",
-                    exclude: ['**/service/services/ApiService*'])
-        })
-    }
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.85
-            }
-        }
-    }
-}
-test.finalizedBy(jacocoTestCoverageVerification)
 
 
 contracts {

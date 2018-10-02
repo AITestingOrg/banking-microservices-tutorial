@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface BankTransactionRepository extends MongoRepository<BankTransaction, UUID> {
+public interface BankTransactionRepository extends MongoRepository<BankTransaction, String> {
     List<BankTransaction> findByCustomerId(UUID customerId);
 }

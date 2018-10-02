@@ -13,4 +13,6 @@ dependencies {
     testCompile ('com.palantir.docker.compose:docker-compose-rule-junit4:0.33.0')
 }
 
+test.enabled = false
+
 version = '0.0.1'
