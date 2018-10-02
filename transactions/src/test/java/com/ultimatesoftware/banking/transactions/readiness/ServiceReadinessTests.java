@@ -33,14 +33,13 @@ public class ServiceReadinessTests {
         RequestSpecification request = given().
             accept("application/json");
         Response response = request.when().
-                get("http://localhost:8081/health");
+            get("http://localhost:8081/health");
 
-        System.out.println(response.getBody().toString());
         response.
             then().
             statusCode(200).
             body("mongo.status", equalTo("UP"),
-                    "mongo.version", equalTo("3.4.1"));
+                 "mongo.version", equalTo("3.4.1"));
 
     }
 

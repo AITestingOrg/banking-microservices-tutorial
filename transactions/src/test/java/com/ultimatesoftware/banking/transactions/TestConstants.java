@@ -8,7 +8,7 @@ import java.util.UUID;
 public class TestConstants {
     public static final double BASE_AMOUNT = 0.0;
     public static final UUID ACCOUNT_ID = UUID.randomUUID();
-    public static final UUID CUSTOMER_ID = UUID.randomUUID();
+    public static final String CUSTOMER_ID = UUID.randomUUID().toString();
     public static final UUID DESTINATION_ID = UUID.randomUUID();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
     public static final String NO_ACCOUNT_MESSAGE = "That isn't here";

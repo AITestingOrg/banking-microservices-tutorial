@@ -38,7 +38,7 @@ public class TransactionService extends RestService {
         this.bankTransactionRepository = bankTransactionRepository;
     }
 
-    public String transfer(UUID customerId, UUID accountId, UUID destAccountId, double amount) throws Exception {
+    public String transfer(String customerId, UUID accountId, UUID destAccountId, double amount) throws Exception {
         BankAccount account = validateAccount(accountId, customerId);
         BankAccount destAccount = validateAccount(destAccountId);
 
@@ -58,7 +58,7 @@ public class TransactionService extends RestService {
         return transaction.getId();
     }
 
-    public String withdraw(UUID customerId, UUID accountId, double amount) throws Exception {
+    public String withdraw(String customerId, UUID accountId, double amount) throws Exception {
         BankAccount account = validateAccount(accountId, customerId);
 
         validateAccountBalance(account, amount);
@@ -76,7 +76,7 @@ public class TransactionService extends RestService {
         return transaction.getId();
     }
 
-    public String deposit(UUID customerId, UUID accountId, double amount) throws Exception {
+    public String deposit(String customerId, UUID accountId, double amount) throws Exception {
         BankAccount account = validateAccount(accountId, customerId);
 
         BankTransaction transaction = new BankTransaction.BankTransactionBuilder()
@@ -109,6 +109,7 @@ public class TransactionService extends RestService {
 
     private BankAccount getAccount(UUID accountId) {
         try {
+            LOG.info(String.format("Fetching account: %s%s", bankAccountQueryService, API_V1_ACCOUNTS + accountId));
             return (BankAccount) get(bankAccountQueryService, API_V1_ACCOUNTS + accountId, BankAccount.class);
         } catch (Exception e) {
             LOG.warn(e.getMessage());
@@ -116,8 +117,9 @@ public class TransactionService extends RestService {
         }
     }
 
-    private void getCustomer(UUID customerId) throws CustomerDoesNotExistException {
+    private void getCustomer(String customerId) throws CustomerDoesNotExistException {
         try {
+            LOG.info(String.format("Fetching customer: %s%s", bankCustomerService, API_V1_CUSTOMERS + customerId));
             get(bankCustomerService, API_V1_CUSTOMERS + customerId);
         } catch (HttpClientErrorException e) {
             LOG.warn(e.getMessage());
@@ -133,7 +135,7 @@ public class TransactionService extends RestService {
         }
     }
 
-    private BankAccount validateAccount(UUID accountId, UUID customerId) throws NoAccountExistsException, CustomerDoesNotExistException {
+    private BankAccount validateAccount(UUID accountId, String customerId) throws NoAccountExistsException, CustomerDoesNotExistException {
         validateCustomer(customerId);
         return validateAccount(accountId);
     }
@@ -149,7 +151,7 @@ public class TransactionService extends RestService {
         return account;
     }
 
-    private void validateCustomer(UUID customerId) throws CustomerDoesNotExistException {
+    private void validateCustomer(String customerId) throws CustomerDoesNotExistException {
         getCustomer(customerId);
     }
 }

@@ -3,6 +3,7 @@ package com.ultimatesoftware.banking.tests.models;
 import java.util.UUID;
 
 public class TransactionDto {
+    private String id;
     private UUID account;
     private String customerId;
     private double amount;
@@ -17,10 +18,15 @@ public class TransactionDto {
         this.destinationAccount = destinationAccount;
     }
 
-    public TransactionDto(UUID account, String customerId, double amount) {
+    public TransactionDto(String id, UUID account, String customerId, double amount) {
         this.account = account;
         this.customerId = customerId;
         this.amount = amount;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public UUID getDestinationAccount() {

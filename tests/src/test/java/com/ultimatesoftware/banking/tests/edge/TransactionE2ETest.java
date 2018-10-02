@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.lang.Exception;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -72,16 +73,16 @@ public class TransactionE2ETest {
         this.account2.setId((response.getBody().as(UUID.class)));
 
         // deposit initial balance
-        TransactionDto transactionDto = new TransactionDto(this.account1.getId(), customer.getId(), 15.00);
+        TransactionDto transactionDto = new TransactionDto("", this.account1.getId(), customer.getId(), 15.00);
         request = given().body(transactionDto).contentType("application/json");
         response = request.when().put(accountCmdHost + "/api/v1/accounts/credit");
         response.then().statusCode(200);
     }
 
     @Test
-    public void givenAccountsWithBalance_whenTransferingValidAmount_AmountIsTransfered() {
+    public void givenAccountsWithBalance_whenTransferingValidAmount_AmountIsTransfered() throws Exception {
         // Arrange
-        double amount = 10.00;
+        double amount = 10.00; 
         RequestSpecification request = given().
             headers(
                 "amount", amount,
@@ -90,7 +91,7 @@ public class TransactionE2ETest {
                 "customerId", this.customer.getId());
         // Act
         Response response = request.when().
-            post(this.transactionHost + "/api/v1/transfer");
+            get(transactionHost + "/api/v1/transactions/transfer");
 
         // Assert
         ResponseBody body = response.getBody();
@@ -100,7 +101,7 @@ public class TransactionE2ETest {
         transactionStatusIsSuccessful("test", 5);
     }
 
-    private void accountBalanceIs(UUID accountId, double balance, long seconds) {
+    private void accountBalanceIs(UUID accountId, double balance, long seconds) throws Exception {
         long secondsTaken = seconds;
         while (secondsTaken < seconds) {
             long startTime = System.currentTimeMillis();
@@ -115,9 +116,10 @@ public class TransactionE2ETest {
             long endTime = System.currentTimeMillis();
             secondsTaken += (endTime - startTime) / 1000;
         }
+        throw new Exception("Account Balance not updated.");
     }
 
-    private void transactionStatusIsSuccessful(String transactionId, long seconds) {
+    private void transactionStatusIsSuccessful(String transactionId, long seconds) throws Exception {
         long secondsTaken = seconds;
         while (secondsTaken < seconds) {
             long startTime = System.currentTimeMillis();
@@ -132,5 +134,6 @@ public class TransactionE2ETest {
             long endTime = System.currentTimeMillis();
             secondsTaken += (endTime - startTime) / 1000;
         }
+        throw new Exception("Transaction not marked successful.");
     }
 }

@@ -57,11 +57,11 @@ public abstract class TransactionContractBase {
         BankAccount dummy = new BankAccount(
                 UUID.fromString(idOrigin),
                 100,
-                UUID.fromString(idCustomer));
+                idCustomer);
         BankAccount dummyDestination = new BankAccount(
                 UUID.fromString(idDestination),
                 100,
-                UUID.fromString(idCustomer));
+                idCustomer);
         when(restTemplate.getForObject("http://" + bankAccountQueryService + API_V1_ACCOUNTS + idOrigin, BankAccount.class))
                 .thenReturn(dummy);
         when(restTemplate.getForObject("http://" + bankAccountQueryService + API_V1_ACCOUNTS + idDestination, BankAccount.class))

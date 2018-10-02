@@ -46,6 +46,6 @@ management:
       enabled: true
 
 hosts:
-  account-cmd: accountcmd:8089
-  account-query: accountquery:8084
-  customers: customers:8082
+  account-cmd: ACCOUNTCMD:8089
+  account-query: ACCOUNTQUERY:8084
+  customers: CUSTOMERS:8082
