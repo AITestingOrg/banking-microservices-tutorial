@@ -18,7 +18,9 @@ public class ActionsController {
     @Autowired
     private TransactionService transactionService;
 
-    public ActionsController() {}
+    public ActionsController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     @GetMapping("/withdraw")
     public ResponseEntity<String> withdraw(@RequestHeader double amount, @RequestHeader UUID accountId, @RequestHeader String customerId) {

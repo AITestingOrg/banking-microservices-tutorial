@@ -1,5 +1,6 @@
 package com.ultimatesoftware.banking.transactions.domain.services;
 
+import com.netflix.discovery.converters.Auto;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
