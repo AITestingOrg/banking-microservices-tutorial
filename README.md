@@ -25,6 +25,7 @@ See each services readme for detailed requirement information
 ## Start the Microservices
 ** Build JARs for each project (You will need to build a JAR anytime changes are made to a project, then rebuild either the container or all containers)
 ```bash
+export SPRING_PROFILES_ACTIVE=default
 # Assemble the binaries
 gradle assemble
 # Start the backing services: service discovery, configuration, authentication, edge service

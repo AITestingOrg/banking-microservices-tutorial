@@ -1,8 +1,8 @@
 package com.ultimatesoftware.banking.account.query.domain.eventhandlers;
 
-import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.account.query.domain.models.Account;
 import com.ultimatesoftware.banking.account.query.service.repositories.AccountRepository;
+import com.ultimatesoftware.banking.events.*;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

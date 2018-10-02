@@ -1,7 +1,6 @@
 package com.ultimatesoftware.banking.transactions.unit;
 
 import com.ultimatesoftware.banking.transactions.TestConstants;
-import com.ultimatesoftware.banking.transactions.domain.eventhandlers.AccountEventHandlers;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
@@ -10,7 +9,6 @@ import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 import com.ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
 import com.ultimatesoftware.banking.transactions.domain.services.TransactionService;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -24,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import static com.mongodb.client.model.Filters.eq;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;

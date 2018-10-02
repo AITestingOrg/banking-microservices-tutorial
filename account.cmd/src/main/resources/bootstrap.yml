@@ -1,6 +1,0 @@
-spring:
-  application:
-    name: accountcmd
-  cloud:
-    config:
-      uri: http://configurationservice:8080

@@ -1,9 +1,5 @@
 package com.ultimatesoftware.banking.account.cmd.integration;
 
-import java.util.Date;
-import java.util.UUID;
-import java.util.concurrent.ScheduledFuture;
-
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
 import com.ultimatesoftware.banking.account.cmd.domain.sagas.TransactionSaga;
 import com.ultimatesoftware.banking.account.cmd.service.scheduling.FutureCommandSend;
@@ -22,6 +18,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Date;
+import java.util.UUID;
+import java.util.concurrent.ScheduledFuture;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;

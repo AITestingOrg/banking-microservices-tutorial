@@ -27,14 +27,6 @@ services:
       - "15672:15672"
     networks:
       - bank
-  configurationservice:
-    image: aista/configuration-service
-    ports:
-      - '8888:8080'
-    depends_on:
-      - discoveryservice
-    networks:
-      - bank
 
 networks:
   bank:

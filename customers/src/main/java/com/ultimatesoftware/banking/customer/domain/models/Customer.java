@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Customer {
     @Id
-    @NotNull
     private String id;
     @NotNull
     private String firstName;

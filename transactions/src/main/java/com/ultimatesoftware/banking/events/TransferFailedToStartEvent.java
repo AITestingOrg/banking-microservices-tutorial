@@ -1,7 +1,5 @@
 package com.ultimatesoftware.banking.events;
 
-import com.ultimatesoftware.banking.events.AccountTransactionEvent;
-
 import java.util.UUID;
 
 public class TransferFailedToStartEvent extends AccountTransactionEvent{

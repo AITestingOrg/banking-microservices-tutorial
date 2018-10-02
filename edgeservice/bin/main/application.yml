@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: edgeservice
+zuul:
+  prefix: /api
+  routes:
+    account-cmd:
+      path: /cmd/v1/accounts
+      url: http://localhost:8089/api/v1
+    account-query:
+      path: /query/v1/accounts/**
+      url: http://localhost:8084/api/v1
+    transactions:
+      path: /v1/transactions/**
+      url: http://localhost:8086/api/v1
+    customers:
+      path: /v1/customers/**
+      url: http://localhost:8081/api/v1
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000
+
+endpoints:
+  routes:
+    sensitive: false
+
+server:
+  port: 8080
