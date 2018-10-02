@@ -1,11 +1,9 @@
 package com.ultimatesoftware.banking.tests.models;
 
-import java.util.UUID;
-
 public class AccountCreationDto {
-    private UUID customerId;
+    private String customerId;
 
-    public AccountCreationDto(UUID customerId) {
+    public AccountCreationDto(String customerId) {
         this.customerId = customerId;
     }
 
@@ -13,11 +11,11 @@ public class AccountCreationDto {
 
     }
 
-    public void setCustomerId(UUID customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 

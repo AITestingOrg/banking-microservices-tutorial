@@ -8,11 +8,11 @@ import java.util.UUID;
 public class CreateAccountCommand implements ICommand {
     @TargetAggregateIdentifier
     private UUID id;
-    private UUID customerId;
+    private String customerId;
     private double balance;
     private boolean active;
 
-    public CreateAccountCommand(UUID customerId) {
+    public CreateAccountCommand(String customerId) {
         this.id = UUID.randomUUID();
         this.customerId = customerId;
         this.balance = 0.0;
@@ -23,7 +23,7 @@ public class CreateAccountCommand implements ICommand {
         return id;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 

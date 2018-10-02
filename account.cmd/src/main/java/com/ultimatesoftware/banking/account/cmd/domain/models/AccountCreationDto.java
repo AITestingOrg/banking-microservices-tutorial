@@ -2,13 +2,12 @@ package com.ultimatesoftware.banking.account.cmd.domain.models;
 
 import javax.validation.constraints.NotNull;
 
-import java.util.UUID;
 
 public class AccountCreationDto {
     @NotNull
-    private UUID customerId;
+    private String customerId;
 
-    public AccountCreationDto(UUID customerId) {
+    public AccountCreationDto(String customerId) {
         this.customerId = customerId;
     }
 
@@ -16,11 +15,11 @@ public class AccountCreationDto {
 
     }
 
-    public void setCustomerId(UUID customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 

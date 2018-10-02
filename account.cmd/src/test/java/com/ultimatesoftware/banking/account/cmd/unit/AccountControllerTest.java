@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
-    protected static final UUID CUSTOMER_ID = UUID.randomUUID();
+    protected static final String CUSTOMER_ID = UUID.randomUUID().toString();
 
     @Mock
     protected CommandGateway commandGateway;

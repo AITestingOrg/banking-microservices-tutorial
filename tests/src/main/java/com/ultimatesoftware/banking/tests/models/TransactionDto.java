@@ -4,20 +4,20 @@ import java.util.UUID;
 
 public class TransactionDto {
     private UUID account;
-    private UUID customerId;
+    private String customerId;
     private double amount;
     private UUID destinationAccount;
 
     public TransactionDto() {}
 
-    public TransactionDto(UUID account, UUID customerId, double amount, UUID destinationAccount) {
+    public TransactionDto(UUID account, String customerId, double amount, UUID destinationAccount) {
         this.account = account;
         this.customerId = customerId;
         this.amount = amount;
         this.destinationAccount = destinationAccount;
     }
 
-    public TransactionDto(UUID account, UUID customerId, double amount) {
+    public TransactionDto(UUID account, String customerId, double amount) {
         this.account = account;
         this.customerId = customerId;
         this.amount = amount;
@@ -35,7 +35,7 @@ public class TransactionDto {
         return amount;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 

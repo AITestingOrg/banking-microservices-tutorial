@@ -42,7 +42,7 @@ public class AccountServicesIntegrationTest {
         // Arrange
 
         // Act
-        UUID accountId = createAndGetAccountId(UUID.randomUUID());
+        UUID accountId = createAndGetAccountId(UUID.randomUUID().toString());
 
         // Assert
         Assert.assertEquals(HttpStatus.OK, checkForAccountStatusCode(accountId));
@@ -52,7 +52,7 @@ public class AccountServicesIntegrationTest {
     public void givenAccountExists_WhenCreditAccount_thenBalanceChanges() throws InterruptedException {
         // Arrange
         double balance = 25;
-        UUID customerId = UUID.randomUUID();
+        String customerId = UUID.randomUUID().toString();
         UUID accountId = createAndGetAccountId(customerId);
 
         // Act
@@ -69,7 +69,7 @@ public class AccountServicesIntegrationTest {
         double balance = 40;
         double withdrawAmount = 25;
         double remainingBalance = balance - withdrawAmount;
-        UUID customerId = UUID.randomUUID();
+        String customerId = UUID.randomUUID().toString();
         UUID accountId = createAndGetAccountId(customerId);;
 
         restTemplate.put(URI.create(accountCmd + "/credit"),
@@ -89,7 +89,7 @@ public class AccountServicesIntegrationTest {
         double balance = 40;
         double transferAmount = 25;
         double remainingBalance = balance - transferAmount;
-        UUID customerId = UUID.randomUUID();
+        String customerId = UUID.randomUUID().toString();
         UUID sourceAccountId = createAndGetAccountId(customerId);
         UUID destinationAccountId = createAndGetAccountId(customerId);
 
@@ -108,7 +108,7 @@ public class AccountServicesIntegrationTest {
     @Test
     public void givenAccountExists_WhenDeleteAccount_thenAccountIsDeleted() throws InterruptedException {
         // Arrange
-        UUID accountId = createAndGetAccountId(UUID.randomUUID());
+        UUID accountId = createAndGetAccountId(UUID.randomUUID().toString());
         HttpStatus accountCreatedStatus = checkForAccountStatusCode(accountId);
 
         // Act
@@ -151,7 +151,7 @@ public class AccountServicesIntegrationTest {
         return currentBalance;
     }
 
-    private UUID createAndGetAccountId(UUID userId) {
+    private UUID createAndGetAccountId(String userId) {
         ResponseEntity<String> createResponse
                 = restTemplate.postForEntity(URI.create(accountCmd),
                 new HttpEntity<>(new AccountCreationDto(userId)),
@@ -159,7 +159,7 @@ public class AccountServicesIntegrationTest {
         return getIdFromResponse(createResponse.getBody());
     }
 
-    private HttpEntity<TransactionDto> generateTransactionRequest(UUID accountId, UUID customerId, double amount, UUID destination){
+    private HttpEntity<TransactionDto> generateTransactionRequest(UUID accountId, String customerId, double amount, UUID destination){
         TransactionDto transactionDto = new TransactionDto(accountId, customerId, amount, destination);
         transactionDto.setId(accountId.toString());
         return new HttpEntity<>(transactionDto);

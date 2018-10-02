@@ -1,13 +1,11 @@
 package com.ultimatesoftware.banking.tests.models;
 
-import java.util.UUID;
-
 public class Customer {
-    private UUID id;
+    private String id;
     private String firstName;
     private String lastName;
 
-    public Customer(UUID id, String firstName, String lastName) {
+    public Customer(String id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -21,11 +19,11 @@ public class Customer {
     public Customer() {
     }
 
-    public void setId(UUID value) {
+    public void setId(String value) {
         this.id = value;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 

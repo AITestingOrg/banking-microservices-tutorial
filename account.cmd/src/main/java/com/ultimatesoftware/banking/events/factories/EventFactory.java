@@ -5,7 +5,7 @@ import com.ultimatesoftware.banking.events.*;
 import java.util.UUID;
 
 public class EventFactory {
-    public static AccountEvent createEvent(AccountEventType type, UUID id, UUID customerId, double amount, double balance, String transactionId, String msg, UUID destinationAccountId) throws Exception {
+    public static AccountEvent createEvent(AccountEventType type, UUID id, String customerId, double amount, double balance, String transactionId, String msg, UUID destinationAccountId) throws Exception {
         switch(type) {
             case CREATED:
                 return new AccountCreatedEvent(id, customerId, balance);
@@ -38,7 +38,7 @@ public class EventFactory {
         }
     }
 
-    public static AccountEvent createEvent(AccountEventType type, UUID id, String transactionId) throws Exception {
+    public static AccountEvent createEvent(AccountEventType type, UUID id, String customerId, String transactionId, String msg) throws Exception {
         return createEvent(type, id, null, 0.0, 0.0, transactionId, null, null);
     }
 
@@ -50,15 +50,15 @@ public class EventFactory {
         return createEvent(type, id, null, 0.0, balance, transactionId, null, null);
     }
 
-    public static AccountEvent createEvent(AccountEventType type, UUID id, UUID customerId) throws Exception {
+    public static AccountEvent createEvent(AccountEventType type, UUID id, String customerId) throws Exception {
         return createEvent(type, id, customerId, 0.0, 0.0, null, null, null);
     }
 
-    public static AccountEvent createEvent(AccountEventType type, UUID id, UUID customerId, double balance) throws Exception {
+    public static AccountEvent createEvent(AccountEventType type, UUID id, String customerId, double balance) throws Exception {
         return createEvent(type, id, customerId, 0.0, balance, null, null, null);
     }
 
-    public static AccountEvent createEvent(AccountEventType type, UUID id, UUID customerId, double amount, double balance, String transactionId) throws Exception {
+    public static AccountEvent createEvent(AccountEventType type, UUID id, String customerId, double amount, double balance, String transactionId) throws Exception {
         return createEvent(type, id, customerId, amount, balance, transactionId, null, null);
     }
 

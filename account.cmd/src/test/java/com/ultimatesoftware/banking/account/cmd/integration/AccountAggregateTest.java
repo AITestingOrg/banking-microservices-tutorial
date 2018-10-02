@@ -28,7 +28,7 @@ import java.util.UUID;
 @ContextConfiguration(initializers = ConfigFileApplicationContextInitializer.class)
 public class AccountAggregateTest {
     private FixtureConfiguration<Account> fixture;
-    private static final UUID customerId = UUID.fromString("123e4567-e89b-12d3-a456-426655440000");
+    private static final String customerId = "123e4567-e89b-12d3-a456-426655440000";
     private static final String transactionId = "123e4567-e89b-12d3-a456-426655440010";
 
     @Before

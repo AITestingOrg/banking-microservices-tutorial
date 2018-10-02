@@ -32,6 +32,7 @@ public class AccountTest {
     private Account account;
 
     private static final UUID uuid = UUID.randomUUID();
+    private static final String customerId = UUID.randomUUID().toString();
 
     @Before
     public void setup() throws Exception {
@@ -44,7 +45,7 @@ public class AccountTest {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
 
-        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
         when(AccountRules.eligibleForDelete(account)).thenReturn(true);
 
         // act
@@ -59,7 +60,7 @@ public class AccountTest {
     public void givenAccountIsNotEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, uuid, BigDecimal.valueOf(50.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(50.0));
         when(AccountRules.eligibleForDelete(account)).thenReturn(false);
 
         // act
@@ -70,7 +71,7 @@ public class AccountTest {
     public void givenAccountEligibleForDebit_WhenDebiting_AccountDebitedEventEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, uuid, BigDecimal.valueOf(50.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(50.0));
         when(AccountRules.eligibleForDebit(account, anyDouble())).thenReturn(true);
 
         // act
@@ -85,7 +86,7 @@ public class AccountTest {
     public void givenAccountInEligibleForDebit_WhenDebiting_TransactionFailedEventEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, uuid, BigDecimal.valueOf(49.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(49.0));
         boolean exceptionThrown = false;
         when(AccountRules.eligibleForDebit(account, anyDouble())).thenReturn(false);
 
@@ -106,7 +107,7 @@ public class AccountTest {
     public void givenAccountInEligibleForCredit_WhenCrediting_TransactionFailedIsEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE));
         boolean exceptionThrown = false;
         when(AccountRules.eligibleForCredit(account, anyDouble())).thenReturn(false);
 
@@ -127,7 +128,7 @@ public class AccountTest {
     public void givenAccountEligibleForCredit_WhenCrediting_AccountCreditedIsEmitted() throws Exception {
         // arrange
         when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, uuid, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1.0)));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1.0)));
         when(AccountRules.eligibleForCredit(account, anyDouble())).thenReturn(true);
 
         // act
@@ -141,10 +142,10 @@ public class AccountTest {
     @Test
     public void givenAccountExists_WhenUpdating_AccountUpdatedIsEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, uuid, BigDecimal.valueOf(0.0));
+        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
 
         // act
-        account.on(new UpdateAccountCommand(uuid, uuid));
+        account.on(new UpdateAccountCommand(uuid, customerId));
 
         // assert
         verifyStatic(AggregateLifecycle.class);
@@ -155,7 +156,7 @@ public class AccountTest {
     @Test
     public void givenAcountCreatedEmitted_whenHandling_ThenUpdateIdBalanceCustomerId() throws Exception {
         // arrange
-        UUID customerId = UUID.randomUUID();
+        String customerId = UUID.randomUUID().toString();
         account = new Account();
 
         // act
@@ -170,7 +171,7 @@ public class AccountTest {
     @Test
     public void givenAcountDebitedEmitted_whenHandling_ThenUpdateBalance() throws Exception {
         // arrange
-        UUID customerId = UUID.randomUUID();
+        String customerId = UUID.randomUUID().toString();
         account = new Account();
 
         // act
@@ -183,7 +184,7 @@ public class AccountTest {
     @Test
     public void givenAcountCreditedEmitted_whenHandling_ThenUpdateBalance() throws Exception {
         // arrange
-        UUID customerId = UUID.randomUUID();
+        String customerId = UUID.randomUUID().toString();
         account = new Account();
 
         // act
@@ -210,7 +211,7 @@ public class AccountTest {
     @Test
     public void givenAcountUpdatedEmitted_whenHandling_ThenUpdateCustomerId() throws Exception {
         // arrange
-        UUID customerId = UUID.randomUUID();
+        String customerId = UUID.randomUUID().toString();
         account = new Account();
 
         // act

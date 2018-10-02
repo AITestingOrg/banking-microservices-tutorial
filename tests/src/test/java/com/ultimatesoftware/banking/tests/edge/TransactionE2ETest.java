@@ -52,7 +52,7 @@ public class TransactionE2ETest {
 
         Response response = request.post(customerHost + "/api/v1/customers");
         response.then().statusCode(200);
-        this.customer.setId(UUID.fromString(response.getBody().asString()));
+        this.customer.setId(response.getBody().asString());
 
         // Create accounts
         AccountCreationDto accountToCreate = new AccountCreationDto(this.customer.getId());
@@ -61,7 +61,7 @@ public class TransactionE2ETest {
             .post(accountCmdHost + "/api/v1/accounts");
         response.then().statusCode(200);
         this.account1 = new Account();
-        this.account1.setId(UUID.fromString(response.getBody().asString()));
+        this.account1.setId((response.getBody().as(UUID.class)));
 
         accountToCreate = new AccountCreationDto(this.customer.getId());
         request = given().body(accountToCreate).contentType("application/json");
@@ -69,11 +69,11 @@ public class TransactionE2ETest {
             .post(accountCmdHost + "/api/v1/accounts");
         response.then().statusCode(200);
         this.account2 = new Account();
-        this.account2.setId(UUID.fromString(response.getBody().asString()));
+        this.account2.setId((response.getBody().as(UUID.class)));
 
         // deposit initial balance
-        TransactionDto transactionDto = new TransactionDto(customer.getId(), this.account1.getId(), 15.00);
-        request = given().body(transactionDto);
+        TransactionDto transactionDto = new TransactionDto(this.account1.getId(), customer.getId(), 15.00);
+        request = given().body(transactionDto).contentType("application/json");
         response = request.when().put(accountCmdHost + "/api/v1/accounts/credit");
         response.then().statusCode(200);
     }

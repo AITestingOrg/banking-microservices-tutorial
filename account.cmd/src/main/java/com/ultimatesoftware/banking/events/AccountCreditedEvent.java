@@ -5,9 +5,9 @@ import java.util.UUID;
 public class AccountCreditedEvent extends AccountTransactionEvent {
     private double balance;
     private double creditAmount;
-    private UUID customerId;
+    private String customerId;
 
-    public AccountCreditedEvent(UUID id, UUID customerId, double creditAmount, double balance, String transactionId) {
+    public AccountCreditedEvent(UUID id, String customerId, double creditAmount, double balance, String transactionId) {
         super(id, transactionId);
         this.balance = balance;
         this.creditAmount = creditAmount;
@@ -22,7 +22,7 @@ public class AccountCreditedEvent extends AccountTransactionEvent {
         return creditAmount;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 }

@@ -3,14 +3,14 @@ package com.ultimatesoftware.banking.events;
 import java.util.UUID;
 
 public class AccountUpdatedEvent extends AccountEvent {
-    private UUID customerId;
+    private String customerId;
 
-    public AccountUpdatedEvent(UUID id, UUID customerId) {
+    public AccountUpdatedEvent(UUID id, String customerId) {
         super(id);
         this.customerId = customerId;
     }
 
-    public UUID getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 }
