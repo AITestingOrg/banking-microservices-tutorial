@@ -1,2 +1,2 @@
 '#!/bin/sh'
-./gradlew cleanTest :account.cmd:test --tests "*.integration.*"
+./gradlew cleanTest :account.cmd:test --tests "*.AccountAggregateTest"
