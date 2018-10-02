@@ -2,6 +2,7 @@ package com.ultimatesoftware.banking.transactions.integration;
 
 import com.netflix.discovery.converters.Auto;
 import com.ultimatesoftware.banking.transactions.TransactionsApplication;
+import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.domain.models.BankAccount;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 import com.ultimatesoftware.banking.transactions.domain.services.TransactionService;
@@ -69,7 +70,6 @@ public class TransactionServiceIntegrationTest {
         actionsController = new ActionsController(transactionService);
     }
 
-
     @Test
     public void testTransferToExistingAccount_ReturnsSuccess() {
         // Arrange
@@ -77,12 +77,7 @@ public class TransactionServiceIntegrationTest {
         BankAccount destAccount = new BankAccount(UUID.randomUUID(), 2500.00d, "destCustomerId");
         double transferAmount = 500.00d;
 
-        Mockito.when(restTemplate.getForObject("http://" + bankCustomerService + API_V1_CUSTOMERS, String.class))
-                .thenReturn(null);
-        Mockito.doReturn(originAccount).when(restTemplate).getForObject("http://" + bankAccountQueryService +
-                        API_V1_ACCOUNTS + originAccount.getId(), BankAccount.class);
-        Mockito.doReturn(destAccount).when(restTemplate).getForObject("http://" + bankAccountQueryService +
-                        API_V1_ACCOUNTS + destAccount.getId(), BankAccount.class);
+        configureTransferMocks(originAccount, destAccount);
 
         ResponseEntity<BankTransaction> successResponseEntity = new ResponseEntity<>(HttpStatus.OK);
         Mockito.doReturn(successResponseEntity).when(restTemplate)
@@ -98,7 +93,28 @@ public class TransactionServiceIntegrationTest {
     }
 
     @Test
-    public void testInsufficientFundTransfer_ReturnsException() {
+    public void testInsufficientFundTransfer_ReturnsBadRequest() {
+        // Arrange
+        BankAccount originAccount = new BankAccount(UUID.randomUUID(), 500.00d, "originCustomerId");
+        BankAccount destAccount = new BankAccount(UUID.randomUUID(), 100.00d, "destCustomerId");
+        double transferAmount = 1000.00d;
 
+        configureTransferMocks(originAccount, destAccount);
+
+        // Act
+        ResponseEntity response = actionsController.transfer(transferAmount, originAccount.getId(),
+                originAccount.getCustomerId(), destAccount.getId());
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    public void configureTransferMocks(BankAccount originAccount, BankAccount destAccount) {
+        Mockito.when(restTemplate.getForObject("http://" + bankCustomerService + API_V1_CUSTOMERS, String.class))
+                .thenReturn(null);
+        Mockito.doReturn(originAccount).when(restTemplate).getForObject("http://" + bankAccountQueryService +
+                API_V1_ACCOUNTS + originAccount.getId(), BankAccount.class);
+        Mockito.doReturn(destAccount).when(restTemplate).getForObject("http://" + bankAccountQueryService +
+                API_V1_ACCOUNTS + destAccount.getId(), BankAccount.class);
     }
 }
