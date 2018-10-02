@@ -1,7 +1,6 @@
 package com.ultimatesoftware.banking.transactions.integration;
 
 import com.ultimatesoftware.banking.transactions.TransactionsApplication;
-import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.domain.models.BankAccount;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 import com.ultimatesoftware.banking.transactions.domain.services.TransactionService;
