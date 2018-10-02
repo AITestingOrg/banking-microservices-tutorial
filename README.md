@@ -27,7 +27,7 @@ See each services readme for detailed requirement information
 ```bash
 export SPRING_PROFILES_ACTIVE=default
 # Assemble the binaries
-gradle assemble
+./gradlew assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
 docker-compose -f docker-compose-backing.yml up
 # After the backing services have succesfully loaded, start the domain services
@@ -64,56 +64,36 @@ docker-compose build
 ## Running Unit Tests
 The Gradle task 'test' executes the JUnit tests for each project.
 ```bash
-./gradlew cleanTest test --tests "*.unit.*"
+sh u-unit-test.sh
 ```
 
 ## Running Code Coverage: Unit
 JaCoCo is used for code coverage and can be run after the unit and integraiton tests for each service have been executed.
-```bash
-./gradlew cleanTest test --tests "*.unit.*"
-./gradlew jacocoTestReport
-```
+You can find a JaCoCo coverage report under the "coverage" in transaction service after running the unit tests.
 
 ## Running Integration Tests (No cross service calls)
 The Gradle task 'test' executes the JUnit tests for each project.
 ```bash
-./gradlew cleanTest test --tests "*.integration.*"
-```
-
-## Running Code Coverage: Integration
-JaCoCo is used for code coverage and can be run after the unit and integraiton tests for each service have been executed.
-```bash
-./gradlew cleanTest test --tests "*.integration.*"
-./gradlew jacocoTestReport
+sh u-integration-test.sh
 ```
 
 ## Running Contract Tests
 ```bash
-./gradlew cleanTest :test:test --tests "*.api.*"
-```
-
-## Running API Tests
-```bash
-./gradlew cleanTest :test:test --tests "*.api.*"
+sh u-contract-test.sh
 ```
 
 ## Running Service Readiness Tests
 ```bash
-./gradlew cleanTest :transactions:test --tests "*.readiness.*"
-```
-
-## Running Cross-Service Integration Tests
-```bash
-./gradlew cleanTest :test:test --tests "*.integration.*"
+sh u-service-readiness-test.sh
 ```
 
 ## Running Edge API Tests
 ```bash
-./gradlew cleanTest :edgeservice:test
+sh u-e2e-test.sh
 ```
 
 ## Service Readiness Endpoints
-
+Spring Actuator provides a series of service readiness endpoints which provides links to various metrics at `service:port/actuator`.
 
 # API Documentation:
 
