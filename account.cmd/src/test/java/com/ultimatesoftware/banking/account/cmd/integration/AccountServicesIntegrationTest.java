@@ -105,20 +105,6 @@ public class AccountServicesIntegrationTest {
         Assert.assertEquals(transferAmount, checkForBalance(destinationAccountId, transferAmount), 1);
     }
 
-    @Test
-    public void givenAccountExists_WhenDeleteAccount_thenAccountIsDeleted() throws InterruptedException {
-        // Arrange
-        UUID accountId = createAndGetAccountId(UUID.randomUUID().toString());
-        HttpStatus accountCreatedStatus = checkForAccountStatusCode(accountId);
-
-        // Act
-        restTemplate.delete(URI.create(accountCmd + "/" + accountId));
-
-        // Assert
-        Assert.assertEquals(HttpStatus.OK, accountCreatedStatus);
-        Assert.assertNotEquals(HttpStatus.OK, checkForAccountStatusCode(accountId));
-    }
-
     private HttpStatus checkForAccountStatusCode(UUID accountId) throws InterruptedException {
         int i = 0;
         ResponseEntity<Account> queryResponse;

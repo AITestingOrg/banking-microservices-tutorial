@@ -9,9 +9,11 @@ import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 public class AccountEventHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);
 
@@ -51,7 +53,7 @@ public class AccountEventHandlers {
     }
 
     private void updateTransaction(AccountTransactionEvent event) {
-        BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(event.getTransactionId()));
+        BankTransaction transaction = bankTransactionRepository.findOne(event.getTransactionId());
         if (transaction != null) {
             transaction.setStatus(TransactionStatus.SUCCESSFUL);
             bankTransactionRepository.save(transaction);
@@ -61,7 +63,7 @@ public class AccountEventHandlers {
     }
 
     private void updateTransaction(String transactionId, TransactionStatus status) {
-        BankTransaction transaction = bankTransactionRepository.findOne(UUID.fromString(transactionId));
+        BankTransaction transaction = bankTransactionRepository.findOne(transactionId);
         if (transaction != null) {
             transaction.setStatus(status);
             bankTransactionRepository.save(transaction);
