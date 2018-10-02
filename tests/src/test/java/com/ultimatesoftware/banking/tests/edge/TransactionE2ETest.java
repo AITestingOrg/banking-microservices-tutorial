@@ -94,23 +94,22 @@ public class TransactionE2ETest {
             get(transactionHost + "/api/v1/transactions/transfer");
 
         // Assert
-        ResponseBody body = response.getBody();
         response.then().statusCode(200);
-        accountBalanceIs(this.account1.getId(), 10.00, 5);
-        accountBalanceIs(this.account2.getId(), 5.00, 5);
-        transactionStatusIsSuccessful("test", 5);
+        accountBalanceIs(this.account1.getId(), 5.00f, 5);
+        accountBalanceIs(this.account2.getId(), 10.00f, 5);
+        transactionStatusIsSuccessful(response.getBody().asString(), 5);
     }
 
-    private void accountBalanceIs(UUID accountId, double balance, long seconds) throws Exception {
-        long secondsTaken = seconds;
+    private void accountBalanceIs(UUID accountId, float balance, long seconds) throws Exception {
+        long secondsTaken = 0;
         while (secondsTaken < seconds) {
             long startTime = System.currentTimeMillis();
             try {
                 TimeUnit.SECONDS.sleep(1);
                 when().
-                    get(this.accountQueryHost + String.format("/api/v1/accounts/%s", accountId)).
+                    get(accountQueryHost + String.format("/api/v1/accounts/%s", accountId)).
                     then().
-                    body("account.balance", equalTo(balance));
+                    body("balance", equalTo(balance));
                 return;
             } catch (Exception e) {}
             long endTime = System.currentTimeMillis();
@@ -120,15 +119,15 @@ public class TransactionE2ETest {
     }
 
     private void transactionStatusIsSuccessful(String transactionId, long seconds) throws Exception {
-        long secondsTaken = seconds;
+        long secondsTaken = 0;
         while (secondsTaken < seconds) {
             long startTime = System.currentTimeMillis();
             try {
                 TimeUnit.SECONDS.sleep(1);
                 when().
-                        get(this.accountQueryHost + String.format("/api/v1/transaction/%s", transactionId)).
+                        get(transactionHost + String.format("/api/v1/transactions/id/%s", transactionId)).
                         then().
-                        body("transaction.status", equalTo("SUCCESSFUL"));
+                        body("status", equalTo("SUCCESSFUL"));
                 return;
             } catch (Exception e) {}
             long endTime = System.currentTimeMillis();

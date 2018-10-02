@@ -154,4 +154,8 @@ public class TransactionService extends RestService {
     private void validateCustomer(String customerId) throws CustomerDoesNotExistException {
         getCustomer(customerId);
     }
+
+    public BankTransaction getTransaction(String transactionId) {
+        return this.bankTransactionRepository.findOne(transactionId);
+    }
 }

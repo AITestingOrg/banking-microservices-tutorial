@@ -3,6 +3,7 @@ package com.ultimatesoftware.banking.transactions.service.controllers;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
+import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 import com.ultimatesoftware.banking.transactions.domain.services.TransactionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,14 @@ public class ActionsController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<BankTransaction> getTransaction(@PathVariable("id") String id) {
+        BankTransaction bankTransaction = this.transactionService.getTransaction(id);
+        if(bankTransaction != null) {
+            return new ResponseEntity<>(bankTransaction, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 }
