@@ -4,18 +4,6 @@ spring:
   data:
     mongodb:
       host: mongo
-  rabbitmq:
-    host: rabbitmq
-
-axon:
-  eventstore:
-    mongo:
-      connections:
-        default:
-          uri: mongodb://mongo:27017/${spring.application.name}
-amqp:
-  events:
-    host: rabbitmq
 
 eureka:
   client:
@@ -32,6 +20,10 @@ endpoints:
 
 server:
   port: 8080
+
+axon:
+  axonserver:
+    servers: axonserver
 
 management:
   security:

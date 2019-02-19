@@ -1,21 +1,10 @@
 spring:
   profiles:
     include: default
-  data:
-    mongodb:
-      host: mongo
-  rabbitmq:
-    host: rabbitmq
 
 axon:
-  eventstore:
-    mongo:
-      connections:
-        default:
-          uri: mongodb://mongo:27017/${spring.application.name}
-amqp:
-  events:
-    host: rabbitmq
+  axonserver:
+    servers: axonserver
 
 eureka:
   client:

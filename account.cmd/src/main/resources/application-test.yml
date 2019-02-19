@@ -3,26 +3,13 @@ spring:
   profiles: test
   application:
     name: accountcmd
-  data:
-    mongodb:
-      database: ${spring.application.name}
-      host: localhost
-      port: 27017
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+
+axon:
+  axonserver:
+    servers: axonserver
 
 server:
   port: 8080
-
-amqp:
-  events:
-    host: localhost
-    exchange-name: eventBus-account
-    queue-name: eventQueue-account
-    handlers: com.ultimatesoftware.banking.transactions.domain.eventhandlers
 
 endpoints:
   health:

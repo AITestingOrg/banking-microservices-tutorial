@@ -1,9 +1,9 @@
 package com.ultimatesoftware.banking.account.cmd.domain.commands;
 
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountUpdateDto;
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 public class UpdateAccountCommand implements ICommand {
     @TargetAggregateIdentifier
