@@ -1,9 +1,7 @@
 package com.ultimatesoftware.banking.account.cmd.domain.commands;
 
-
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
-
 import java.util.UUID;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 public class DeleteAccountCommand implements ICommand {
     @TargetAggregateIdentifier

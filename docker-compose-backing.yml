@@ -20,11 +20,11 @@ services:
       - 'mongo:/data/db'
     networks:
       - bank
-  rabbitmq:
-    image: rabbitmq:management
+  axonserver:
+    image: 'axoniq/axonserver'
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - '8124:8124'
+      - '8024:8024'
     networks:
       - bank
 

@@ -1,13 +1,14 @@
 dependencies {
-    compile project(":eventsourcing")
-    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-    compile('org.springframework.cloud:spring-cloud-starter-eureka')
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
-    compile('org.springframework.boot:spring-boot-starter-data-mongodb')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-hateoas')
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    compile("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-hateoas")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile "org.aspectj:aspectjtools:${aspectjVersion}"
+    compile("org.axonframework:axon-spring-boot-starter:${axonVersion}")
+    testCompile("org.axonframework:axon-test:${axonVersion}")
     testCompile 'io.rest-assured:rest-assured:3.1.1'
 }
 

@@ -1,16 +1,15 @@
 apply plugin: "jacoco"
 
 dependencies {
-    compile project(":eventsourcing")
-    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-    compile('org.springframework.cloud:spring-cloud-starter-eureka')
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.axonframework:axon-test:${axonVersion}")
-    compile("org.powermock:powermock-module-junit4:1.7.4")
-    compile("org.powermock:powermock-api-mockito:1.7.4")
-
-    testCompile('org.springframework.boot:spring-boot-starter-data-mongodb')
+    compile("org.axonframework:axon-spring-boot-starter:${axonVersion}")
+    testCompile("org.axonframework:axon-test:${axonVersion}")
+    testCompile("org.powermock:powermock-module-junit4:1.7.4")
+    testCompile("org.powermock:powermock-api-mockito:1.7.4")
+    
 }
 
 version = '0.0.1'

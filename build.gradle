@@ -1,21 +1,31 @@
 buildscript {
-    ext {
-        springCloudVersion = 'Edgware.SR4'
-        springBootVersion = '1.5.14.RELEASE'
-        axonVersion = '3.1.2'
-        aspectjVersion = '1.9.1'
-        verifierVersion = '1.2.3.RELEASE'
-        springfoxVersion = '2.8.0'
-    }
+  ext {
+    verifierVersion = '1.2.3.RELEASE'
+  }
 
-    dependencies {
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:${verifierVersion}"
-    }
+  dependencies {
+    classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:${verifierVersion}"
+  }
 }
 
 plugins {
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id "org.springframework.boot" version "1.5.14.RELEASE" apply false
+  id 'org.springframework.boot' version '2.1.3.RELEASE' apply false
+  id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+repositories {
+  mavenCentral()
+  maven { url 'https://repo.spring.io/milestone' }
+}
+
+ext {
+  springCloudVersion = 'Greenwich.RELEASE'
+  springBootVersion = '2.1.3.RELEASE'
+  axonVersion = '4.0.3'
+  aspectjVersion = '1.9.1'
+  springfoxVersion = '2.8.0'
 }
 
 dependencyManagement {
@@ -24,8 +34,6 @@ dependencyManagement {
         mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
     }
 }
-
-apply plugin: 'java'
 
 dependencies {
     compile project('customers')
@@ -47,6 +55,7 @@ springProjects.addAll(crudProjects)
 springProjects.add(project('transactions'))
 
 allprojects {
+    version = '0.1.0'
     group = 'com.ultimatesoftware.banking'
     sourceCompatibility = 1.8
 
@@ -56,6 +65,7 @@ allprojects {
         maven {
             url 'https://dl.bintray.com/palantir/releases'
         }
+        maven { url 'https://repo.spring.io/milestone' }
 	}
     apply plugin: 'java'
     apply plugin: 'checkstyle'
@@ -127,30 +137,31 @@ allprojects {
 }
 
 configure(springProjects) {
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'groovy'
-    apply plugin: 'spring-cloud-contract'
+  apply plugin: 'org.springframework.boot'
+  apply plugin: 'groovy'
+  apply plugin: 'spring-cloud-contract'
+  apply plugin: 'io.spring.dependency-management'
 
     configurations {
         providedRuntime
     }
 
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-        }
-    }
     dependencies {
-        compile 'org.springframework.boot:spring-boot-starter-actuator'
-        compile 'org.springframework.boot:spring-boot-starter-aop'
-        compile 'org.springframework.cloud:spring-cloud-starter-config'
+        compile "org.springframework.boot:spring-boot-starter-actuator"
+        compile "org.springframework.boot:spring-boot-starter-aop"
         compile("io.springfox:springfox-swagger2:${springfoxVersion}")
         compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
-        testCompile 'junit:junit:4.12'
-        testCompile('org.springframework.boot:spring-boot-starter-test')
+        testCompile "junit:junit:4.12"
+        testCompile("org.springframework.boot:spring-boot-starter-test")
         testCompile "org.springframework.cloud:spring-cloud-starter-contract-verifier"
         testCompile "org.springframework.cloud:spring-cloud-contract-spec"
     }
+
+  dependencyManagement {
+    imports {
+      mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+  }
 }
 
 wrapper {

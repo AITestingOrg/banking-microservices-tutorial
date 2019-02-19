@@ -1,9 +1,9 @@
 package com.ultimatesoftware.banking.account.cmd.domain.commands;
 
 import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import java.util.UUID;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 public class FailToStartTransferTransactionCommand extends TransactionCommand implements ICommand {
     @TargetAggregateIdentifier

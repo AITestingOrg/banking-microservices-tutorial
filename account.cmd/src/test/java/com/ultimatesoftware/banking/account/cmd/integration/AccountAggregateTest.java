@@ -50,7 +50,7 @@ public class AccountAggregateTest {
     }
 
     @Test
-    public void onAccountDebit() {
+    public void givenAccountExistsWithBalance_WhenAccountDebit_EmitAccountDebited() {
         
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         CreditAccountCommand creditCommand = new CreditAccountCommand(createCommand.getId(), 100.0, transactionId);
@@ -95,7 +95,7 @@ public class AccountAggregateTest {
     }
 
     @Test
-    public void onAccountDebit_WhenAccountInactive_NoEventSent() {
+    public void givenInactiveAccount_WhenAccountDebited_ExpectDeletedException() {
 
         CreateAccountCommand createCommand = new CreateAccountCommand(customerId);
         DeleteAccountCommand deleteCommand = new DeleteAccountCommand(createCommand.getId());

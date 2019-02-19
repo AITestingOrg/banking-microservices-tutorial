@@ -2,6 +2,7 @@ package com.ultimatesoftware.banking.customer.service.controllers;
 
 import com.ultimatesoftware.banking.customer.domain.models.Customer;
 import com.ultimatesoftware.banking.customer.service.repositories.CustomerRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,9 @@ public class CustomerController {
 
     @GetMapping("customers/{id}")
     public ResponseEntity<Customer> getCustomer(@PathVariable("id") String id) {
-        Customer customer = customerRepository.findOne(id);
-        if (customer != null) {
-            return new ResponseEntity<>(customer, HttpStatus.OK);
+        Optional<Customer> customer = customerRepository.findById(id);
+        if (customer.isPresent()) {
+            return new ResponseEntity<>(customer.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -39,8 +40,8 @@ public class CustomerController {
 
     @PutMapping("customers/{id}")
     public ResponseEntity updateCustomer(@PathVariable("id") String id, @Valid @RequestBody Customer customer) {
-        Customer customerFromDB = customerRepository.findOne(id);
-        if (customerFromDB != null) {
+        Optional<Customer> customerFromDB = customerRepository.findById(id);
+        if (customerFromDB.isPresent()) {
             customerRepository.save(customer);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -49,9 +50,9 @@ public class CustomerController {
 
     @DeleteMapping("customers/{id}")
     public ResponseEntity deleteCustomers(@PathVariable("id") String id) {
-        Customer customerFromDB = customerRepository.findOne(id);
-        if (customerFromDB != null) {
-            customerRepository.delete(id);
+        Optional<Customer> customerFromDB = customerRepository.findById(id);
+        if (customerFromDB.isPresent()) {
+            customerRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

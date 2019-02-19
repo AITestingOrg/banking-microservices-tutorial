@@ -4,11 +4,10 @@ import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
 import com.ultimatesoftware.banking.account.cmd.service.scheduling.FutureCommandSend;
 import com.ultimatesoftware.banking.events.*;
 
-import com.ultimatesoftware.banking.eventsourcing.sagas.CustomSaga;
-
-import org.axonframework.eventhandling.saga.EndSaga;
-import org.axonframework.eventhandling.saga.SagaEventHandler;
-import org.axonframework.eventhandling.saga.StartSaga;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.modelling.saga.EndSaga;
+import org.axonframework.modelling.saga.SagaEventHandler;
+import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +15,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Saga
-public class TransactionSaga extends CustomSaga {
+public class TransactionSaga {
     private static final Logger logger = LoggerFactory.getLogger(TransactionSaga.class);
 
     private String transactionId;
@@ -26,6 +28,13 @@ public class TransactionSaga extends CustomSaga {
     private UUID destinationAccountId;
     private double amount;
     private ScheduledFuture cancellationTimer;
+    private TaskScheduler executor;
+    private CommandGateway commandGateway;
+
+    public TransactionSaga(@Autowired ThreadPoolTaskScheduler taskScheduler, @Autowired CommandGateway commandGateway) {
+        this.commandGateway = commandGateway;
+        this.executor = taskScheduler;
+    }
 
     @StartSaga
     @SagaEventHandler(associationProperty = "transactionId")

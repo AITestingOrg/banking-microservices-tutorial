@@ -5,6 +5,7 @@ import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 import com.ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
 
+import java.util.Optional;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,8 +54,9 @@ public class AccountEventHandlers {
     }
 
     private void updateTransaction(AccountTransactionEvent event) {
-        BankTransaction transaction = bankTransactionRepository.findOne(event.getTransactionId());
-        if (transaction != null) {
+        Optional<BankTransaction> transactionOp = bankTransactionRepository.findById(event.getTransactionId());
+        if (transactionOp.isPresent()) {
+            BankTransaction transaction = transactionOp.get();
             transaction.setStatus(TransactionStatus.SUCCESSFUL);
             bankTransactionRepository.save(transaction);
             return;
@@ -63,8 +65,9 @@ public class AccountEventHandlers {
     }
 
     private void updateTransaction(String transactionId, TransactionStatus status) {
-        BankTransaction transaction = bankTransactionRepository.findOne(transactionId);
-        if (transaction != null) {
+        Optional<BankTransaction> transactionOp = bankTransactionRepository.findById(transactionId);
+        if (transactionOp.isPresent()) {
+            BankTransaction transaction = transactionOp.get();
             transaction.setStatus(status);
             bankTransactionRepository.save(transaction);
             return;

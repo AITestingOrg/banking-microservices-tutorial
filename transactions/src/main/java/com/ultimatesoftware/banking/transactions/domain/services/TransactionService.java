@@ -157,6 +157,6 @@ public class TransactionService extends RestService {
     }
 
     public BankTransaction getTransaction(String transactionId) {
-        return this.bankTransactionRepository.findOne(transactionId);
+        return this.bankTransactionRepository.findById(transactionId).get();
     }
 }
