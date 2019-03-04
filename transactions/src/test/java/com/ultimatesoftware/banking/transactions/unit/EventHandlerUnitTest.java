@@ -7,22 +7,28 @@ import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
 import com.ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
 import com.ultimatesoftware.banking.transactions.domain.models.TransactionType;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
-import org.junit.Test;
+
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+
+@ExtendWith(MockitoExtension.class)
+@DisplayName("Spring boot 2 mockito2 Junit5 example")
 public class EventHandlerUnitTest {
 
     @InjectMocks
@@ -33,16 +39,17 @@ public class EventHandlerUnitTest {
 
     @Test
     public void givenAccountTransactionExists_whenAccountCreditedEventReceived_thenTheTransactionShouldBeUpdated() {
+        // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
-                .findOne(TestConstants.TRANSACTION_ID))
-                .thenReturn(new BankTransaction(
+                .findById(TestConstants.TRANSACTION_ID))
+                .thenReturn(Optional.of(new BankTransaction(
                         "1",
                         TransactionType.CREDIT,
                         TestConstants.CUSTOMER_ID,
                         TestConstants.ACCOUNT_ID,
                         5.0,
-                        TestConstants.DESTINATION_ID));
+                        TestConstants.DESTINATION_ID)));
 
         // Act
         accountEventHandlers.on(
@@ -65,14 +72,14 @@ public class EventHandlerUnitTest {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
-                .findOne(TestConstants.TRANSACTION_ID))
-                .thenReturn(new BankTransaction(
+                .findById(TestConstants.TRANSACTION_ID))
+                .thenReturn(Optional.of(new BankTransaction(
                         "1",
                         TransactionType.TRANSFER,
                         TestConstants.CUSTOMER_ID,
                         TestConstants.ACCOUNT_ID,
                         5.0,
-                        TestConstants.DESTINATION_ID));
+                        TestConstants.DESTINATION_ID)));
 
         // Act
         accountEventHandlers.on(
@@ -92,14 +99,14 @@ public class EventHandlerUnitTest {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
-                .findOne(TestConstants.TRANSACTION_ID))
-                .thenReturn(new BankTransaction(
+                .findById(TestConstants.TRANSACTION_ID))
+                .thenReturn(Optional.of(new BankTransaction(
                         "1",
                         TransactionType.CREDIT,
                         TestConstants.CUSTOMER_ID,
                         TestConstants.ACCOUNT_ID,
                         5.0,
-                        TestConstants.DESTINATION_ID));
+                        TestConstants.DESTINATION_ID)));
 
         // Act
         accountEventHandlers.on(
@@ -122,14 +129,14 @@ public class EventHandlerUnitTest {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
-                .findOne(TestConstants.TRANSACTION_ID))
-                .thenReturn(new BankTransaction(
+                .findById(TestConstants.TRANSACTION_ID))
+                .thenReturn(Optional.of(new BankTransaction(
                         "1",
                         TransactionType.CREDIT,
                         TestConstants.CUSTOMER_ID,
                         TestConstants.ACCOUNT_ID,
                         5.0,
-                        TestConstants.DESTINATION_ID));
+                        TestConstants.DESTINATION_ID)));
 
         // Act
         accountEventHandlers.on(
@@ -150,14 +157,14 @@ public class EventHandlerUnitTest {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
         when(bankTransactionRepository
-                .findOne(TestConstants.TRANSACTION_ID))
-                .thenReturn(new BankTransaction(
+                .findById(TestConstants.TRANSACTION_ID))
+                .thenReturn(Optional.of(new BankTransaction(
                         "1",
                         TransactionType.CREDIT,
                         TestConstants.CUSTOMER_ID,
                         TestConstants.ACCOUNT_ID,
                         5.0,
-                        TestConstants.DESTINATION_ID));
+                        TestConstants.DESTINATION_ID)));
 
         // Act
         accountEventHandlers.on(
@@ -176,7 +183,7 @@ public class EventHandlerUnitTest {
     @Test
     public void givenNoAccountTransactionExists_whenAccountCreditedEventReceived_thenNothingShouldBeDone() {
         // Arrange
-        when(bankTransactionRepository.findOne(TestConstants.TRANSACTION_ID)).thenReturn(null);
+        when(bankTransactionRepository.findById(TestConstants.TRANSACTION_ID)).thenReturn(Optional.empty());
 
         // Act
         accountEventHandlers.on(
@@ -188,13 +195,13 @@ public class EventHandlerUnitTest {
                         TestConstants.TRANSACTION_ID));
 
         // Assert
-        verify(bankTransactionRepository, times(0)).save(isA(BankTransaction.class));
+        verify(bankTransactionRepository, times(0)).save(ArgumentMatchers.isA(BankTransaction.class));
     }
 
     @Test
     public void givenNoAccountTransactionExists_whenTransferFailedToStartEvent_thenNothingShouldBeDone() {
         // Arrange
-        when(bankTransactionRepository.findOne(TestConstants.TRANSACTION_ID)).thenReturn(null);
+        when(bankTransactionRepository.findById(TestConstants.TRANSACTION_ID)).thenReturn(Optional.empty());
 
         // Act
         accountEventHandlers.on(
@@ -203,13 +210,13 @@ public class EventHandlerUnitTest {
                         TestConstants.TRANSACTION_ID));
 
         // Assert
-        verify(bankTransactionRepository, times(0)).save(isA(BankTransaction.class));
+        verify(bankTransactionRepository, times(0)).save(ArgumentMatchers.isA(BankTransaction.class));
     }
 
     @Test
     public void givenNoAccountTransactionExists_whenAccountDebitedEventReceived_thenNothingShouldBeDone() {
         // Arrange
-        when(bankTransactionRepository.findOne(TestConstants.TRANSACTION_ID)).thenReturn(null);
+        when(bankTransactionRepository.findById(TestConstants.TRANSACTION_ID)).thenReturn(Optional.empty());
 
         // Act
         accountEventHandlers.on(
@@ -221,13 +228,13 @@ public class EventHandlerUnitTest {
                         TestConstants.TRANSACTION_ID));
 
         // Assert
-        verify(bankTransactionRepository, times(0)).save(isA(BankTransaction.class));
+        verify(bankTransactionRepository, times(0)).save(ArgumentMatchers.isA(BankTransaction.class));
     }
 
     @Test
     public void givenNoAccountTransactionExists_whenTransferCanceledEventReceived_thenNothingShouldBeDone() {
         // Arrange
-        when(bankTransactionRepository.findOne(TestConstants.TRANSACTION_ID)).thenReturn(null);
+        when(bankTransactionRepository.findById(TestConstants.TRANSACTION_ID)).thenReturn(Optional.empty());
 
         // Act
         accountEventHandlers.on(
@@ -237,13 +244,13 @@ public class EventHandlerUnitTest {
                         TestConstants.TRANSACTION_ID));
 
         // Assert
-        verify(bankTransactionRepository, times(0)).save(isA(BankTransaction.class));
+        verify(bankTransactionRepository, times(0)).save(ArgumentMatchers.isA(BankTransaction.class));
     }
 
     @Test
     public void givenNoAccountTransactionExists_whenTransferDepositConcludedEventReceived_thenNothingShouldBeDone() {
         // Arrange
-        when(bankTransactionRepository.findOne(TestConstants.TRANSACTION_ID)).thenReturn(null);
+        when(bankTransactionRepository.findById(TestConstants.TRANSACTION_ID)).thenReturn(Optional.empty());
 
         // Act
         accountEventHandlers.on(
@@ -253,6 +260,6 @@ public class EventHandlerUnitTest {
                         TestConstants.TRANSACTION_ID));
 
         // Assert
-        verify(bankTransactionRepository, times(0)).save(isA(BankTransaction.class));
+        verify(bankTransactionRepository, times(0)).save(ArgumentMatchers.isA(BankTransaction.class));
     }
 }

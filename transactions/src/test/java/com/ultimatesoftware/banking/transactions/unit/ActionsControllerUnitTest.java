@@ -4,11 +4,11 @@ import com.ultimatesoftware.banking.transactions.domain.services.TransactionServ
 import com.ultimatesoftware.banking.transactions.service.controllers.ActionsController;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -18,16 +18,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ActionsControllerUnitTest {
-    @InjectMocks
-    private ActionsController actionsController;
+
     @Mock
-    private TransactionService transactionService;
+    TransactionService transactionService;
+
+    @InjectMocks
+    ActionsController actionsController;
 
     @Test
     public void whenWithdrawIsCalled_thenServiceCalledWithParams() throws Exception {
         // Arrange
+        when(transactionService.withdraw(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT)).thenReturn(TRANSACTION_ID);
 
         // Act
         actionsController.withdraw(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
@@ -78,6 +81,7 @@ public class ActionsControllerUnitTest {
     @Test
     public void whenDepositIsCalled_thenServiceCalledWithParams() throws Exception {
         // Arrange
+        when(transactionService.deposit(CUSTOMER_ID, ACCOUNT_ID, BASE_AMOUNT)).thenReturn(TRANSACTION_ID);
 
         // Act
         actionsController.deposit(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID);
@@ -115,6 +119,7 @@ public class ActionsControllerUnitTest {
     @Test
     public void whenTransferIsCalled_thenServiceCalledWithParams() throws Exception {
         // Arrange
+        when(transactionService.transfer(CUSTOMER_ID, ACCOUNT_ID, DESTINATION_ID, BASE_AMOUNT)).thenReturn(TRANSACTION_ID);
         
         // Act
         actionsController.transfer(BASE_AMOUNT, ACCOUNT_ID, CUSTOMER_ID, DESTINATION_ID);

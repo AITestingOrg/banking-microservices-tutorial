@@ -1,44 +1,55 @@
 package com.ultimatesoftware.banking.transactions.domain.services;
 
-import com.ultimatesoftware.banking.transactions.domain.models.BankAccount;
+import com.ultimatesoftware.banking.transactions.domain.models.BankAccountDto;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
+import com.ultimatesoftware.banking.transactions.domain.models.CustomerDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-public abstract class RestService {
-
+@Service
+public class RestService {
+    private static final String API_V1_ACCOUNTS = "/api/v1/accounts/";
+    private static final String API_V1_CUSTOMERS = "/api/v1/customers/";
+    @Value("${hosts.account-query}")
+    private String bankAccountQueryService;
+    @Value("${hosts.account-cmd}")
+    private String bankAccountCmdService;
+    @Value("${hosts.customers}")
+    private String bankCustomerService;
+    @Value("${hosts.ssl}")
+    private String ssl;
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    protected RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
-    public RestService(RestTemplate restTemplate) {
+    public RestService(@Autowired RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    protected BankAccount get(String appName, String path, Class<BankAccount> type) {
-        log.info(String.format("Sending getbankaccount to: %s", "http://" + appName + path));
-        return restTemplate.getForObject("http://" + appName + path, type);
+    public ResponseEntity<BankAccountDto> getBankAccount(String accountId) {
+        String url = String.format("%s://%s/%s", ssl, bankAccountQueryService, API_V1_ACCOUNTS, accountId);
+        log.info(String.format(String.format("Sending getbankaccount to: %s", url)));
+        return restTemplate.exchange(url , HttpMethod.GET, null, BankAccountDto.class);
     }
 
-    protected void get(String appName, String path) throws HttpClientErrorException {
-        log.info(String.format("Sending get to: %s", "http://" + appName + path));
-        restTemplate.getForObject("http://" + appName + path, String.class);
+    public ResponseEntity<CustomerDto> getCustomer(String customerId) {
+        String url = String.format("%s://%s/%s", ssl, bankAccountQueryService, API_V1_CUSTOMERS, customerId);
+        log.info(String.format(String.format("Sending getcustomer to: %s", url)));
+        return restTemplate.exchange(url, HttpMethod.GET, null, CustomerDto.class);
     }
 
-    protected HttpStatus put(String appName, String path, BankTransaction objectToPut, Class<BankTransaction> type) {
+    public ResponseEntity<BankTransaction> updateBankTransaction(String type, BankTransaction objectToPut) {
+        String url = String.format("%s://%s/%s", ssl, bankAccountQueryService, API_V1_ACCOUNTS, type);
         HttpEntity<BankTransaction> requestUpdate = new HttpEntity<>(objectToPut);
-        log.info(String.format("Sending put to : http://" + appName + path));
-        ResponseEntity<BankTransaction> response = restTemplate.exchange("http://" + appName + path , HttpMethod.PUT, requestUpdate, type);
-        return response.getStatusCode();
+        log.info(String.format(String.format("Sending updatebanktransaction to: %s", url)));
+        return restTemplate.exchange(url , HttpMethod.PUT, requestUpdate, BankTransaction.class);
     }
 }

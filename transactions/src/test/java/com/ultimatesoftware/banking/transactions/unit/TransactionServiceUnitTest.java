@@ -4,29 +4,33 @@ import com.ultimatesoftware.banking.transactions.TestConstants;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.domain.exceptions.NoAccountExistsException;
-import com.ultimatesoftware.banking.transactions.domain.models.BankAccount;
+import com.ultimatesoftware.banking.transactions.domain.models.BankAccountDto;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
+import com.ultimatesoftware.banking.transactions.domain.models.CustomerDto;
 import com.ultimatesoftware.banking.transactions.domain.models.TransactionStatus;
+import com.ultimatesoftware.banking.transactions.domain.services.RestService;
 import com.ultimatesoftware.banking.transactions.domain.services.TransactionService;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TransactionServiceUnitTest {
 
     @InjectMocks
@@ -36,30 +40,32 @@ public class TransactionServiceUnitTest {
     private BankTransactionRepository bankTransactionRepository;
 
     @Mock
-    protected RestTemplate restTemplate;
+    protected RestService restService;
+
+    private void buildGetBankAccountMock(BankAccountDto bankAccountDto, HttpStatus status) {
+        when(restService.getBankAccount(bankAccountDto.getId().toString())).thenReturn(new ResponseEntity<BankAccountDto>(bankAccountDto, status));
+    }
+
+    private void buildGetBankAccountMock(HttpStatus status) {
+        when(restService.getBankAccount(ArgumentMatchers.anyString())).thenReturn(new ResponseEntity(status));
+    }
+
+    private void buildGetCustomerMock(String customerId, HttpStatus status) {
+        when(restService.getCustomer(customerId)).thenReturn(new ResponseEntity(status));
+    }
+
+    private void buildTransactionUpdateMock(HttpStatus status) {
+        when(restService.updateBankTransaction(ArgumentMatchers.anyString(), ArgumentMatchers.isA(BankTransaction.class))).thenReturn(new ResponseEntity(status));
+    }
 
     @Test
-    public void givenAcountAndCustomerExist_whenDebitingAValidAmount_thenTheTransactionIsStarted() throws Exception {
+    public void givenAcountAndCustomerExist_whenDebitingAValidAmount_thenTheTransactionIsStarted()
+        throws Exception {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 0.0, TestConstants.CUSTOMER_ID));
+        buildTransactionUpdateMock(HttpStatus.OK);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 0.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
 
         // Act
         transactionService.deposit(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
@@ -73,66 +79,36 @@ public class TransactionServiceUnitTest {
         assertEquals(TransactionStatus.IN_PROGRESS, transaction.getStatus());
     }
 
-    @Test(expected = NoAccountExistsException.class)
-    public void givenAccountDoesNotExist_whenDebitingAValidAmount_thenThrowNoAccountExists() throws Exception {
+    @Test
+    public void givenAccountDoesNotExist_whenDebitingAValidAmount_thenThrowNoAccountExists() {
         // Arrange
-        ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
 
         // Act
-        transactionService.deposit(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
-    }
-
-    @Test(expected = CustomerDoesNotExistException.class)
-    public void givenCustomerDoesNotExist_whenDebitingAValidAmount_thenThrowNoCustomerExists() throws Exception {
-        // Arrange
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenThrow(CustomerDoesNotExistException.class);
-
-        // Act
-        transactionService.deposit(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
+        Assertions.assertThrows(NoAccountExistsException.class, () -> {
+            transactionService.deposit(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
+        });
     }
 
     @Test
-    public void givenAcountAndCustomerExist_whenWithdrawingAAValidAmount_thenTheTransactionIsStarted() throws Exception {
+    public void givenCustomerDoesNotExist_whenDebitingAValidAmount_thenThrowNoCustomerExists() {
+        // Arrange
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.NOT_FOUND);
+
+        // Act
+        Assertions.assertThrows(CustomerDoesNotExistException.class, () -> {
+            transactionService.deposit(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
+        });
+    }
+
+    @Test
+    public void givenAcountAndCustomerExist_whenWithdrawingAAValidAmount_thenTheTransactionIsStarted()
+        throws Exception {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 10.0, TestConstants.CUSTOMER_ID));
+        buildTransactionUpdateMock(HttpStatus.OK);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 10.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
 
         // Act
         transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
@@ -146,72 +122,39 @@ public class TransactionServiceUnitTest {
         assertEquals(TransactionStatus.IN_PROGRESS, transaction.getStatus());
     }
 
-    @Test(expected = NoAccountExistsException.class)
-    public void givenNoAcountExist_whenWithdrawingAAValidAmount_thenThrowNoAccountExists() throws Exception {
+    @Test
+    public void givenNoAcountExist_whenWithdrawingAAValidAmount_thenThrowNoAccountExists() {
         // Arrange
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(HttpStatus.NOT_FOUND);
 
         // Act
-        transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
+        Assertions.assertThrows(NoAccountExistsException.class, () -> {
+                transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
+            });
 
         // Assert
     }
 
-    @Test(expected = CustomerDoesNotExistException.class)
-    public void givenNoCustomerExist_whenWithdrawingAAValidAmount_thenThrowNoCustomerExists() throws Exception {
+    @Test
+    public void givenNoCustomerExist_whenWithdrawingAAValidAmount_thenThrowNoCustomerExists() {
         // Arrange
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenThrow(CustomerDoesNotExistException.class);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.NOT_FOUND);
 
         // Act
-        transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
+        Assertions.assertThrows(CustomerDoesNotExistException.class, () -> {
+            transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
+        });
     }
 
     @Test
-    public void givenAcountAndCustomerExist_whenWithdrawingATheEntireBalance_thenTheTransactionIsStarted() throws Exception {
+    public void givenAcountAndCustomerExist_whenWithdrawingATheEntireBalance_thenTheTransactionIsStarted()
+        throws Exception {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID));
+        buildTransactionUpdateMock(HttpStatus.OK);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
 
         // Act
         transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.00);
@@ -225,54 +168,26 @@ public class TransactionServiceUnitTest {
         assertEquals(TransactionStatus.IN_PROGRESS, transaction.getStatus());
     }
 
-    @Test(expected = InsufficientBalanceException.class)
-    public void givenAcountAndCustomerExist_whenWithdrawingSlightlyMoreThanTheBalance_thenTheTransactionIsStarted() throws Exception {
+    @Test
+    public void givenAcountAndCustomerExist_whenWithdrawingSlightlyMoreThanTheBalance_thenTheTransactionIsStarted() {
         // Arrange
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID));
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
 
         // Act
-        transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.01);
+        Assertions.assertThrows(InsufficientBalanceException.class, () -> {
+            transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 5.01);
+        });
     }
 
     @Test
-    public void givenAcountAndCustomerExist_whenWithdrawingSlightlyLessThanTheBalance_thenTheTransactionIsStarted() throws Exception {
+    public void givenAcountAndCustomerExist_whenWithdrawingSlightlyLessThanTheBalance_thenTheTransactionIsStarted()
+        throws Exception {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID));
+        buildTransactionUpdateMock(HttpStatus.OK);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
 
         // Act
         transactionService.withdraw(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, 4.99);
@@ -287,27 +202,14 @@ public class TransactionServiceUnitTest {
     }
 
     @Test
-    public void givenAcountAndCustomerExist_whenTransferingAValidAmount_thenTheTransactionIsStarted() throws Exception {
+    public void givenAcountAndCustomerExist_whenTransferingAValidAmount_thenTheTransactionIsStarted()
+        throws Exception {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 10.0, TestConstants.CUSTOMER_ID));
+        buildTransactionUpdateMock(HttpStatus.OK);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.DESTINATION_ID, 10.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
 
         // Act
         transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, TestConstants.DESTINATION_ID, 5.00);
@@ -322,72 +224,42 @@ public class TransactionServiceUnitTest {
         assertEquals(TransactionStatus.IN_PROGRESS, transaction.getStatus());
     }
 
-    @Test(expected = NoAccountExistsException.class)
-    public void givenNoAcountExist_whenTransferingAValidAmount_thenThrowNoAccountExists() throws Exception {
+    @Test
+    public void givenNoAcountExist_whenTransferingAValidAmount_thenThrowNoAccountExists() {
         // Arrange
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(HttpStatus.NOT_FOUND);
 
         // Act
-        transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, TestConstants.DESTINATION_ID, 5.00);
+        Assertions.assertThrows(NoAccountExistsException.class, () -> {
+                transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID,
+                    TestConstants.DESTINATION_ID, 5.00);
+            });
 
         // Assert
     }
 
-    @Test(expected = CustomerDoesNotExistException.class)
-    public void givenNoCustomerExist_whenTransferingAValidAmount_thenThrowNoCustomerExists() throws Exception {
+    @Test
+    public void givenNoCustomerExist_whenTransferingAValidAmount_thenThrowNoCustomerExists() {
         // Arrange
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenThrow(CustomerDoesNotExistException.class);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.NOT_FOUND);
 
         // Act
-        transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, TestConstants.DESTINATION_ID, 5.00);
+        Assertions.assertThrows(CustomerDoesNotExistException.class, () -> {
+            transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID,
+                TestConstants.DESTINATION_ID, 5.00);
+        });
     }
 
     @Test
-    public void givenAcountAndCustomerExist_whenTransferingATheEntireBalance_thenTheTransactionIsStarted() throws Exception {
+    public void givenAcountAndCustomerExist_whenTransferingATheEntireBalance_thenTheTransactionIsStarted()
+        throws Exception {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID));
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.DESTINATION_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
+        buildTransactionUpdateMock(HttpStatus.OK);
 
         // Act
         transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, TestConstants.DESTINATION_ID, 5.00);
@@ -402,54 +274,29 @@ public class TransactionServiceUnitTest {
         assertEquals(TransactionStatus.IN_PROGRESS, transaction.getStatus());
     }
 
-    @Test(expected = InsufficientBalanceException.class)
-    public void givenAcountAndCustomerExist_whenTransferingSlightlyMoreThanTheBalance_thenTheTransactionIsStarted() throws Exception {
+    @Test
+    public void givenAcountAndCustomerExist_whenTransferingSlightlyMoreThanTheBalance_thenTheTransactionIsStarted() {
         // Arrange
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID));
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.DESTINATION_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
 
         // Act
-        transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, TestConstants.DESTINATION_ID, 5.01);
+        Assertions.assertThrows(InsufficientBalanceException.class, () -> {
+            transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID,
+                TestConstants.DESTINATION_ID, 5.01);
+        });
     }
 
     @Test
-    public void givenAcountAndCustomerExist_whenTransferingSlightlyLessThanTheBalance_thenTheTransactionIsStarted() throws Exception {
+    public void givenAcountAndCustomerExist_whenTransferingSlightlyLessThanTheBalance_thenTheTransactionIsStarted()
+        throws Exception {
         // Arrange
         ArgumentCaptor<BankTransaction> transactionCaptor = ArgumentCaptor.forClass(BankTransaction.class);
-        ResponseEntity<BankTransaction> response = new ResponseEntity<BankTransaction>(new BankTransaction(), HttpStatus.OK);
-        when(restTemplate.<BankTransaction>exchange(
-                anyString(),
-                any(HttpMethod.class),
-                Matchers.<HttpEntity<BankTransaction>>any(),
-                Matchers.<Class<BankTransaction>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(response);
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<String>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn("");
-        when(restTemplate.getForObject(
-                anyString(),
-                Matchers.<Class<BankAccount>>any(),
-                Matchers.<Object>anyVararg()))
-                .thenReturn(new BankAccount(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID));
+        buildTransactionUpdateMock(HttpStatus.OK);
+        buildGetCustomerMock(TestConstants.CUSTOMER_ID, HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.ACCOUNT_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
+        buildGetBankAccountMock(new BankAccountDto(TestConstants.DESTINATION_ID, 5.0, TestConstants.CUSTOMER_ID), HttpStatus.OK);
 
         // Act
         transactionService.transfer(TestConstants.CUSTOMER_ID, TestConstants.ACCOUNT_ID, TestConstants.DESTINATION_ID, 4.99);

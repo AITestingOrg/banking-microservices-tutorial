@@ -7,8 +7,6 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.axonframework:axon-spring-boot-starter:${axonVersion}")
     testCompile("org.axonframework:axon-test:${axonVersion}")
-    testCompile("org.powermock:powermock-module-junit4:1.7.4")
-    testCompile("org.powermock:powermock-api-mockito:1.7.4")
     
 }
 

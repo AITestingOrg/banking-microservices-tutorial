@@ -1,17 +1,17 @@
 package com.ultimatesoftware.banking.transactions.readiness;
 
-import org.junit.Before;
-import org.junit.Test;
 
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 public class ServiceReadinessTests {
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         Thread.sleep(1);
     }
