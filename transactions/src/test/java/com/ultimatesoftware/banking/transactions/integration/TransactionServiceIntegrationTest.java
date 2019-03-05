@@ -3,6 +3,7 @@ package com.ultimatesoftware.banking.transactions.integration;
 import com.ultimatesoftware.banking.transactions.TransactionsApplication;
 import com.ultimatesoftware.banking.transactions.domain.models.BankAccountDto;
 import com.ultimatesoftware.banking.transactions.domain.models.BankTransaction;
+import com.ultimatesoftware.banking.transactions.domain.services.RestService;
 import com.ultimatesoftware.banking.transactions.domain.services.TransactionService;
 import com.ultimatesoftware.banking.transactions.service.controllers.ActionsController;
 import com.ultimatesoftware.banking.transactions.service.repositories.BankTransactionRepository;
@@ -28,6 +29,9 @@ import org.mockito.Mockito;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -39,7 +43,7 @@ public class TransactionServiceIntegrationTest {
     private BankTransactionRepository bankTransactionRepository;
 
     @Mock
-    private RestTemplate restTemplate;
+    private RestService restService;
 
     @InjectMocks
     @Autowired
@@ -75,9 +79,8 @@ public class TransactionServiceIntegrationTest {
         configureTransferMocks(originAccount, destAccount);
 
         ResponseEntity<BankTransaction> successResponseEntity = new ResponseEntity<>(HttpStatus.OK);
-        Mockito.doReturn(successResponseEntity).when(restTemplate)
-                .exchange(Mockito.eq("http://" + bankAccountCmdService + API_V1_ACCOUNTS + "transfer"),
-                        Mockito.eq(HttpMethod.PUT), Mockito.any(), Mockito.<Class<BankTransaction>>any());
+        doReturn(successResponseEntity).when(restService)
+                .updateBankTransaction(anyString(), any());
 
         // Act
         ResponseEntity response = actionsController.transfer(transferAmount, originAccount.getId(),
@@ -106,11 +109,8 @@ public class TransactionServiceIntegrationTest {
     }
 
     public void configureTransferMocks(BankAccountDto originAccount, BankAccountDto destAccount) {
-        Mockito.when(restTemplate.getForObject("http://" + bankCustomerService + API_V1_CUSTOMERS, String.class))
-                .thenReturn(null);
-        Mockito.doReturn(originAccount).when(restTemplate).getForObject("http://" + bankAccountQueryService +
-                API_V1_ACCOUNTS + originAccount.getId(), BankAccountDto.class);
-        Mockito.doReturn(destAccount).when(restTemplate).getForObject("http://" + bankAccountQueryService +
-                API_V1_ACCOUNTS + destAccount.getId(), BankAccountDto.class);
+        doReturn(new ResponseEntity(HttpStatus.OK)).when(restService).getCustomer(anyString());
+        doReturn(new ResponseEntity<>(originAccount, HttpStatus.OK)).when(restService).getBankAccount(anyString());
+        doReturn(new ResponseEntity<>(destAccount, HttpStatus.OK)).when(restService).getBankAccount(anyString());
     }
 }
