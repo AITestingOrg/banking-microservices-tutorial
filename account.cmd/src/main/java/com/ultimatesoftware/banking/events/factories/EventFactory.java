@@ -66,7 +66,7 @@ public class EventFactory {
         return createEvent(type, id, null, amount, 0.0, transactionId, null, destinationAccount);
     }
 
-    public static Object createEvent(AccountEventType type, UUID id) throws Exception {
+    public static AccountEvent createEvent(AccountEventType type, UUID id) throws Exception {
         return createEvent(type, id, null, 0.0, 0.0, null, null, null);
     }
 }

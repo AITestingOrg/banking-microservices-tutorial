@@ -3,7 +3,7 @@ package com.ultimatesoftware.banking.account.query.unit;
 import com.ultimatesoftware.banking.account.query.service.controllers.AccountController;
 import com.ultimatesoftware.banking.account.query.service.repositories.AccountRepository;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

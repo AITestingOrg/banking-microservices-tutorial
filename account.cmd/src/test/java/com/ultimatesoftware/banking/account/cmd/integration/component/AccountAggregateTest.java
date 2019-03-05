@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.account.cmd.integration;
+package com.ultimatesoftware.banking.account.cmd.integration.component;
 
 import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
@@ -8,20 +8,22 @@ import com.ultimatesoftware.banking.events.*;
 import org.axonframework.eventsourcing.AggregateDeletedException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.yml")
@@ -31,7 +33,7 @@ public class AccountAggregateTest {
     private static final String customerId = "123e4567-e89b-12d3-a456-426655440000";
     private static final String transactionId = "123e4567-e89b-12d3-a456-426655440010";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fixture = new AggregateTestFixture<>(Account.class);
     }

@@ -4,10 +4,12 @@ import com.ultimatesoftware.banking.customer.domain.models.Customer;
 import com.ultimatesoftware.banking.customer.service.controllers.CustomerController;
 import com.ultimatesoftware.banking.customer.service.repositories.CustomerRepository;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +19,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CustomerControllerUnitTests {
     @InjectMocks
     private CustomerController customerController;

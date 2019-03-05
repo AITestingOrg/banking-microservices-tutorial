@@ -6,15 +6,17 @@ import com.ultimatesoftware.banking.account.cmd.domain.models.AccountUpdateDto;
 import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
 import com.ultimatesoftware.banking.account.cmd.service.controllers.AccountController;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.UUID;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AccountControllerTest {
     protected static final String CUSTOMER_ID = UUID.randomUUID().toString();
 
@@ -23,11 +25,6 @@ public class AccountControllerTest {
 
     @InjectMocks
     protected AccountController accountController;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void givenCorrectParameters_whenCreateEndpointCalled_thenCorrectCommandSent() {
