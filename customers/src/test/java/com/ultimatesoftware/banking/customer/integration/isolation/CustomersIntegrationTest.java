@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customer.integration;
+package com.ultimatesoftware.banking.customer.integration.isolation;
 
 import com.ultimatesoftware.banking.customer.CustomerApplication;
 import com.ultimatesoftware.banking.customer.domain.models.Customer;
