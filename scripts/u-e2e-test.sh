@@ -1,2 +1,2 @@
 '#!/bin/sh'
-./gradlew cleanTest :tests:test --tests "*.edge.*"
+../gradlew cleanTest :tests:test --tests "*.edge.*"

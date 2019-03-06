@@ -1,2 +1,2 @@
 '#!/bin/sh'
-./gradlew cleanTest :transactions:test --tests "*.ContractVerifierTest"
+../gradlew cleanTest :transactions:test --tests "*.ContractVerifierTest"
