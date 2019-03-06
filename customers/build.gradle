@@ -53,4 +53,9 @@ pact {
 
     }
 
+    publish {
+        pactDirectory = '../pact-tests' // defaults to $buildDir/pacts
+        pactBrokerUrl = 'http://localhost:8081'
+    }
+
 }
