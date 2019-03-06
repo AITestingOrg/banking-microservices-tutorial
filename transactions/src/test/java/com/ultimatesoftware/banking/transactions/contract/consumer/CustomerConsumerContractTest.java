@@ -29,8 +29,8 @@ public class CustomerConsumerContractTest {
     @Pact(provider="Customers", consumer="Transactions")
     public RequestResponsePact createPact(PactDslWithProvider builder) {
         return builder
-            .given("test state")
-            .uponReceiving("ExampleJavaConsumerPactTest test interaction")
+            .given("A customer does not exist.")
+            .uponReceiving("Empty customer list")
             .path("/api/v1/customers/")
             .method("GET")
             .headers(getHeaders())
