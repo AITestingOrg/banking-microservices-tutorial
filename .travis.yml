@@ -7,6 +7,7 @@ addons:
     packages:
       - docker-ce
 before_install:
+- docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
 - sudo rm /usr/local/bin/docker-compose
 - curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` > docker-compose
 - chmod +x docker-compose
@@ -31,7 +32,6 @@ after_success:
   Tag($TRAVIS_TAG) Commit($TRAVIS_COMMIT) PR($TRAVIS_PULL_REQUEST) Build($TRAVIS_BUILD_NUMBER)"
 - if [[ "$ACTUAL_BRANCH" == "master" ]]; then echo -e "Push Container to Docker Hub";
   fi
-- docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
 - export TAG=`if [ "$ACTUAL_BRANCH" == "master" ]; then echo "latest";else echo ""; fi`
 - export REPO=aista/banking-account-cmd
 - cd account.cmd
