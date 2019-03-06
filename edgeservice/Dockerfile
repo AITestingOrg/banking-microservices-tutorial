@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-oraclejdk8:slim
+FROM openjdk/8-jre-slim
 VOLUME /tmp
 ADD build/libs/edgeservice-0.0.1.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=dev
