@@ -1,9 +1,10 @@
 version "0.1"
-group "com.ultimatesoftware.banking"
+mainClassName = "com.ultimatesoftware.banking.Application"
 
 
 dependencies {
-    
+    compile project(":api")
+    compile "io.micronaut.configuration:micronaut-mongo-reactive"
 }
 
 shadowJar {

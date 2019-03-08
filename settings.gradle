@@ -1,4 +1,4 @@
 rootProject.name = 'com.ultimatesoftware.banking'
 
-include ':account.cmd', ':customers', ':account.query', ':transactions', ':edgeservice', ':tests'
+include ':accountquery', ':accountcommand', ':api', ':customers', ':transactions'
 

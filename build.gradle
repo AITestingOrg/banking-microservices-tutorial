@@ -10,13 +10,6 @@ buildscript {
     }
 }
 
-plugins {
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id "com.github.johnrengelman.shadow" version "4.0.2"
-    id "net.ltgt.apt-eclipse" version "0.18"
-    id "net.ltgt.apt-idea" version "0.18"
-}
-
 ext {
     axonVersion = '4.0.3'
     aspectjVersion = '1.9.1'
@@ -32,17 +25,27 @@ subprojects { project ->
     apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
     apply plugin: 'groovy'
-    apply plugin: "application"
-    apply plugin: 'com.github.johnrengelman.shadow'
 
-    shadowJar {
-        mergeServiceFiles()
+    if(project.name != 'api') {
+        apply plugin: "application"
+        apply plugin: 'com.github.johnrengelman.shadow'
+
+        shadowJar {
+            mergeServiceFiles()
+        }
+
+        run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
+
+        mainClassName = "com.ultimatesoftware.banking.Application"
+        tasks.withType(JavaCompile) {
+            options.encoding = "UTF-8"
+            options.compilerArgs.add('-parameters')
+        }
     }
 
     repositories {
         mavenLocal()
-        mavenCentral()
-        maven { url "https://jcenter.bintray.com" }
+        jcenter()
     }
 
     dependencyManagement {
@@ -54,6 +57,8 @@ subprojects { project ->
     dependencies {
         annotationProcessor "io.micronaut:micronaut-inject-java"
         annotationProcessor "io.micronaut:micronaut-validation"
+        annotationProcessor "io.micronaut.configuration:micronaut-openapi"
+        compile "io.micronaut.configuration:micronaut-openapi"
         compile "io.micronaut:micronaut-inject"
         compile "io.micronaut:micronaut-validation"
         compile "io.micronaut:micronaut-runtime"
@@ -83,14 +88,6 @@ subprojects { project ->
             excludes =
                     ['*.yml', '*contracts/org/springframework/cloud/contract/verifier/tests*']
         }
-    }
-
-    run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
-
-    mainClassName = "com.ultimatesoftware.banking.Application"
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.compilerArgs.add('-parameters')
     }
 
     jacoco {
@@ -126,14 +123,3 @@ subprojects { project ->
 
     test.finalizedBy(jacocoTestCoverageVerification)
 }
-
-dependencies {
-    compile project('customers')
-    compile project('account.cmd')
-    compile project('account.query')
-    compile project('transactions')
-    compile project('edgeservice')
-    compile project('tests')
-}
-
-assemble.dependsOn(clean)

@@ -1,0 +1,16 @@
+version "0.1"
+mainClassName = "com.ultimatesoftware.banking.Application"
+
+
+dependencies {
+    compile project(":api")
+    compile("org.axonframework:axon-configuration:${axonVersion}")
+    compile("org.axonframework:axon-messaging:${axonVersion}")
+    compile("org.axonframework:axon-server-connector:${axonVersion}")
+    compile("org.axonframework:axon-modelling:${axonVersion}")
+    testCompile("org.axonframework:axon-test:${axonVersion}")
+}
+
+shadowJar {
+    mergeServiceFiles()
+}

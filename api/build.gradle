@@ -1,0 +1,10 @@
+version "0.1"
+group "com.ultimatesoftware.banking.api"
+
+dependencies {
+    compile "io.micronaut.configuration:micronaut-mongo-reactive"
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+}

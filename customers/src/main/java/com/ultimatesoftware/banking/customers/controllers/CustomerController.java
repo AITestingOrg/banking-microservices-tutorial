@@ -1,55 +1,47 @@
 package com.ultimatesoftware.banking.customers.controllers;
 
+import com.ultimatesoftware.banking.api.operations.RestController;
+import com.ultimatesoftware.banking.api.repository.MongoRepository;
 import com.ultimatesoftware.banking.customers.models.Customer;
-import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import javax.validation.Valid;
 
 import java.util.List;
 
-@Controller("api/v1")
-public class CustomerController {
-    @Autowired
-    CustomerRepository customerRepository;
+@Controller("/api/v1")
+public class CustomerController implements RestController<Customer> {
 
-    @GetMapping("customers")
-    public List<Customer> getCustomers() {
-        return customerRepository.findAll();
+    private final MongoRepository<Customer> mongoRepository;
+
+    public CustomerController(MongoRepository<Customer> mongoRepository) {
+        this.mongoRepository = mongoRepository;
     }
 
-    @GetMapping("customers/{id}")
-    public ResponseEntity<Customer> getCustomer(@PathVariable("id") String id) {
-        Optional<Customer> customer = customerRepository.findById(id);
-        if (customer.isPresent()) {
-            return new ResponseEntity<>(customer.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Get("customers")
+    public Single<List<Customer>> getAll() {
+        return mongoRepository.findMany();
     }
 
-    @PostMapping("customers")
-    public String createCustomer(@Valid @RequestBody Customer customer) {
-        customerRepository.save(customer);
-        return customer.getId();
+    @Get("customers/{id}")
+    public Maybe<Customer> get(String id) {
+        return mongoRepository.findOne(id);
     }
 
-    @PutMapping("customers/{id}")
-    public ResponseEntity updateCustomer(@PathVariable("id") String id, @Valid @RequestBody Customer customer) {
-        Optional<Customer> customerFromDB = customerRepository.findById(id);
-        if (customerFromDB.isPresent()) {
-            customerRepository.save(customer);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Post("customers")
+    public Single<Customer> create(@Valid @Body Customer customer) {
+        return mongoRepository.add(customer);
     }
 
-    @DeleteMapping("customers/{id}")
-    public ResponseEntity deleteCustomers(@PathVariable("id") String id) {
-        Optional<Customer> customerFromDB = customerRepository.findById(id);
-        if (customerFromDB.isPresent()) {
-            customerRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Put("customers/{id}")
+    public Maybe<Customer> update(String id, @Valid @Body Customer customer) {
+        return mongoRepository.replaceOne(id, customer);
+    }
+
+    @Delete("customers/{id}")
+    public long delete(String id) {
+        return mongoRepository.deleteOne(id);
     }
 }

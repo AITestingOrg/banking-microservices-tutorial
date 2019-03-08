@@ -1,0 +1,28 @@
+package com.ultimatesoftware.banking.api.operations;
+
+import io.micronaut.http.annotation.Body;
+import io.micronaut.http.annotation.Delete;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.Put;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import java.util.List;
+import javax.validation.Valid;
+
+public interface RestController<T> {
+    @Get("/")
+    Single<List<T>> getAll();
+
+    @Get("/{id}")
+    Maybe<T> get(String id);
+
+    @Post("/")
+    Single<T> create(@Valid @Body T T);
+
+    @Put("/{id}")
+    Maybe<T> update(String id, @Valid @Body T T);
+
+    @Delete("/{id}")
+    long delete(String id);
+}

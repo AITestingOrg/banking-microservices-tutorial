@@ -2,7 +2,6 @@ version: '2.1'
 services:
   customers:
     build: customers/
-    mem_limit: 800m
     ports:
       - "8082:8080"
     networks:
@@ -25,7 +24,7 @@ services:
       - RABBIT_HOST=rabbitmq
 
   accountquery:
-    build: account.query/
+    build: account.query-spring/
     mem_limit: 800m
     ports:
       - "8084:8080"
@@ -38,7 +37,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   transactionserver:
-    build: transactions/
+    build: transactions-spring/
     mem_limit: 800m
     ports:
       - "8086:8080"
