@@ -29,9 +29,7 @@ jacocoTestReport {
 }
 
 pact {
-
     serviceProviders {
-
         // You can define as many as you need, but each must have a unique name
         Customers {
             // All the provider properties are optional, and have sensible defaults (shown below)
@@ -46,16 +44,12 @@ pact {
                 // Will define a consumer for each pact file in the directory.
                 // Consumer name is read from contents of pact file
                 pactFileLocation = file('../pact-tests')
-
             }
-
         }
-
     }
 
     publish {
         pactDirectory = '../pact-tests' // defaults to $buildDir/pacts
         pactBrokerUrl = 'http://localhost:8081'
     }
-
 }

@@ -26,6 +26,7 @@ ext {
   axonVersion = '4.0.3'
   aspectjVersion = '1.9.1'
   springfoxVersion = '2.8.0'
+  fongoVersion = '2.2.0-RC2'
 }
 
 dependencyManagement {
@@ -160,6 +161,7 @@ configure(springProjects) {
         testCompile("org.springframework.boot:spring-boot-starter-test")
         testCompile("org.springframework.cloud:spring-cloud-starter-contract-verifier")
         testCompile("org.springframework.cloud:spring-cloud-contract-spec")
+        compile('de.bwaldvogel:mongo-java-server:1.13.0')
     }
 
   dependencyManagement {
@@ -172,6 +174,15 @@ configure(springProjects) {
     useJUnitPlatform()
     systemProperties['pact.rootDir'] = "../pact-tests"
   }
+
+  task bootJarMocked(type: Exec) {
+    doLast {
+      environment 'SPRING_PROFILES_ACTIVE', 'mock'
+      commandLine 'ls'
+    }
+  }
+
+  bootJarMocked.finalizedBy bootRun
 }
 
 wrapper {
