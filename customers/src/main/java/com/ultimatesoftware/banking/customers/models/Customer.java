@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customer.domain.models;
+package com.ultimatesoftware.banking.customers.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;

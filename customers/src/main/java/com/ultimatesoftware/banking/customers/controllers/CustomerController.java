@@ -1,19 +1,14 @@
-package com.ultimatesoftware.banking.customer.service.controllers;
+package com.ultimatesoftware.banking.customers.controllers;
 
-import com.ultimatesoftware.banking.customer.domain.models.Customer;
-import com.ultimatesoftware.banking.customer.service.repositories.CustomerRepository;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.ultimatesoftware.banking.customers.models.Customer;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.*;
 
 import javax.validation.Valid;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("api/v1")
+@Controller("api/v1")
 public class CustomerController {
     @Autowired
     CustomerRepository customerRepository;
