@@ -1,5 +1,7 @@
 package com.ultimatesoftware.banking.customers.controllers;
 
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.ultimatesoftware.banking.api.operations.RestController;
 import com.ultimatesoftware.banking.api.repository.MongoRepository;
 import com.ultimatesoftware.banking.customers.models.Customer;
@@ -11,7 +13,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-@Controller("/api/v1")
+@Controller("/api/v1/customers")
 public class CustomerController implements RestController<Customer> {
 
     private final MongoRepository<Customer> mongoRepository;
@@ -20,28 +22,28 @@ public class CustomerController implements RestController<Customer> {
         this.mongoRepository = mongoRepository;
     }
 
-    @Get("customers")
+    @Get
     public Single<List<Customer>> getAll() {
         return mongoRepository.findMany();
     }
 
-    @Get("customers/{id}")
+    @Get("/{id}")
     public Maybe<Customer> get(String id) {
         return mongoRepository.findOne(id);
     }
 
-    @Post("customers")
+    @Post
     public Single<Customer> create(@Valid @Body Customer customer) {
         return mongoRepository.add(customer);
     }
 
-    @Put("customers/{id}")
-    public Maybe<Customer> update(String id, @Valid @Body Customer customer) {
+    @Put("/{id}")
+    public Maybe<UpdateResult> update(String id, @Valid @Body Customer customer) {
         return mongoRepository.replaceOne(id, customer);
     }
 
-    @Delete("customers/{id}")
-    public long delete(String id) {
+    @Delete("/{id}")
+    public Maybe<DeleteResult> delete(String id) {
         return mongoRepository.deleteOne(id);
     }
 }

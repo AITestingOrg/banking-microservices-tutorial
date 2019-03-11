@@ -5,7 +5,7 @@ mainClassName = "com.ultimatesoftware.banking.Application"
 dependencies {
     compile project(":api")
     compile "io.micronaut.configuration:micronaut-mongo-reactive"
-    compile "io.micronaut.configuration:netflix-ribbon"
+    compile "io.micronaut.configuration:micronaut-netflix-ribbon"
     compile("org.axonframework:axon-configuration:${axonVersion}")
     testCompile("org.axonframework:axon-test:${axonVersion}")
 }

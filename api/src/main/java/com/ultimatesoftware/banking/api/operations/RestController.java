@@ -1,5 +1,7 @@
 package com.ultimatesoftware.banking.api.operations;
 
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
@@ -21,8 +23,8 @@ public interface RestController<T> {
     Single<T> create(@Valid @Body T T);
 
     @Put("/{id}")
-    Maybe<T> update(String id, @Valid @Body T T);
+    Maybe<UpdateResult> update(String id, @Valid @Body T T);
 
     @Delete("/{id}")
-    long delete(String id);
+    Maybe<DeleteResult> delete(String id);
 }

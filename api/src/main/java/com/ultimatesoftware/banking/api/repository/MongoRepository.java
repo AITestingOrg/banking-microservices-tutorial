@@ -1,11 +1,14 @@
 package com.ultimatesoftware.banking.api.repository;
 
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoCollection;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import java.util.List;
+import org.bson.types.ObjectId;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -25,23 +28,24 @@ public class MongoRepository<T extends Entity> implements Repository<T> {
     }
 
     @Override public Maybe<T> findOne(String id) {
-        return Flowable.fromPublisher(getCollection().find(eq("id", id)).limit(1)).firstElement();
+        return Flowable.fromPublisher(getCollection().find(eq("_id", new ObjectId(id))).limit(1)).firstElement();
     }
 
     @Override public Single<T> add(T entity) {
-        return findOne(entity.getId())
+        entity.setId(ObjectId.get());
+        return findOne(entity.getId().toHexString())
             .switchIfEmpty(
                 Single.fromPublisher(getCollection().insertOne(entity))
                     .map(success -> entity)
             );
     }
 
-    @Override public Maybe<T> replaceOne(String id, T entity) {
-        return Flowable.fromPublisher(getCollection().findOneAndReplace(eq("id", id), entity)).firstElement();
+    @Override public Maybe<UpdateResult> replaceOne(String id, T entity) {
+        return Flowable.fromPublisher(getCollection().replaceOne(eq("_id", new ObjectId(id)), entity)).firstElement();
     }
 
-    @Override public long deleteOne(String id) {
-        return Flowable.fromPublisher(getCollection().deleteOne(eq("id", id))).firstElement().blockingGet().getDeletedCount();
+    @Override public Maybe<DeleteResult> deleteOne(String id) {
+        return Flowable.fromPublisher(getCollection().deleteOne(eq("_id", new ObjectId(id)))).firstElement();
     }
 
     protected MongoCollection<T> getCollection() {
@@ -51,11 +55,6 @@ public class MongoRepository<T extends Entity> implements Repository<T> {
     }
 
     private String getEntityName() {
-        Class<?> enclosingClass = type.getClass().getEnclosingClass();
-        if (enclosingClass != null) {
-            return enclosingClass.getName();
-        } else {
-            return type.getClass().getName();
-        }
+        return type.getClass().getName();
     }
 }

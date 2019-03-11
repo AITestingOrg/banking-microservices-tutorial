@@ -12,11 +12,14 @@ import com.ultimatesoftware.banking.transactions.models.TransactionDto;
 import com.ultimatesoftware.banking.transactions.models.TransactionType;
 import com.ultimatesoftware.banking.transactions.models.TransferTransactionDto;
 import com.ultimatesoftware.banking.transactions.respositories.TransactionRepository;
-import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpException;
+import io.reactivex.Maybe;
 import java.util.UUID;
+import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class TransactionService {
     private static final Logger LOG = LoggerFactory.getLogger(TransactionService.class);
 
@@ -42,12 +45,12 @@ public class TransactionService {
 
         validateAccountBalance(account, amount);
 
-        Transaction transaction = new Transaction.TransactionBuilder()
-            .setAccount(accountId)
-            .setType(TransactionType.TRANSFER)
-            .setAmount(amount)
-            .setCustomerId(customerId)
-            .setDestinationAccount(destAccountId)
+        Transaction transaction = Transaction.builder()
+            .account(accountId)
+            .type(TransactionType.TRANSFER)
+            .amount(amount)
+            .customerId(customerId)
+            .destinationAccount(destAccountId)
             .build();
         TransactionRepository.add(transaction);
 
@@ -64,11 +67,11 @@ public class TransactionService {
 
         validateAccountBalance(account, amount);
 
-        Transaction transaction = new Transaction.TransactionBuilder()
-            .setAccount(accountId)
-            .setType(TransactionType.DEBIT)
-            .setAmount(amount)
-            .setCustomerId(customerId)
+        Transaction transaction = Transaction.builder()
+            .account(accountId)
+            .type(TransactionType.DEBIT)
+            .amount(amount)
+            .customerId(customerId)
             .build();
         TransactionRepository.add(transaction);
 
@@ -83,11 +86,11 @@ public class TransactionService {
         Double amount = transactionDto.getAmount();
         BankAccountDto account = validateCustomerAccount(accountId, customerId);
 
-        Transaction transaction = new Transaction.TransactionBuilder()
-            .setAccount(accountId)
-            .setType(TransactionType.CREDIT)
-            .setAmount(amount)
-            .setCustomerId(customerId)
+        Transaction transaction = Transaction.builder()
+            .account(accountId)
+            .type(TransactionType.CREDIT)
+            .amount(amount)
+            .customerId(customerId)
             .build();
         TransactionRepository.add(transaction);
 
@@ -112,10 +115,13 @@ public class TransactionService {
     private CustomerDto getCustomer(String customerId) throws CustomerDoesNotExistException {
         try {
             LOG.info(String.format("Fetching customer: %s", customerId));
-            CustomerDto customerDto =  this.customerClient.get(customerId).blockingGet();
-            if(customerDto != null) {
-                return customerDto;
-            }
+            CustomerDto customer =  this.customerClient.get(customerId)
+                .doOnError(throwable -> {
+                   if (throwable instanceof HttpException) {
+                       HttpException ex = (HttpException) throwable;
+                   }
+                }).blockingGet();
+            return customer;
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }
@@ -125,22 +131,39 @@ public class TransactionService {
     private void updateAccount(Transaction transaction) throws Exception {
         if (transaction.getType().equals(TransactionType.CREDIT)) {
             bankAccountClient.credit(transaction).doOnError(throwable -> {
-
-            }).subscribe();
+                if (throwable instanceof HttpException) {
+                    HttpException ex = (HttpException) throwable;
+                    String msg = String.format("No account with id %s exists", transaction.getAccount());
+                    LOG.warn(msg);
+                    throw new NoAccountExistsException(msg);
+                }
+                throw new Exception("There was a problem that occurred when PUTing the transaction to the account service.");
+            });
         }
-        bankAccountClient.put(transaction).doOnError(error -> {
-            if (error instanceof HttpStatus)
-        })
-        ResponseEntity<Transaction> response = this.restService.updateTransaction(transaction.getType().toString().toLowerCase(), transaction);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return;
+        else if (transaction.getType().equals(TransactionType.DEBIT)) {
+            bankAccountClient.credit(transaction).doOnError(throwable -> {
+                if (throwable instanceof HttpException) {
+                    HttpException ex = (HttpException) throwable;
+                    String msg = String.format("No account with id %s exists", transaction.getAccount());
+                    LOG.warn(msg);
+                    throw new NoAccountExistsException(msg);
+                }
+                throw new Exception("There was a problem that occurred when PUTing the transaction to the account service.");
+            });
         }
-        else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
-            String msg = String.format("No account with id %s exists", transaction.getAccount());
-            LOG.warn(msg);
-            throw new NoAccountExistsException(msg);
+        else if (transaction.getType().equals(TransactionType.TRANSFER)) {
+            bankAccountClient.credit(transaction).doOnError(throwable -> {
+                if (throwable instanceof HttpException) {
+                    HttpException ex = (HttpException) throwable;
+                    String msg = String.format("No account with id %s exists", transaction.getAccount());
+                    LOG.warn(msg);
+                    throw new NoAccountExistsException(msg);
+                }
+                throw new Exception("There was a problem that occurred when PUTing the transaction to the account service.");
+            });
+        } else {
+            throw new Exception("An unknown error occured.");
         }
-        throw new Exception("There was a problem that occurred when PUTing the transaction to the account service.");
     }
 
     private void validateAccountBalance(BankAccountDto account, double amount) throws InsufficientBalanceException {

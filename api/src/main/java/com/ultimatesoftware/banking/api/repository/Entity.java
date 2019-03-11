@@ -1,17 +1,28 @@
 package com.ultimatesoftware.banking.api.repository;
 
-public class Entity {
-    private String id;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.types.ObjectId;
 
-    public Entity(String id) {
-        this.id = id;
-    }
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public abstract class Entity {
+    @BsonId
+    private ObjectId id;
 
-    public Entity() {
-
-    }
-
-    public String getId() {
-        return id;
+    @JsonProperty("id")
+    public String getHexId() {
+        if (id != null) {
+            return id.toHexString();
+        }
+        return null;
     }
 }
