@@ -1,0 +1,15 @@
+version "0.1"
+mainClassName = "com.ultimatesoftware.banking.Application"
+
+
+dependencies {
+    compile project(":api")
+    compile "io.micronaut.configuration:micronaut-mongo-reactive"
+    compile("org.axonframework:axon-configuration:${axonVersion}")
+    compile("org.axonframework:axon-server-connector:${axonVersion}")
+    testCompile("org.axonframework:axon-test:${axonVersion}")
+}
+
+shadowJar {
+    mergeServiceFiles()
+}

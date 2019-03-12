@@ -1,5 +1,6 @@
 package com.ultimatesoftware.banking.api.repository;
 
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.reactivestreams.client.MongoClient;
@@ -8,6 +9,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import java.util.List;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -32,7 +34,9 @@ public class MongoRepository<T extends Entity> implements Repository<T> {
     }
 
     @Override public Single<T> add(T entity) {
-        entity.setId(ObjectId.get());
+        if (entity.getId() == null) {
+            entity.setId(ObjectId.get());
+        }
         return findOne(entity.getId().toHexString())
             .switchIfEmpty(
                 Single.fromPublisher(getCollection().insertOne(entity))
@@ -48,6 +52,10 @@ public class MongoRepository<T extends Entity> implements Repository<T> {
         return Flowable.fromPublisher(getCollection().deleteOne(eq("_id", new ObjectId(id)))).firstElement();
     }
 
+    @Override public void uniqueKeys(List<String> keys) {
+        keys.forEach(key -> getCollection().createIndex(new Document(key, 1), new IndexOptions().unique(true)));
+    }
+
     protected MongoCollection<T> getCollection() {
         return mongoClient
             .getDatabase(databaseName)
@@ -55,6 +63,6 @@ public class MongoRepository<T extends Entity> implements Repository<T> {
     }
 
     private String getEntityName() {
-        return type.getClass().getName();
+        return type.getSimpleName();
     }
 }

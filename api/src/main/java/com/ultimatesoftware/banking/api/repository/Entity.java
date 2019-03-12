@@ -7,18 +7,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Setter
+@NoArgsConstructor
 @Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Entity {
     @BsonId
-    private ObjectId id;
+    protected ObjectId id;
 
     @JsonProperty("id")
+    @BsonIgnore
     public String getHexId() {
         if (id != null) {
             return id.toHexString();

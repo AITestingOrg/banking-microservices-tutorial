@@ -13,13 +13,13 @@ import java.util.List;
 import javax.validation.Valid;
 
 public interface RestController<T> {
-    @Get("/")
+    @Get
     Single<List<T>> getAll();
 
     @Get("/{id}")
     Maybe<T> get(String id);
 
-    @Post("/")
+    @Post
     Single<T> create(@Valid @Body T T);
 
     @Put("/{id}")

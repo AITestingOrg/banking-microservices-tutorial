@@ -50,7 +50,7 @@ public class AccountEventHandlers {
             transaction -> {
                 if (transaction != null) {
                     transaction.setStatus(TransactionStatus.SUCCESSFUL);
-                    bankTransactionRepository.replaceOne(transaction.getId(), transaction);
+                    bankTransactionRepository.replaceOne(transaction.getHexId(), transaction);
                 } else {
                     LOG.warn("Attempted to update transaction that does not exist {}.", event.getTransactionId());
                 }

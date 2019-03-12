@@ -1,31 +1,21 @@
-spring:
-  application:
-    name: accountcmd
-
-security:
-  enable-csrf: false
+micronaut:
+    application:
+        name: account-cmd
+    router:
+        static-resources:
+            swagger:
+                enabled: true
+                paths: classpath:META-INF/swagger
+                mapping: /swagger/**
+    server:
+        port: "${HOST_PORT:8081}"
 
 axon:
-  axonserver:
-    servers: localhost
-    component-name: accountcmd
+    axonserver:
+        servers: localhost
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-    fetch-registry: false
-    register-with-eureka: false
-  instance:
-    preferIpAddress: true
-
-endpoints:
-  health:
-    sensitive:  false
-
-management:
-  security:
-    enabled: false
-
-thread-pool:
-  size: 5
+consul:
+    client:
+        registration:
+            enabled: true
+        defaultZone: "${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}"

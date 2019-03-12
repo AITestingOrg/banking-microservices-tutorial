@@ -1,22 +1,15 @@
-apply plugin: "jacoco"
+version "0.1"
+mainClassName = "com.ultimatesoftware.banking.Application"
+
 
 dependencies {
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
-    compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
-    compile("org.axonframework:axon-spring-boot-starter:${axonVersion}")
+    compile("org.axonframework:axon-configuration:${axonVersion}")
+    compile("org.axonframework:axon-messaging:${axonVersion}")
+    compile("org.axonframework:axon-server-connector:${axonVersion}")
+    compile("org.axonframework:axon-modelling:${axonVersion}")
     testCompile("org.axonframework:axon-test:${axonVersion}")
-    
 }
 
-version = '0.0.1'
-
-
-contracts {
-    baseClassMappings {
-        baseClassMapping(".*", "com.ultimatesoftware.banking.account.cmd.provider.AccountCmdContractBase")
-    }
+shadowJar {
+    mergeServiceFiles()
 }
-

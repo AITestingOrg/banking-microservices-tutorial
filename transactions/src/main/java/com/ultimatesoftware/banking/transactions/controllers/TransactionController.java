@@ -8,14 +8,12 @@ import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
 import com.ultimatesoftware.banking.transactions.models.TransferTransactionDto;
 import com.ultimatesoftware.banking.transactions.services.TransactionService;
-import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
-import java.util.UUID;
 
 @Controller("/api/v1/transactions")
 public class TransactionController {

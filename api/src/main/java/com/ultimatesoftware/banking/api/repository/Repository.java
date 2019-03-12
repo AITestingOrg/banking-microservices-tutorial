@@ -12,4 +12,5 @@ public interface Repository<T extends Entity> {
     Single<T> add(T entity);
     Maybe<UpdateResult> replaceOne(String id, T entity);
     Maybe<DeleteResult> deleteOne(String id);
+    void uniqueKeys(List<String> keys);
 }

@@ -1,17 +1,21 @@
 package com.ultimatesoftware.banking.transactions.models;
 
-import java.util.UUID;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BankAccountDto {
-    private UUID id;
+    private String id;
     private double balance;
     private String customerId;
+
+    @JsonCreator
+    public BankAccountDto(@JsonProperty("id") String id, @JsonProperty("balance") double balance, @JsonProperty("customerId")  String customerId) {
+        this.id = id;
+        this.balance = balance;
+        this.customerId = customerId;
+    }
 }

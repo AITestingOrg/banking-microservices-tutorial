@@ -1,27 +1,18 @@
 package com.ultimatesoftware.banking.transactions.models;
 
-import java.util.UUID;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TransferTransactionDto extends TransactionDto {
-    private UUID destinationAccountId;
+    private String destinationAccountId;
 
     @Builder
-    public TransferTransactionDto(String customerId, UUID accountId, Double amount,
-        UUID destinationAccountId) {
+    public TransferTransactionDto(String customerId, String accountId, Double amount,
+        String destinationAccountId) {
         super(customerId, accountId, amount);
         this.destinationAccountId = destinationAccountId;
-    }
-
-    public static class TransferTransactionDtoBuilder extends TransactionDto.TransactionDtoBuilder {
-        TransferTransactionDtoBuilder() {
-            super();
-        }
     }
 }

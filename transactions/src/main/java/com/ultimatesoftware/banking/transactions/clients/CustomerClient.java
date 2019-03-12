@@ -6,8 +6,8 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.retry.annotation.Retryable;
 import io.reactivex.Maybe;
 
-@Client(id ="customers", path = "/api/v1/customer/")
-@Retryable(attempts = "2", delay = "2s")
+@Client(id ="customer", path = "/api/v1/customers/")
+@Retryable(attempts = "2")
 public interface CustomerClient {
     @Get("/{id}")
     Maybe<CustomerDto> get(String id);
