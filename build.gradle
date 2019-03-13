@@ -70,6 +70,7 @@ subprojects { project ->
         compileOnly "io.micronaut:micronaut-inject-java"
         compile "io.micronaut:micronaut-discovery-client"
         compile "io.micronaut.configuration:micronaut-hibernate-validator"
+        compile "au.com.dius:pact-jvm-consumer-junit_2.12:3.6.2"
         runtime "io.micronaut:micronaut-management"
         runtime "ch.qos.logback:logback-classic:1.2.3"
         testCompile "io.micronaut:micronaut-inject-java"
@@ -78,7 +79,7 @@ subprojects { project ->
         testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
         testCompile "org.mockito:mockito-core:${mockitoVersion}"
         testCompile "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-        compile "au.com.dius:pact-jvm-consumer-junit_2.12:3.6.2"
+
     }
 
     checkstyle {
