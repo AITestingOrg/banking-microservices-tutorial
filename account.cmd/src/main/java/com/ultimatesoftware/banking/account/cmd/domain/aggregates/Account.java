@@ -5,6 +5,7 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotElig
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
+import com.ultimatesoftware.banking.account.cmd.domain.rules.StandardAccountRules;
 import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.events.factories.AccountEventType;
 import com.ultimatesoftware.banking.events.factories.EventFactory;
@@ -31,9 +32,11 @@ public class Account {
     private BigDecimal balance;
     private int activeTransfers;
 
+    private AccountRules accountRules = new StandardAccountRules();
+
     @CommandHandler
     public Account(CreateAccountCommand createAccountCommand) throws Exception {
-        apply(EventFactory.createEvent(
+        applyEvent(EventFactory.createEvent(
                 AccountEventType.CREATED,
                 createAccountCommand.getId(),
                 createAccountCommand.getCustomerId(),
@@ -72,34 +75,38 @@ public class Account {
         return activeTransfers;
     }
 
+    public void setAccountRules(AccountRules accountRules) {
+        this.accountRules = accountRules;
+    }
+
     @CommandHandler
     public void on(DebitAccountCommand debitAccountCommand) throws Exception {
-        if (!AccountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
-            apply(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, debitAccountCommand.getId(), debitAccountCommand.getTransactionId(), "Account balance not eligable for withdraw."));
+        if (!this.accountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
+            applyEvent(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, debitAccountCommand.getId(), debitAccountCommand.getTransactionId(), "Account balance not eligable for withdraw."));
             throw new AccountNotEligibleForDebitException(id, balance.doubleValue());
         }
         BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(debitAccountCommand.getAmount()));
-        apply(EventFactory.createEvent(AccountEventType.DEBITED, debitAccountCommand.getId(), customerId, debitAccountCommand.getAmount(), newBalance.doubleValue(),
+        applyEvent(EventFactory.createEvent(AccountEventType.DEBITED, debitAccountCommand.getId(), customerId, debitAccountCommand.getAmount(), newBalance.doubleValue(),
                 debitAccountCommand.getTransactionId()));
     }
 
     @CommandHandler
     public void on(CreditAccountCommand creditAccountCommand) throws Exception {
-        if (!AccountRules.eligibleForCredit(this, creditAccountCommand.getAmount())) {
-            apply(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, creditAccountCommand.getId(), creditAccountCommand.getTransactionId(), "Account balance not eligable for deposit."));
+        if (!this.accountRules.eligibleForCredit(this, creditAccountCommand.getAmount())) {
+            applyEvent(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, creditAccountCommand.getId(), creditAccountCommand.getTransactionId(), "Account balance not eligable for deposit."));
             throw new AccountNotEligibleForCreditException(id, balance.doubleValue());
         }
 
         BigDecimal newBalance = balance.add(BigDecimal.valueOf(creditAccountCommand.getAmount()));
-        apply(EventFactory.createEvent(AccountEventType.CREDITED, creditAccountCommand.getId(), customerId,
+        applyEvent(EventFactory.createEvent(AccountEventType.CREDITED, creditAccountCommand.getId(), customerId,
                                        creditAccountCommand.getAmount(), newBalance.doubleValue(),
                                        creditAccountCommand.getTransactionId().toString()));
     }
 
     @CommandHandler
     public void on(DeleteAccountCommand deleteAccountCommand) throws Exception {
-        if (AccountRules.eligibleForDelete(this)) {
-            apply(EventFactory.createEvent(AccountEventType.DELETED, deleteAccountCommand.getId()));
+        if (this.accountRules.eligibleForDelete(this)) {
+            applyEvent(EventFactory.createEvent(AccountEventType.DELETED, deleteAccountCommand.getId()));
             return;
         }
         throw new AccountNotEligibleForDeleteException(deleteAccountCommand.getId(), balance.doubleValue());
@@ -107,27 +114,27 @@ public class Account {
 
     @CommandHandler
     public void on(UpdateAccountCommand updateAccountCommand) throws Exception {
-        apply(EventFactory.createEvent(AccountEventType.UPDATED, id, updateAccountCommand.getCustomerId()));
+        applyEvent(EventFactory.createEvent(AccountEventType.UPDATED, id, updateAccountCommand.getCustomerId()));
     }
 
     @CommandHandler
     public void on(StartTransferTransactionCommand command) throws Exception {
         logger.info("Transfer transaction started from {} successfully", id);
-        apply(EventFactory.createEvent(AccountEventType.TRANSACTION_STARTED, id, command.getDestinationId(), command.getAmount(),
+        applyEvent(EventFactory.createEvent(AccountEventType.TRANSACTION_STARTED, id, command.getDestinationId(), command.getAmount(),
                 command.getTransactionId()));
 
     }
 
     @CommandHandler
     public void on(StartTransferWithdrawCommand command) throws Exception {
-        if (!AccountRules.eligibleForDebit(this, command.getAmount())) {
-            apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, "", command.getTransactionId(), ""));
+        if (!this.accountRules.eligibleForDebit(this, command.getAmount())) {
+            applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id, "", command.getTransactionId(), ""));
             throw new AccountNotEligibleForDebitException(id, balance.doubleValue());
         }
 
         logger.info("Transfer concluded from {} successfully", id);
         BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(command.getAmount()));
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_WITHDRAW_CONCLUDED, id, newBalance.doubleValue(),
+        applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_WITHDRAW_CONCLUDED, id, newBalance.doubleValue(),
                 command.getTransactionId()));
     }
 
@@ -135,28 +142,28 @@ public class Account {
     public void on(ConcludeTransferDepositCommand concludeTransferDepositCommand) throws Exception {
         logger.info("Transfer concluded to {} successfully", id);
         BigDecimal newBalance = balance.add(BigDecimal.valueOf(concludeTransferDepositCommand.getAmount()));
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_CONCLUDED, id, newBalance.doubleValue(),
+        applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_CONCLUDED, id, newBalance.doubleValue(),
                 concludeTransferDepositCommand.getTransactionId()));
     }
 
     @CommandHandler
     public void on(ReleaseAccountCommand releaseAccountCommand) throws Exception {
         logger.info("Account Released {}", id);
-        apply(EventFactory.createEvent(AccountEventType.RELEASED, releaseAccountCommand.getId(), "", releaseAccountCommand.getTransactionId(), ""));
+        applyEvent(EventFactory.createEvent(AccountEventType.RELEASED, releaseAccountCommand.getId(), "", releaseAccountCommand.getTransactionId(), ""));
     }
 
     @CommandHandler
     public void on(CancelTransferCommand cancelTransferCommand) throws Exception {
         logger.info("Account transfer canceled from {}", id);
         BigDecimal newBalance = balance.add(BigDecimal.valueOf(cancelTransferCommand.getAmount()));
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_CANCELLED, cancelTransferCommand.getId(),
+        applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_CANCELLED, cancelTransferCommand.getId(),
                 newBalance.doubleValue(), cancelTransferCommand.getTransactionId()));
     }
 
     @CommandHandler
     public void on(FailToStartTransferTransactionCommand command) throws Exception {
         logger.info("Transaction {} failed to start", command.getTransactionId());
-        apply(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, command.getId(), "", command.getTransactionId(), ""));
+        applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, command.getId(), "", command.getTransactionId(), ""));
     }
 
     @EventSourcingHandler
@@ -183,7 +190,7 @@ public class Account {
 
     @EventSourcingHandler
     public void on(AccountDeletedEvent accountDeletedEvent) {
-        markDeleted();
+        delete();
     }
 
     @EventSourcingHandler
@@ -206,5 +213,13 @@ public class Account {
     @EventSourcingHandler
     public void on(AccountReleasedEvent accountReleasedEvent) {
         activeTransfers--;
+    }
+
+    public void applyEvent(AccountEvent event) {
+        apply(event);
+    }
+
+    public void delete() {
+        markDeleted();
     }
 }

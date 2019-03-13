@@ -151,16 +151,26 @@ configure(springProjects) {
         compile "org.springframework.boot:spring-boot-starter-aop"
         compile("io.springfox:springfox-swagger2:${springfoxVersion}")
         compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
-        testCompile "junit:junit:4.12"
+        testImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
+        testCompile('org.junit.jupiter:junit-jupiter-params:5.3.2')
+        testRuntime('org.junit.jupiter:junit-jupiter-engine:5.3.2')
+        testCompile "org.mockito:mockito-core:2.24.5"
+        testCompile('org.mockito:mockito-junit-jupiter:2.24.5')
+        compile('au.com.dius:pact-jvm-consumer-junit_2.12:3.6.2')
         testCompile("org.springframework.boot:spring-boot-starter-test")
-        testCompile "org.springframework.cloud:spring-cloud-starter-contract-verifier"
-        testCompile "org.springframework.cloud:spring-cloud-contract-spec"
+        testCompile("org.springframework.cloud:spring-cloud-starter-contract-verifier")
+        testCompile("org.springframework.cloud:spring-cloud-contract-spec")
     }
 
   dependencyManagement {
     imports {
       mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
+  }
+
+  test {
+    useJUnitPlatform()
+    systemProperties['pact.rootDir'] = "../pact-tests"
   }
 }
 

@@ -42,3 +42,4 @@ hosts:
   account-cmd: localhost:8089
   account-query: localhost:8084
   customers: localhost:8081
+  ssl: http

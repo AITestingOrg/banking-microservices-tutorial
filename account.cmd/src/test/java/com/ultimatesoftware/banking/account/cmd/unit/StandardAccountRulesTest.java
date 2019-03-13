@@ -1,14 +1,14 @@
 package com.ultimatesoftware.banking.account.cmd.unit;
 
 import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
-import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
+import com.ultimatesoftware.banking.account.cmd.domain.rules.StandardAccountRules;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class AccountRulesTest {
+public class StandardAccountRulesTest {
 
     @Test
     public void givenZeroAccount_WhenDebitMaxDouble_ThenOutputShouldBeFalse() {
@@ -17,7 +17,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(0));
 
         // act
-        boolean eligible = AccountRules.eligibleForDebit(account, maxDouble);
+        boolean eligible = new StandardAccountRules().eligibleForDebit(account, maxDouble);
 
         // assert
         Assert.assertEquals(false, eligible);
@@ -29,7 +29,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(-50.0));
 
         // act
-        boolean eligible = AccountRules.eligibleForDebit(account, 10);
+        boolean eligible = new StandardAccountRules().eligibleForDebit(account, 10);
 
         // assert
         Assert.assertEquals(false, eligible);
@@ -42,7 +42,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(minDouble));
 
         // act
-        boolean eligible = AccountRules.eligibleForDebit(account, 10.0);
+        boolean eligible = new StandardAccountRules().eligibleForDebit(account, 10.0);
 
         // assert
         Assert.assertEquals(false, eligible);
@@ -55,7 +55,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(maxDouble));
 
         // act
-        boolean eligible = AccountRules.eligibleForDebit(account, 10.0);
+        boolean eligible = new StandardAccountRules().eligibleForDebit(account, 10.0);
 
         // assert
         Assert.assertEquals(true, eligible);
@@ -67,7 +67,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(50.0));
 
         // act
-        boolean eligible = AccountRules.eligibleForDebit(account, 50.0);
+        boolean eligible = new StandardAccountRules().eligibleForDebit(account, 50.0);
 
         // assert
         Assert.assertEquals(true, eligible);
@@ -80,7 +80,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(maxDouble));
 
         // act
-        boolean eligible = AccountRules.eligibleForDebit(account, BigDecimal.valueOf(maxDouble).subtract(BigDecimal.valueOf(1)).doubleValue());
+        boolean eligible = new StandardAccountRules().eligibleForDebit(account, BigDecimal.valueOf(maxDouble).subtract(BigDecimal.valueOf(1)).doubleValue());
 
         // assert
         Assert.assertEquals(true, eligible);
@@ -92,7 +92,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(10.0));
 
         // act
-        boolean eligible = AccountRules.eligibleForDelete(account);
+        boolean eligible = new StandardAccountRules().eligibleForDelete(account);
 
         // assert
         Assert.assertEquals(false, eligible);
@@ -104,7 +104,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(-10.0));
 
         // act
-        boolean eligible = AccountRules.eligibleForDelete(account);
+        boolean eligible = new StandardAccountRules().eligibleForDelete(account);
 
         // assert
         Assert.assertEquals(false, eligible);
@@ -116,7 +116,7 @@ public class AccountRulesTest {
         Account account = new Account(UUID.randomUUID(), UUID.randomUUID().toString(), BigDecimal.valueOf(0.0));
 
         // act
-        boolean eligible = AccountRules.eligibleForDelete(account);
+        boolean eligible = new StandardAccountRules().eligibleForDelete(account);
 
         // assert
         Assert.assertEquals(true, eligible);

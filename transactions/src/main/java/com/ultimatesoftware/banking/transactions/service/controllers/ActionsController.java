@@ -16,10 +16,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/transactions")
 public class ActionsController {
-    @Autowired
     private TransactionService transactionService;
 
-    public ActionsController(TransactionService transactionService) {
+    public ActionsController(@Autowired TransactionService transactionService) {
         this.transactionService = transactionService;
     }
 
@@ -65,6 +64,6 @@ public class ActionsController {
         if(bankTransaction != null) {
             return new ResponseEntity<>(bankTransaction, HttpStatus.OK);
         }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(bankTransaction, HttpStatus.BAD_REQUEST);
     }
 }

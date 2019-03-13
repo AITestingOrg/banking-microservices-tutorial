@@ -1,25 +1,27 @@
-package com.ultimatesoftware.banking.account.cmd.integration;
+package com.ultimatesoftware.banking.account.cmd.integration.service;
 
 import com.mongodb.MongoClient;
 import com.ultimatesoftware.banking.account.cmd.domain.aggregates.Account;
 import com.ultimatesoftware.banking.account.cmd.domain.models.AccountCreationDto;
 import com.ultimatesoftware.banking.account.cmd.domain.models.TransactionDto;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AccountServicesIntegrationTest {
     private final String accountCmd = "http://localhost:8089/api/v1/accounts";
@@ -28,7 +30,7 @@ public class AccountServicesIntegrationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @After
+    @AfterEach
     public void tearDown() {
         MongoClient mongoClient = new MongoClient();
         mongoClient.getDatabase("accountquery").drop();

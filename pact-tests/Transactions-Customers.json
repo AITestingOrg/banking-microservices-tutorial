@@ -1,0 +1,39 @@
+{
+    "provider": {
+        "name": "Customers"
+    },
+    "consumer": {
+        "name": "Transactions"
+    },
+    "interactions": [
+        {
+            "description": "ExampleJavaConsumerPactTest test interaction",
+            "request": {
+                "method": "GET",
+                "path": "/api/v1/customers/",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": [
+                    
+                ]
+            },
+            "providerStates": [
+                {
+                    "name": "test state"
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "pactSpecification": {
+            "version": "3.0.0"
+        },
+        "pact-jvm": {
+            "version": "3.6.2"
+        }
+    }
+}

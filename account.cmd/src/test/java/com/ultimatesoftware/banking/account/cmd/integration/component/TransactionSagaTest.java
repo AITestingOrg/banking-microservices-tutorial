@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.account.cmd.integration;
+package com.ultimatesoftware.banking.account.cmd.integration.component;
 
 import com.ultimatesoftware.banking.account.cmd.domain.commands.*;
 import com.ultimatesoftware.banking.account.cmd.domain.sagas.TransactionSaga;
@@ -7,8 +7,9 @@ import com.ultimatesoftware.banking.events.TransferDepositConcludedEvent;
 import com.ultimatesoftware.banking.events.TransferTransactionStartedEvent;
 import com.ultimatesoftware.banking.events.TransferWithdrawConcludedEvent;
 import org.axonframework.test.saga.SagaTestFixture;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
@@ -17,6 +18,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
@@ -26,9 +28,9 @@ import java.util.concurrent.ScheduledFuture;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.yml")
@@ -46,7 +48,7 @@ public class TransactionSagaTest {
     @Mock
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sagaFixture = new SagaTestFixture<>(TransactionSaga.class);
         sagaFixture.registerResource(threadPoolTaskScheduler);

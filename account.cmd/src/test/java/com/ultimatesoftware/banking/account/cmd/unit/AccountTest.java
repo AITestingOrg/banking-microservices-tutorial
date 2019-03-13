@@ -7,149 +7,136 @@ import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotElig
 import com.ultimatesoftware.banking.account.cmd.domain.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.domain.rules.AccountRules;
 import com.ultimatesoftware.banking.events.*;
-import org.axonframework.commandhandling.model.AggregateLifecycle;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({AggregateLifecycle.class, AccountRules.class})
+@ExtendWith(MockitoExtension.class)
 public class AccountTest {
+    @Spy
     private Account account;
+
+    @Mock
+    private AccountRules accountRules;
 
     private static final UUID uuid = UUID.randomUUID();
     private static final String customerId = UUID.randomUUID().toString();
 
-    @Before
-    public void setup() throws Exception {
-        mockStatic(AggregateLifecycle.class);
-        mockStatic(AccountRules.class);
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        account.setAccountRules(accountRules);
     }
 
     @Test
     public void givenAccountIsEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
-        when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
+        doNothing().when(account).applyEvent(any());
 
-        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
-        when(AccountRules.eligibleForDelete(account)).thenReturn(true);
+        account.on(new AccountCreatedEvent(uuid, customerId, 0.0));
+        doReturn(true).when(accountRules).eligibleForDelete(any());
 
         // act
         account.on(new DeleteAccountCommand(uuid));
 
         // assert
-        verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(Matchers.<AccountDeletedEvent>any());
+        verify(account, times(1)).applyEvent(any());
     }
 
-    @Test(expected = AccountNotEligibleForDeleteException.class)
+    @Test
     public void givenAccountIsNotEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
         // arrange
-        when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, customerId, BigDecimal.valueOf(50.0));
-        when(AccountRules.eligibleForDelete(account)).thenReturn(false);
+        account.on(new AccountCreatedEvent(uuid, customerId, 50.0));
+        doReturn(false).when(accountRules).eligibleForDelete(any());
 
         // act
-        account.on(new DeleteAccountCommand(uuid));
+        Assertions.assertThrows(AccountNotEligibleForDeleteException.class, () -> {
+            account.on(new DeleteAccountCommand(uuid));
+        });
     }
 
     @Test
     public void givenAccountEligibleForDebit_WhenDebiting_AccountDebitedEventEmitted() throws Exception {
         // arrange
-        when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, customerId, BigDecimal.valueOf(50.0));
-        when(AccountRules.eligibleForDebit(account, anyDouble())).thenReturn(true);
+        doNothing().when(account).applyEvent(any());
+        account.on(new AccountCreatedEvent(uuid, customerId, 50.0));
+        doReturn(true).when(accountRules).eligibleForDebit(eq(account), anyDouble());
 
         // act
         account.on(new DebitAccountCommand(uuid, 49.0, "test"));
 
         // assert
-        verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(Matchers.<AccountDebitedEvent>any());
+        verify(account, times(1)).applyEvent(any());
     }
 
     @Test
     public void givenAccountInEligibleForDebit_WhenDebiting_TransactionFailedEventEmitted() throws Exception {
         // arrange
-        when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, customerId, BigDecimal.valueOf(49.0));
-        boolean exceptionThrown = false;
-        when(AccountRules.eligibleForDebit(account, anyDouble())).thenReturn(false);
+        doNothing().when(account).applyEvent(any());
+        account.on(new AccountCreatedEvent(uuid, customerId, 49.0));
+        doReturn(false).when(accountRules).eligibleForDebit(any(), anyDouble());
 
         // act
-        try {
+        Assertions.assertThrows(AccountNotEligibleForDebitException.class, () -> {
             account.on(new DebitAccountCommand(uuid, 50.0, "test"));
-        } catch (AccountNotEligibleForDebitException e) {
-            exceptionThrown = true;
-        }
-
-        // assert
-        verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(Matchers.<TransactionFailedEvent>any());
-        assertEquals(true, exceptionThrown);
+        });
     }
 
     @Test
     public void givenAccountInEligibleForCredit_WhenCrediting_TransactionFailedIsEmitted() throws Exception {
         // arrange
-        when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE));
-        boolean exceptionThrown = false;
-        when(AccountRules.eligibleForCredit(account, anyDouble())).thenReturn(false);
+        doNothing().when(account).applyEvent(any());
+        account.on(new AccountCreatedEvent(uuid, customerId, Double.MAX_VALUE));
+        doReturn(false).when(accountRules).eligibleForCredit(any(), anyDouble());
 
         // act
-        try {
+        Assertions.assertThrows(AccountNotEligibleForCreditException.class, () -> {
             account.on(new CreditAccountCommand(uuid, 1.0, "test"));
-        } catch (AccountNotEligibleForCreditException e) {
-            exceptionThrown = true;
-        }
-
-        // assert
-        verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(Matchers.<TransactionFailedEvent>any());
-        assertEquals(true, exceptionThrown);
+        });
     }
 
     @Test
     public void givenAccountEligibleForCredit_WhenCrediting_AccountCreditedIsEmitted() throws Exception {
         // arrange
-        when(AggregateLifecycle.apply(anyObject())).thenReturn(anyObject());
-        account = new Account(uuid, customerId, BigDecimal.valueOf(Double.MAX_VALUE).subtract(BigDecimal.valueOf(1.0)));
-        when(AccountRules.eligibleForCredit(account, anyDouble())).thenReturn(true);
+        doNothing().when(account).applyEvent(any());
+        account.on(new AccountCreatedEvent(uuid, customerId, Double.MAX_VALUE - 1.0));
+        doReturn(true).when(accountRules).eligibleForCredit(any(), anyDouble());
 
         // act
         account.on(new CreditAccountCommand(uuid, 2.0, "test"));
 
         // assert
-        verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(Matchers.<AccountCreditedEvent>any());
+        verify(account, times(1)).applyEvent(any());
     }
 
     @Test
     public void givenAccountExists_WhenUpdating_AccountUpdatedIsEmitted() throws Exception {
         // arrange
-        account = new Account(uuid, customerId, BigDecimal.valueOf(0.0));
+        doNothing().when(account).applyEvent(any());
+        account.on(new AccountCreatedEvent(uuid, customerId, 0.0));
 
         // act
         account.on(new UpdateAccountCommand(uuid, customerId));
 
         // assert
-        verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.apply(Matchers.<AccountUpdatedEvent>any());
+        verify(account, times(1)).applyEvent(any());
     }
 
 
@@ -157,7 +144,6 @@ public class AccountTest {
     public void givenAcountCreatedEmitted_whenHandling_ThenUpdateIdBalanceCustomerId() throws Exception {
         // arrange
         String customerId = UUID.randomUUID().toString();
-        account = new Account();
 
         // act
         account.on(new AccountCreatedEvent(uuid, customerId, 0.0));
@@ -172,7 +158,7 @@ public class AccountTest {
     public void givenAcountDebitedEmitted_whenHandling_ThenUpdateBalance() throws Exception {
         // arrange
         String customerId = UUID.randomUUID().toString();
-        account = new Account();
+        account.on(new AccountCreatedEvent(uuid, customerId, 0.0));
 
         // act
         account.on(new AccountDebitedEvent(uuid, customerId, 10.0, 10.0, "test"));
@@ -185,7 +171,7 @@ public class AccountTest {
     public void givenAcountCreditedEmitted_whenHandling_ThenUpdateBalance() throws Exception {
         // arrange
         String customerId = UUID.randomUUID().toString();
-        account = new Account();
+        account.on(new AccountCreatedEvent(uuid, customerId, 0.0));
 
         // act
         account.on(new AccountCreditedEvent(uuid, customerId, 10.0, 10.0, "test"));
@@ -197,22 +183,21 @@ public class AccountTest {
     @Test
     public void givenAcountDeletedEmitted_whenHandling_ThenMarkDeleted() throws Exception {
         // arrange
-        PowerMockito.doNothing().when(AggregateLifecycle.class, "markDeleted");
-        account = new Account();
+        doNothing().when(account).delete();
+        account.on(new AccountCreatedEvent(uuid, customerId, 0.0));
 
         // act
         account.on(new AccountDeletedEvent(uuid));
 
         // assert
-        verifyStatic(AggregateLifecycle.class);
-        AggregateLifecycle.markDeleted();
+        verify(account, times(1)).delete();
     }
 
     @Test
     public void givenAcountUpdatedEmitted_whenHandling_ThenUpdateCustomerId() throws Exception {
         // arrange
         String customerId = UUID.randomUUID().toString();
-        account = new Account();
+        account.on(new AccountCreatedEvent(uuid, customerId, 20.0));
 
         // act
         account.on(new AccountUpdatedEvent(uuid, customerId));

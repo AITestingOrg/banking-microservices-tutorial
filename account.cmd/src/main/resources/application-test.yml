@@ -1,12 +1,14 @@
 #spring.profiles.active: test
+
 spring:
-  profiles: test
+  profiles:
+    include: default
   application:
     name: accountcmd
 
 axon:
   axonserver:
-    servers: axonserver
+    servers: localhost
 
 server:
   port: 8080

@@ -4,11 +4,15 @@ import com.ultimatesoftware.banking.customer.domain.models.Customer;
 import com.ultimatesoftware.banking.customer.service.controllers.CustomerController;
 import com.ultimatesoftware.banking.customer.service.repositories.CustomerRepository;
 
-import org.junit.Test;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -17,10 +21,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CustomerControllerUnitTests {
     @InjectMocks
     private CustomerController customerController;
+
     @Mock
     private CustomerRepository customerRepository;
 
@@ -42,7 +47,7 @@ public class CustomerControllerUnitTests {
         customerController.getCustomer(id);
 
         //assert
-        verify(customerRepository, times(1)).findOne(id);
+        verify(customerRepository, times(1)).findOne(Example.of(customer));
     }
 
     @Test
@@ -69,13 +74,13 @@ public class CustomerControllerUnitTests {
         customerController.updateCustomer(id, customer);
 
         //assert
-        verify(customerRepository, times(1)).findOne(id);
+        verify(customerRepository, times(1)).findOne(Example.of(customer));
     }
 
     @Test
     public void onUpdateCustomersWithExistingId_repositorySaveIsCalled() {
         //arrange
-        when(customerRepository.findOne(id)).thenReturn(customer);
+        when(customerRepository.findOne(Example.of(customer))).thenReturn(Optional.of(customer));
 
         //act
         customerController.updateCustomer(id, customer);
@@ -99,19 +104,19 @@ public class CustomerControllerUnitTests {
         customerController.deleteCustomers(id);
 
         //assert
-        verify(customerRepository, times(1)).findOne(id);
+        verify(customerRepository, times(1)).findOne(Example.of(customer));
     }
 
     @Test
     public void onDeleteCustomersWithExistingId_repositoryDeleteIsCalled() {
         //arrange
-        when(customerRepository.findOne(id)).thenReturn(customer);
+        when(customerRepository.findOne(Example.of(customer))).thenReturn(Optional.of(customer));
 
         //act
         customerController.deleteCustomers(id);
 
         //assert
-        verify(customerRepository, times(1)).delete(id);
+        verify(customerRepository, times(1)).delete(customer);
     }
 
     @Test

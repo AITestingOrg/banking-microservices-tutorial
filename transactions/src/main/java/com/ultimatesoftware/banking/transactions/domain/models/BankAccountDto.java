@@ -2,16 +2,16 @@ package com.ultimatesoftware.banking.transactions.domain.models;
 
 import java.util.UUID;
 
-public class BankAccount {
+public class BankAccountDto {
     private UUID id;
     private double balance;
     private String customerId;
 
-    public BankAccount() {
+    public BankAccountDto() {
 
     }
 
-    public BankAccount(UUID id, double balance, String customerId) {
+    public BankAccountDto(UUID id, double balance, String customerId) {
         this.id = id;
         this.balance = balance;
         this.customerId = customerId;

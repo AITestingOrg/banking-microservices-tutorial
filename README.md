@@ -92,6 +92,17 @@ sh u-service-readiness-test.sh
 sh u-e2e-test.sh
 ```
 
+## PACT Consumer Tests
+Ensure the PACT Broker is live
+```bash
+cd misc-docker-images
+docker-compose up
+```
+Build and execute PACT consumer tests, this will first execute the consumer tests in the consumer project against a mock provider to generate the PACTs, the PACTs will then be executed against the actual provider and finally published to the PACT broker.
+```bash
+sh pact-tests.sh
+```
+Go to `http://localhost:8081` to view the contracts that have been published.
 ## Service Readiness Endpoints
 Spring Actuator provides a series of service readiness endpoints which provides links to various metrics at `service:port/actuator`.
 
