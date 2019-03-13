@@ -1,15 +1,12 @@
 package com.ultimatesoftware.banking.events;
 
-import java.util.UUID;
+import lombok.Getter;
 
+@Getter
 public abstract class AccountEvent {
-    protected UUID id;
+    protected String id;
 
-    public AccountEvent(UUID id) {
+    public AccountEvent(String id) {
         this.id = id;
-    }
-
-    public UUID getId() {
-        return id;
     }
 }

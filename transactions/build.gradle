@@ -7,6 +7,7 @@ dependencies {
     compile "io.micronaut.configuration:micronaut-mongo-reactive"
     compile "io.micronaut.configuration:micronaut-netflix-ribbon"
     compile("org.axonframework:axon-configuration:${axonVersion}")
+    compile("org.axonframework:axon-server-connector:${axonVersion}")
     testCompile("org.axonframework:axon-test:${axonVersion}")
 }
 

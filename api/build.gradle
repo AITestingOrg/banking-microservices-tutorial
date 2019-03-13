@@ -3,6 +3,8 @@ group "com.ultimatesoftware.banking.api"
 
 dependencies {
     compile "io.micronaut.configuration:micronaut-mongo-reactive"
+    compile("org.axonframework:axon-configuration:${axonVersion}")
+    compile("org.axonframework:axon-server-connector:${axonVersion}")
 }
 
 compileJava {

@@ -9,6 +9,8 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 @Getter
@@ -22,18 +24,25 @@ public class Transaction extends Entity {
     private String destinationAccount;
     private @Setter TransactionStatus status = TransactionStatus.IN_PROGRESS;
 
+    @BsonCreator
     @Builder
-    public Transaction(ObjectId id,
-        TransactionType type, String accountId, String customerId, double amount,
-        String destinationAccount,
-        TransactionStatus status) {
+    public Transaction(
+        @BsonProperty("id") ObjectId id,
+        @BsonProperty("type") TransactionType type,
+        @BsonProperty("accountId") String accountId,
+        @BsonProperty("customerId") String customerId,
+        @BsonProperty("amount") double amount,
+        @BsonProperty("destinationAccount") String destinationAccount,
+        @BsonProperty("status") TransactionStatus status) {
         super(id);
         this.type = type;
         this.accountId = accountId;
         this.customerId = customerId;
         this.amount = amount;
         this.destinationAccount = destinationAccount;
-        this.status = status;
+        if(status != null) {
+            this.status = status;
+        }
     }
 
     @JsonPOJOBuilder(withPrefix = "")

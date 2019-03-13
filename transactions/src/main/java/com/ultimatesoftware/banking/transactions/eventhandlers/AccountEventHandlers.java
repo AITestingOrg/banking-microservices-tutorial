@@ -1,19 +1,36 @@
 package com.ultimatesoftware.banking.transactions.eventhandlers;
 
+import com.ultimatesoftware.banking.api.repository.MongoRepository;
 import com.ultimatesoftware.banking.events.*;
+import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionStatus;
-import com.ultimatesoftware.banking.transactions.respositories.TransactionRepository;
 
+import io.micronaut.discovery.event.ServiceStartedEvent;
+import io.micronaut.runtime.event.annotation.EventListener;
+import javax.inject.Singleton;
+import org.axonframework.config.Configuration;
+import org.axonframework.config.DefaultConfigurer;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class AccountEventHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);
+    private Configuration configurer;
+    private final MongoRepository<Transaction> bankTransactionRepository;
 
-    private TransactionRepository bankTransactionRepository;
+    public AccountEventHandlers(MongoRepository<Transaction> bankTransactionRepository) {
+        this.bankTransactionRepository = bankTransactionRepository;
+    }
 
-    public AccountEventHandlers() {}
+    @EventListener
+    public void configuration(final ServiceStartedEvent event) {
+        LOG.info("Configuring Axon server");
+        configurer = DefaultConfigurer.defaultConfiguration()
+            .eventProcessing(eventProcessingConfigurer -> eventProcessingConfigurer
+                .registerEventHandler(conf -> this)).start();
+    }
 
     @EventHandler
     public void on(AccountCreditedEvent event) {
@@ -50,7 +67,7 @@ public class AccountEventHandlers {
             transaction -> {
                 if (transaction != null) {
                     transaction.setStatus(TransactionStatus.SUCCESSFUL);
-                    bankTransactionRepository.replaceOne(transaction.getHexId(), transaction);
+                    bankTransactionRepository.replaceOne(transaction.getHexId(), transaction).blockingGet();
                 } else {
                     LOG.warn("Attempted to update transaction that does not exist {}.", event.getTransactionId());
                 }
@@ -61,7 +78,7 @@ public class AccountEventHandlers {
         bankTransactionRepository.findOne(transactionId).subscribe(transaction -> {
             if (transaction != null) {
                 transaction.setStatus(status);
-                bankTransactionRepository.replaceOne(transactionId, transaction);
+                bankTransactionRepository.replaceOne(transactionId, transaction).blockingGet();
             } else {
                 LOG.warn("Attempted to update transaction that does not exist {}.", transactionId);
             }

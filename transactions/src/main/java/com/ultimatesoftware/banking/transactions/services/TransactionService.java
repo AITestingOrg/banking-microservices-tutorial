@@ -1,5 +1,6 @@
 package com.ultimatesoftware.banking.transactions.services;
 
+import com.ultimatesoftware.banking.api.repository.MongoRepository;
 import com.ultimatesoftware.banking.transactions.clients.BankAccountCmdClient;
 import com.ultimatesoftware.banking.transactions.clients.BankAccountQueryClient;
 import com.ultimatesoftware.banking.transactions.clients.CustomerClient;
@@ -14,7 +15,6 @@ import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
 import com.ultimatesoftware.banking.transactions.models.TransactionType;
 import com.ultimatesoftware.banking.transactions.models.TransferTransactionDto;
-import com.ultimatesoftware.banking.transactions.respositories.TransactionRepository;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +23,15 @@ import org.slf4j.LoggerFactory;
 public class TransactionService {
     private static final Logger LOG = LoggerFactory.getLogger(TransactionService.class);
 
-    private final TransactionRepository transactionRepository;
+    private final MongoRepository<Transaction> transactionRepository;
     private final CustomerClient customerClient;
     private final BankAccountQueryClient bankAccountQueryClient;
     private final BankAccountCmdClient bankAccountCmdClient;
 
     public TransactionService(
-        TransactionRepository TransactionRepository, CustomerClient customerClient,
+        MongoRepository<Transaction> transactionRepository, CustomerClient customerClient,
             BankAccountQueryClient bankAccountQueryClient, BankAccountCmdClient bankAccountCmdClient) {
-        this.transactionRepository = TransactionRepository;
+        this.transactionRepository = transactionRepository;
         this.customerClient = customerClient;
         this.bankAccountQueryClient = bankAccountQueryClient;
         this.bankAccountCmdClient = bankAccountCmdClient;
@@ -55,9 +55,9 @@ public class TransactionService {
             .destinationAccount(destAccountId)
             .build();
 
-        updateAccount(transaction);
+        transactionRepository.add(transaction).blockingGet();
 
-        transactionRepository.add(transaction);
+        updateAccount(transaction);
 
         return transaction.getHexId();
     }
@@ -77,9 +77,9 @@ public class TransactionService {
             .customerId(customerId)
             .build();
 
-        updateAccount(transaction);
+        transactionRepository.add(transaction).blockingGet();
 
-        transactionRepository.add(transaction);
+        updateAccount(transaction);
 
         return transaction.getHexId();
     }
@@ -97,9 +97,9 @@ public class TransactionService {
             .customerId(customerId)
             .build();
 
-        updateAccount(transaction);
+        transactionRepository.add(transaction).blockingGet();
 
-        transactionRepository.add(transaction);
+        updateAccount(transaction);
 
         return transaction.getHexId();
     }

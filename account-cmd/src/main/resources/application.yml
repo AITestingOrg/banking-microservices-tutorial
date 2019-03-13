@@ -1,0 +1,25 @@
+micronaut:
+    application:
+        name: account-cmd
+    router:
+        static-resources:
+            swagger:
+                enabled: true
+                paths: classpath:META-INF/swagger
+                mapping: /swagger/**
+    server:
+        port: "${HOST_PORT:8082}"
+        netty:
+            logLevel: TRACE
+axon:
+    axonserver:
+        servers: localhost
+        component-name: account-cmd
+
+consul:
+    client:
+        registration:
+            enabled: true
+        defaultZone: "${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}"
+
+
