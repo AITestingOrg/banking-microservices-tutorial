@@ -9,6 +9,7 @@ out/
 
 .gradle
 /build/
+/node_modules/
 !gradle/wrapper/gradle-wrapper.jar
 **/coverage/**
 **/jacoco/**
