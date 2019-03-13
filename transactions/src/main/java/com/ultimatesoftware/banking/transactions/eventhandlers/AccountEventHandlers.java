@@ -1,5 +1,6 @@
 package com.ultimatesoftware.banking.transactions.eventhandlers;
 
+import com.mongodb.client.result.UpdateResult;
 import com.ultimatesoftware.banking.api.repository.MongoRepository;
 import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.transactions.models.Transaction;
@@ -67,7 +68,7 @@ public class AccountEventHandlers {
             transaction -> {
                 if (transaction != null) {
                     transaction.setStatus(TransactionStatus.SUCCESSFUL);
-                    bankTransactionRepository.replaceOne(transaction.getHexId(), transaction).blockingGet();
+                    UpdateResult ur = bankTransactionRepository.replaceOne(transaction.getHexId(), transaction).blockingGet();
                 } else {
                     LOG.warn("Attempted to update transaction that does not exist {}.", event.getTransactionId());
                 }
@@ -78,7 +79,7 @@ public class AccountEventHandlers {
         bankTransactionRepository.findOne(transactionId).subscribe(transaction -> {
             if (transaction != null) {
                 transaction.setStatus(status);
-                bankTransactionRepository.replaceOne(transactionId, transaction).blockingGet();
+                UpdateResult ur = bankTransactionRepository.replaceOne(transactionId, transaction).blockingGet();
             } else {
                 LOG.warn("Attempted to update transaction that does not exist {}.", transactionId);
             }

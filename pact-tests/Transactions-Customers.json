@@ -7,7 +7,7 @@
     },
     "interactions": [
         {
-            "description": "ExampleJavaConsumerPactTest test interaction",
+            "description": "Empty customer list",
             "request": {
                 "method": "GET",
                 "path": "/api/v1/customers/",
@@ -23,7 +23,7 @@
             },
             "providerStates": [
                 {
-                    "name": "test state"
+                    "name": "A customer does not exist."
                 }
             ]
         }
