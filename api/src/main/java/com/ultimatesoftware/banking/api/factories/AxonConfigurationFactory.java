@@ -2,6 +2,7 @@ package com.ultimatesoftware.banking.api.factories;
 
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Value;
 import javax.inject.Singleton;
@@ -16,6 +17,7 @@ public class AxonConfigurationFactory {
     @Value("${axon.axonserver.servers}")
     private String axonServerHost;
 
+    @Primary
     @Bean
     @Singleton
     public AxonServerConfiguration axonServerConfiguration() {

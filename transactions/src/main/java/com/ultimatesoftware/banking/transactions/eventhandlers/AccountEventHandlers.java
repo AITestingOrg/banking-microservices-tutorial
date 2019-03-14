@@ -9,6 +9,7 @@ import com.ultimatesoftware.banking.transactions.models.TransactionStatus;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
 import javax.inject.Singleton;
+import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
 import org.axonframework.config.DefaultConfigurer;
 import org.axonframework.eventhandling.EventHandler;
@@ -20,15 +21,18 @@ public class AccountEventHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);
     private Configuration configurer;
     private final MongoRepository<Transaction> bankTransactionRepository;
+    private final AxonServerConfiguration axonServerConfiguration;
 
-    public AccountEventHandlers(MongoRepository<Transaction> bankTransactionRepository) {
+    public AccountEventHandlers(MongoRepository<Transaction> bankTransactionRepository, AxonServerConfiguration axonServerConfiguration) {
         this.bankTransactionRepository = bankTransactionRepository;
+        this.axonServerConfiguration = axonServerConfiguration;
     }
 
     @EventListener
     public void configuration(final ServiceStartedEvent event) {
         LOG.info("Configuring Axon server");
         configurer = DefaultConfigurer.defaultConfiguration()
+            .registerComponent(AxonServerConfiguration.class, c -> axonServerConfiguration)
             .eventProcessing(eventProcessingConfigurer -> eventProcessingConfigurer
                 .registerEventHandler(conf -> this)).start();
     }

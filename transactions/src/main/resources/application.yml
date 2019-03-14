@@ -19,7 +19,7 @@ ribbon:
 
 axon:
     axonserver:
-        servers: localhost
+        servers: ${AXON_HOST:localhost}
         component-name: transactions
 
 consul:

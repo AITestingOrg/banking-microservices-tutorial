@@ -32,6 +32,7 @@ public class AccountEventHandler {
     public void configuration(final ServiceStartedEvent event) {
         LOG.info("Configuring Axon server");
         configurer = DefaultConfigurer.defaultConfiguration()
+            .registerComponent(AxonServerConfiguration.class, c -> axonServerConfiguration)
             .eventProcessing(eventProcessingConfigurer -> eventProcessingConfigurer
                 .registerEventHandler(conf -> this)).start();
     }

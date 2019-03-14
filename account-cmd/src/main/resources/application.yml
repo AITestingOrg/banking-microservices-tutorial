@@ -13,7 +13,7 @@ micronaut:
             logLevel: TRACE
 axon:
     axonserver:
-        servers: localhost
+        servers: ${AXON_HOST:localhost}
         component-name: account-cmd
 
 consul:

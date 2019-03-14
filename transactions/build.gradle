@@ -8,7 +8,6 @@ dependencies {
     compile "io.micronaut.configuration:micronaut-netflix-ribbon"
     compile("org.axonframework:axon-configuration:${axonVersion}")
     compile("org.axonframework:axon-server-connector:${axonVersion}")
-    compile group: 'au.com.dius', name: 'pact-jvm-consumer-junit5_2.12', version: '3.6.2'
     testCompile("org.axonframework:axon-test:${axonVersion}")
     testCompile 'io.rest-assured:rest-assured:3.3.0'
 }

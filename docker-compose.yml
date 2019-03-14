@@ -8,6 +8,7 @@ services:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
+      - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
       - HOST_PORT=8085
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
@@ -21,7 +22,10 @@ services:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
+      - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
+      - HOST_PORT=8082
 
   accountquery:
     build: account-query/
@@ -32,7 +36,9 @@ services:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
+      - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
       - HOST_PORT=8084
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
@@ -42,7 +48,9 @@ services:
     ports:
       - "8086:8086"
     environment:
+      - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
       - HOST_PORT=8086
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     networks:
