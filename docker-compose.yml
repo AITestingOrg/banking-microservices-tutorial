@@ -2,6 +2,7 @@ version: '2.1'
 services:
   customers:
     build: customers/
+    mem_limit: 400m
     ports:
       - "8085:8085"
     networks:
@@ -15,7 +16,7 @@ services:
 
   accountcmd:
     build: account-cmd/
-    mem_limit: 800m
+    mem_limit: 400m
     ports:
       - "8082:8082"
     networks:
@@ -29,7 +30,7 @@ services:
 
   accountquery:
     build: account-query/
-    mem_limit: 800m
+    mem_limit: 400m
     ports:
       - "8084:8084"
     networks:
@@ -44,7 +45,7 @@ services:
 
   transactionserver:
     build: transactions/
-    mem_limit: 800m
+    mem_limit: 400m
     ports:
       - "8086:8086"
     environment:
