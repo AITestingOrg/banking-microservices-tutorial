@@ -8,9 +8,10 @@ import com.mongodb.reactivestreams.client.MongoCollection;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+
+import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 

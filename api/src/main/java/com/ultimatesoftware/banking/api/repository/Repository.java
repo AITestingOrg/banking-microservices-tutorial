@@ -4,6 +4,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+
 import java.util.List;
 
 public interface Repository<T extends Entity> {

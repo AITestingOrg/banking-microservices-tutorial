@@ -169,3 +169,7 @@ To run with centralized logging and logging visualizations follow the steps belo
 * `cd ../`
 * `docker-compose up -f docker-compose-elk.yml`
 * Refresh Kibana to see the logs.
+
+
+### Micronaut Isolation test configs
+`MICRONAUT_ENVIRONMENTS=test,mock` 

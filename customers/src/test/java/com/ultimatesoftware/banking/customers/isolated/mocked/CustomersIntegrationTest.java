@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@MicronautTest(environments = "mock")
+@MicronautTest()
 public class CustomersIntegrationTest {
     @Inject
     @Client("/api/v1/customers")

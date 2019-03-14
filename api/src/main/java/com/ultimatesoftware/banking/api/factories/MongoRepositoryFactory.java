@@ -6,6 +6,7 @@ import com.ultimatesoftware.banking.api.repository.MongoRepository;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Value;
+
 import javax.inject.Singleton;
 
 @Requires(beans = MongoClient.class)

@@ -9,8 +9,10 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import java.util.List;
+
 import javax.validation.Valid;
+
+import java.util.List;
 
 public interface RestController<T> {
     @Get
@@ -20,10 +22,10 @@ public interface RestController<T> {
     Maybe<T> get(String id);
 
     @Post
-    Single<T> create(@Valid @Body T T);
+    Single<T> create(@Valid @Body T entity);
 
     @Put("/{id}")
-    Maybe<UpdateResult> update(String id, @Valid @Body T T);
+    Maybe<UpdateResult> update(String id, @Valid @Body T entity);
 
     @Delete("/{id}")
     Maybe<DeleteResult> delete(String id);

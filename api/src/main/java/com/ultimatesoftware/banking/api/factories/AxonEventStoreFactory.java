@@ -1,9 +1,6 @@
 package com.ultimatesoftware.banking.api.factories;
 
 import io.micronaut.context.annotation.Bean;
-import io.micronaut.context.annotation.Factory;
-import io.micronaut.context.annotation.Value;
-import javax.inject.Singleton;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.axonserver.connector.AxonServerConnectionManager;
 import org.axonframework.axonserver.connector.event.axon.AxonServerEventStore;
@@ -17,6 +14,8 @@ import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.axonframework.modelling.command.AggregateAnnotationCommandHandler;
 import org.axonframework.modelling.command.Repository;
+
+import javax.inject.Singleton;
 
 public abstract class AxonEventStoreFactory<T> {
     private final Class<T> type;
