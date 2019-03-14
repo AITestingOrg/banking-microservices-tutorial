@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customers.isolated.mocked;
+package com.ultimatesoftware.banking.customers.isolated;
 
 import com.mongodb.client.result.DeleteResult;
 import com.ultimatesoftware.banking.customers.models.Customer;

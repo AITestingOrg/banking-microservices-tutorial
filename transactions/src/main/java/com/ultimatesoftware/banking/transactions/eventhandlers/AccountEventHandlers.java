@@ -1,11 +1,13 @@
 package com.ultimatesoftware.banking.transactions.eventhandlers;
 
 import com.mongodb.client.result.UpdateResult;
+import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.api.repository.MongoRepository;
 import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionStatus;
 
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
 import javax.inject.Singleton;
@@ -17,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
+@Requires(notEnv = ConfigurationConstants.INTERNAL_MOCKS)
 public class AccountEventHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);
     private Configuration configurer;

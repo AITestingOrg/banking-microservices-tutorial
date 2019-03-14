@@ -16,7 +16,7 @@ import static io.restassured.RestAssured.given;
 
 @ExtendWith(PactConsumerTestExt.class)
 @PactTestFor(providerName = "Customers", port = "8085")
-public class CustomerConsumerContractTest {
+public class ConsumeCustomer {
 
     @Pact(provider="Customers", consumer="Transactions")
     public RequestResponsePact createPact(PactDslWithProvider builder) {
@@ -28,7 +28,7 @@ public class CustomerConsumerContractTest {
             .headers(getHeaders())
             .willRespondWith()
             .status(200)
-            .body("[]")
+            .body("[{\"id\":\"5c86d04877970c1fd879a36b\",\"firstName\":\"Jack\",\"lastName\":\"Oneill\"},{\"id\":\"5c892dbef72465ad7e7dde42\",\"firstName\":\"Samantha\",\"lastName\":\"Carter\"},{\"id\":\"5c89342ef72465c5981bc1fc\",\"firstName\":\"Daniel\",\"lastName\":\"Jackson\"}]")
             .toPact();
     }
 

@@ -18,7 +18,21 @@
             "response": {
                 "status": 200,
                 "body": [
-                    
+                    {
+                        "id": "5c86d04877970c1fd879a36b",
+                        "firstName": "Jack",
+                        "lastName": "Oneill"
+                    },
+                    {
+                        "id": "5c892dbef72465ad7e7dde42",
+                        "firstName": "Samantha",
+                        "lastName": "Carter"
+                    },
+                    {
+                        "id": "5c89342ef72465c5981bc1fc",
+                        "firstName": "Daniel",
+                        "lastName": "Jackson"
+                    }
                 ]
             },
             "providerStates": [

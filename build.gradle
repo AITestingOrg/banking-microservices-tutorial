@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -7,6 +8,7 @@ buildscript {
     dependencies {
         classpath "com.github.jengelman.gradle.plugins:shadow:2.0.2"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE"
+        classpath 'au.com.dius:pact-jvm-provider-gradle_2.12:3.6.2'
     }
 }
 
@@ -30,6 +32,7 @@ subprojects { project ->
     if(project.name != 'api') {
         apply plugin: "application"
         apply plugin: 'com.github.johnrengelman.shadow'
+        apply plugin: 'au.com.dius.pact'
 
         shadowJar {
             mergeServiceFiles()
@@ -72,7 +75,7 @@ subprojects { project ->
         compile "io.micronaut:micronaut-discovery-client"
         compile "io.micronaut.configuration:micronaut-hibernate-validator"
         if(project.name != 'api') {
-            compile "au.com.dius:pact-jvm-consumer-junit_2.12:3.6.2"
+            compile "au.com.dius:pact-jvm-consumer-junit5_2.12:3.6.2"
             runtime "ch.qos.logback:logback-classic:1.2.3"
         }
         runtime "io.micronaut:micronaut-management"
@@ -105,6 +108,7 @@ subprojects { project ->
 
     jacocoTestReport {
         reports {
+            html.destination file("${buildDir}/jacocoHtml")
             html {
                 enabled true
             }
@@ -121,6 +125,77 @@ subprojects { project ->
                         ]
                 )
             })
+        }
+    }
+    if(project.name != 'api') {
+        pact {
+            serviceProviders {
+                // You can define as many as you need, but each must have a unique name
+                AccountCmd {
+                    // All the provider properties are optional, and have sensible defaults (shown below)
+                    protocol = 'http'
+                    host = 'localhost'
+                    port = 8082
+                    path = '/'
+
+                    // Or if you have many pact files in a directory
+                    hasPactsWith('manyConsumers') {
+                        // Will define a consumer for each pact file in the directory.
+                        // Consumer name is read from contents of pact file
+                        pactFileLocation = file('./pact-tests')
+                    }
+                }
+
+                AccountQuery {
+                    // All the provider properties are optional, and have sensible defaults (shown below)
+                    protocol = 'http'
+                    host = 'localhost'
+                    port = 8084
+                    path = '/'
+
+                    // Or if you have many pact files in a directory
+                    hasPactsWith('manyConsumers') {
+                        // Will define a consumer for each pact file in the directory.
+                        // Consumer name is read from contents of pact file
+                        pactFileLocation = file('./pact-tests')
+                    }
+                }
+
+                Customers {
+                    // All the provider properties are optional, and have sensible defaults (shown below)
+                    protocol = 'http'
+                    host = 'localhost'
+                    port = 8085
+                    path = '/'
+
+                    // Or if you have many pact files in a directory
+                    hasPactsWith('manyConsumers') {
+                        // Will define a consumer for each pact file in the directory.
+                        // Consumer name is read from contents of pact file
+                        pactFileLocation = file('./pact-tests')
+                    }
+                }
+
+                Transactions {
+                    // All the provider properties are optional, and have sensible defaults (shown below)
+                    protocol = 'http'
+                    host = 'localhost'
+                    port = 8086
+                    path = '/'
+
+                    // Or if you have many pact files in a directory
+                    hasPactsWith('manyConsumers') {
+                        // Will define a consumer for each pact file in the directory.
+                        // Consumer name is read from contents of pact file
+                        pactFileLocation = file('./pact-tests')
+                    }
+                }
+            }
+
+            publish {
+                pactDirectory = '../pact-tests' // defaults to $buildDir/pacts
+                pactBrokerUrl = 'http://localhost:8089'
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.ultimatesoftware.banking.api.factories;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.ultimatesoftware.banking.api.repository.Entity;
 import com.ultimatesoftware.banking.api.repository.MongoRepository;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Value;
@@ -22,7 +23,7 @@ public abstract class MongoRepositoryFactory<T extends Entity> {
 
     @Bean
     @Singleton
-    public MongoRepository<T> mongoRepository(MongoClient mongoClient) {
+    public Repository<T> mongoRepository(MongoClient mongoClient) {
         return new MongoRepository<>(mongoClient, databaseName, type);
     }
 }
