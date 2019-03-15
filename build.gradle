@@ -191,3 +191,12 @@ subprojects { project ->
 
     test.finalizedBy(jacocoTestCoverageVerification)
 }
+
+task clearPactBroker() {
+    def services = ['Customers', 'AccountCmd', 'AccountQuery', 'Transactions']
+    for(service in services) {
+        println "http://localhost:8089/pacticipants/" + service
+        def p = ['curl', '-X', 'DELETE', "http://localhost:8089/pacticipants/" + service].execute()
+        println p.text
+    }
+}

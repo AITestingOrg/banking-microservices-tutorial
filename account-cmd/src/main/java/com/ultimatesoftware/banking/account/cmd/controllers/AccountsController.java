@@ -9,8 +9,9 @@ import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.annotation.Put;
-import javax.validation.Valid;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+
+import javax.validation.Valid;
 
 @Controller("/api/v1/accounts")
 public class AccountsController {
