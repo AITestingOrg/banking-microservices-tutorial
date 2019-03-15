@@ -1,13 +1,16 @@
 # Banking Microservices Example
+[![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-example.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-example)
+[![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-example/badge.svg?branch=master)](https://coveralls.io/github/AITestingOrg/banking-microservices-example?branch=master)
 
-The Banking Microservices Example project is a small system used to show how microservices can be implemented with Netflix's Zuul / Eureka framework and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
+The Banking Microservices Example project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 
+![](images/micronaut.jpg)![](images/axon.png)![](images/consul.svg)![](images/mongo.png)![](images/tyk.png)![](images/junit5-banner.png)
 ## Architecture
 ![Build Status](documentation/services.png)
 <p style="text-align: center;">Figure 1: Overall Banking Example architecture.</p>
 
 ![Build Status](documentation/communication.png)
-<p style="text-align: center;">Figure 2: Flow of communication between domain architectures.</p>
+<p style="text-align: center;">Figure 2: Flow of communication between domain architectures.</p> 
 
 ## Configuration
 The services can be configured in three ways, a local default configuration under each project resources/application.yml, a development coniguration under
@@ -20,12 +23,17 @@ See each services readme for detailed requirement information
 * https://docs.docker.com/compose/install/
 * /data/db directory created and accessible to "everyone"
 
+### Java 8
+* https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+
+### Lombok
+* IntelliJ IDEA installation: https://projectlombok.org/setup/intellij
+
 # Running the Project
 
 ## Start the Microservices
 ** Build JARs for each project (You will need to build a JAR anytime changes are made to a project, then rebuild either the container or all containers)
 ```bash
-export SPRING_PROFILES_ACTIVE=default
 # Assemble the binaries
 ./gradlew assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
@@ -61,50 +69,69 @@ docker-compose build
 
 # Executing Tests
 
-## Running Unit Tests
+## Running Unit and Integration Tests
 The Gradle task 'test' executes the JUnit tests for each project.
 ```bash
-sh u-unit-test.sh
+sh run-unit-tests.sh
 ```
 
-## Running Code Coverage: Unit
+## Running Code Coverage: Unit and Integration Tests
 JaCoCo is used for code coverage and can be run after the unit and integraiton tests for each service have been executed.
 You can find a JaCoCo coverage report under the "coverage" in transaction service after running the unit tests.
 
-## Running Integration Tests (No cross service calls)
-The Gradle task 'test' executes the JUnit tests for each project.
-```bash
-sh u-integration-test.sh
-```
-
 ## Running Contract Tests
+Start the domain services with internal mocks so that only the endpoints will be tested.
+![Internally Mocked Services](./images/internal-mocks.png)
 ```bash
-sh u-contract-test.sh
+docker-compose -f docker-compose-internal-mocked.yml up -d
+```
+Start the PactBroker service and check `http://localhost:8089` that it is live.
+```bash
+docker-compose -f ./pact-broker/docker-compose.yml up -d
+```
+Generate the PACTs and execute them.
+```bash
+sh ./scripts/generate-publish-pact-tests.sh
+sh ./scripts/run-pact-tests.sh
+```
+Stop the PactBroker.
+```bash
+docker-compose -f ./pact-broker/docker-compose.yml down
+```
+Stop the services with internal mocks.
+```bash
+docker-compose -f docker-compose-internal-mocked.yml down
 ```
 
-## Running Service Readiness Tests
+## Running Service Isolation Tests
+
+### Running Service Isolation Tests with All External Dependencies Mocked
+Mocking all external dependencies to the services allows for very rapid execution of tests and alleviates the need for configuring or utilizing resources for the external dependencies.
+![Externally Mocked Services](./images/external-mocks.png)
+Docker is not required to run these tests as all external dependencies are mocked.
 ```bash
-sh u-service-readiness-test.sh
+sh isolation-test-mocked.sh
 ```
 
-## Running Edge API Tests
+### Running Service Isolation Tests with External Dependencies
+Here only the calls to other services are mocked, but external dependencies like databases, caches, and discovery services are deployed.
+![Externally Mocked Services](./images/isolation-mocks.png)
+Start the external dependencies with Docker Compose.
 ```bash
-sh u-e2e-test.sh
+docker-compose -f docker-compose-backing.yml up
+```
+Execute the tests in a new terminal once external dependencies have started.
+```bash
+sh isolation-test.sh
+```
+Tear down the external dependencies.
+```bash
+docker-compose -f docker-compose-backing.yml down
 ```
 
-## PACT Consumer Tests
-Ensure the PACT Broker is live
-```bash
-cd misc-docker-images
-docker-compose up
-```
-Build and execute PACT consumer tests, this will first execute the consumer tests in the consumer project against a mock provider to generate the PACTs, the PACTs will then be executed against the actual provider and finally published to the PACT broker.
-```bash
-sh pact-tests.sh
-```
-Go to `http://localhost:8081` to view the contracts that have been published.
-## Service Readiness Endpoints
-Spring Actuator provides a series of service readiness endpoints which provides links to various metrics at `service:port/actuator`.
+## Running Service Integration Tests
+Coming soon
+
 
 # API Documentation:
 
@@ -169,3 +196,7 @@ To run with centralized logging and logging visualizations follow the steps belo
 * `cd ../`
 * `docker-compose up -f docker-compose-elk.yml`
 * Refresh Kibana to see the logs.
+
+
+### Micronaut Isolation test configs
+`MICRONAUT_ENVIRONMENTS=test,mock` 

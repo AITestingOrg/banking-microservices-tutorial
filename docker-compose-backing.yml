@@ -1,23 +1,56 @@
-version: '2'
+version: '3'
 services:
-  discoveryservice:
-    image: 'aista/eureka'
-    ports:
-      - "8761:8761"
+  discovery-service:
+    image: bitnami/consul:latest
     networks:
       - bank
-  edgeservice:
-    build: 'edgeservice/'
     ports:
-      - "8080:8080"
+      - '8300:8300'
+      - '8301:8301'
+      - '8301:8301/udp'
+      - '8500:8500'
+      - '8600:8600'
+      - '8600:8600/udp'
+  gateway:
+    image: 'tykio/tyk-gateway'
+    ports:
+      - "8081:8080"
     networks:
       - bank
+    depends_on:
+      - redis
+  gateway-pump:
+    image: 'tykio/tyk-pump-docker-pub'
+    networks:
+      - bank
+    depends_on:
+      - redis
+      - mongo
+      - gateway
+  gateway-dashboard:
+    image: tykio/tyk-dashboard
+    ports:
+      - "3000:3000"
+      - "5000:5000"
+    networks:
+      - bank
+    depends_on:
+      - redis
+      - mongo
   mongo:
     image: 'mongo:3.4.1'
     ports:
       - '27017:27017'
     volumes:
-      - 'mongo:/data/db'
+      - 'mongo:/data/mongo/db'
+    networks:
+      - bank
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - 'redis:/data/redis'
     networks:
       - bank
   axonserver:
@@ -33,4 +66,5 @@ networks:
     driver: bridge
 
 volumes:
+  redis:
   mongo:

@@ -1,0 +1,44 @@
+version: '2.1'
+services:
+  customers:
+    build: customers/
+    mem_limit: 400m
+    ports:
+      - "8085:8085"
+    restart: on-failure
+    environment:
+      - MICRONAUT_ENVIRONMENTS=test,internal_mocks
+      - HOST_PORT=8085
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+
+  accountcmd:
+    build: account-cmd/
+    mem_limit: 400m
+    ports:
+      - "8082:8082"
+    restart: on-failure
+    environment:
+      - MICRONAUT_ENVIRONMENTS=test,internal_mocks
+      - HOST_PORT=8082
+
+  accountquery:
+    build: account-query/
+    mem_limit: 400m
+    ports:
+      - "8084:8084"
+    restart: on-failure
+    environment:
+      - MICRONAUT_ENVIRONMENTS=test,internal_mocks
+      - HOST_PORT=8084
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+
+  transactionserver:
+    build: transactions/
+    mem_limit: 400m
+    ports:
+      - "8086:8086"
+    environment:
+      - MICRONAUT_ENVIRONMENTS=test,internal_mocks
+      - HOST_PORT=8086
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    restart: on-failure

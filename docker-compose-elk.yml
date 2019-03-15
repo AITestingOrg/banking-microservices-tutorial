@@ -18,7 +18,7 @@ services:
         tag: "customer-query-server"
 
   accountcmd:
-    build: account.cmd/
+    build: account.cmd-spring/
     depends_on:
       - mongo
       - rabbitmq
@@ -35,7 +35,7 @@ services:
         tag: "account-cmd-server"
 
   accountquery:
-    build: account.query/
+    build: account.query-spring/
     depends_on:
       - mongo
       - rabbitmq
@@ -53,7 +53,7 @@ services:
         tag: "acount-query-server"
 
   transactionserver:
-    build: transactions/
+    build: transactions-spring/
     depends_on:
       - mongo
     mem_limit: 700m

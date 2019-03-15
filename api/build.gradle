@@ -1,0 +1,13 @@
+version "0.1"
+group "com.ultimatesoftware.banking.api"
+
+dependencies {
+    compile "io.micronaut.configuration:micronaut-mongo-reactive"
+    compile("org.axonframework:axon-configuration:${axonVersion}")
+    compile("org.axonframework:axon-server-connector:${axonVersion}")
+    compile "de.bwaldvogel:mongo-java-server:1.13.0"
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+}

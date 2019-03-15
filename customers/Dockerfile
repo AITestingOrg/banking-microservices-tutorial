@@ -1,7 +1,5 @@
-FROM frolvlad/alpine-oraclejdk8:slim
-VOLUME /tmp
-ADD build/libs/customers-0.0.1.jar app.jar
-ENV SPRING_PROFILES_ACTIVE=dev
-ENV JAVA_OPTS=""
+FROM openjdk:8u171-alpine3.7
+RUN apk --no-cache add curl
+COPY build/libs/*-all.jar customers.jar
 EXPOSE 8080
-ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
+CMD java ${JAVA_OPTS} -jar customers.jar

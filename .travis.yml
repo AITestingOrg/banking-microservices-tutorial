@@ -3,4 +3,6 @@ jdk:
 - oraclejdk8
 sudo: required
 script:
-  - ./gradlew cleanTest test --tests "*.unit.*"
+  - ./gradlew test
+after_success:
+  - ./gradlew cobertura coveralls

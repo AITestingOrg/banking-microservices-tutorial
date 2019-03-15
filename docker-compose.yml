@@ -2,48 +2,57 @@ version: '2.1'
 services:
   customers:
     build: customers/
-    mem_limit: 800m
+    mem_limit: 400m
     ports:
-      - "8082:8080"
+      - "8085:8085"
     networks:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
+      - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
+      - HOST_PORT=8085
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   accountcmd:
-    build: account.cmd/
-    mem_limit: 800m
+    build: account-cmd/
+    mem_limit: 400m
     ports:
-      - "8089:8080"
+      - "8082:8082"
     networks:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
+      - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
-      - RABBIT_HOST=rabbitmq
+      - AXON_HOST=axonserver
+      - HOST_PORT=8082
 
   accountquery:
-    build: account.query/
-    mem_limit: 800m
+    build: account-query/
+    mem_limit: 400m
     ports:
-      - "8084:8080"
+      - "8084:8084"
     networks:
       - banking-microservices-example_bank
     restart: on-failure
     environment:
+      - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
-      - RABBIT_HOST=rabbitmq
+      - AXON_HOST=axonserver
+      - HOST_PORT=8084
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   transactionserver:
     build: transactions/
-    mem_limit: 800m
+    mem_limit: 400m
     ports:
-      - "8086:8080"
+      - "8086:8086"
     environment:
+      - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
+      - HOST_PORT=8086
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     networks:
       - banking-microservices-example_bank
