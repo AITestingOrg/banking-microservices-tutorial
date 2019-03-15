@@ -28,6 +28,10 @@ subprojects { project ->
     apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
     apply plugin: 'groovy'
+    apply plugin: 'net.saliman.cobertura'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    cobertura.coverageFormats = ['html', 'xml']
 
     if(project.name != 'api') {
         apply plugin: "application"
@@ -129,6 +133,19 @@ subprojects { project ->
         }
     }
     if(project.name != 'api') {
+
+        task clearPactBroker() {
+            doLast() {
+                def services = ['Customers', 'AccountCmd', 'AccountQuery', 'Transactions']
+                for (service in services) {
+                    println "http://localhost:8089/pacticipants/" + service
+                    def p = ['curl', '-X', 'DELETE', "http://localhost:8089/pacticipants/" + service].
+                            execute()
+                    println p.text
+                }
+            }
+        }
+
         pact {
             serviceProviders {
                 // You can define as many as you need, but each must have a unique name
@@ -178,7 +195,12 @@ subprojects { project ->
             }
 
             publish {
-                pactDirectory = '../pact-tests' // defaults to $buildDir/pacts
+                def folder = new File('./pact-tests')
+                if (folder.exists()) {
+                    pactDirectory = './pact-tests'
+                } else {
+                    pactDirectory = '../pact-tests'
+                }
                 pactBrokerUrl = 'http://localhost:8089'
             }
         }
@@ -190,13 +212,4 @@ subprojects { project ->
     }
 
     test.finalizedBy(jacocoTestCoverageVerification)
-}
-
-task clearPactBroker() {
-    def services = ['Customers', 'AccountCmd', 'AccountQuery', 'Transactions']
-    for(service in services) {
-        println "http://localhost:8089/pacticipants/" + service
-        def p = ['curl', '-X', 'DELETE', "http://localhost:8089/pacticipants/" + service].execute()
-        println p.text
-    }
 }

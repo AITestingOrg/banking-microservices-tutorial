@@ -80,8 +80,26 @@ sh u-integration-test.sh
 ```
 
 ## Running Contract Tests
+Start the domain services with internal mocks so that only the endpoints will be tested.
 ```bash
-sh u-contract-test.sh
+docker-compose -f docker-compose-internal-mocked.yml start
+```
+Start the PactBroker service and check `http://localhost:8089` that it is live.
+```bash
+docker-compose -f ./pact-broker/docker-compose.yml start
+```
+Generate the PACTs and execute them.
+```bash
+sh ./scripts/generate-publish-pact-tests.sh
+sh ./scripts/run-pact-tests.sh
+```
+Stop the PactBroker.
+```bash
+docker-compose -f ./pact-broker/docker-compose.yml down
+```
+Stop the services with internal mocks.
+```bash
+docker-compose -f docker-compose-internal-mocked.yml down
 ```
 
 ## Running Service Readiness Tests
