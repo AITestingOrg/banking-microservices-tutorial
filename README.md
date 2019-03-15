@@ -2,14 +2,17 @@
 [![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-example.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-example)
 [![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-example/badge.svg?branch=master)](https://coveralls.io/github/AITestingOrg/banking-microservices-example?branch=master)
 
-The Banking Microservices Example project is a small system used to show how microservices can be implemented with Netflix's Zuul / Eureka framework and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
+The Banking Microservices Example project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 
+<div style="display:flex">
+![](images/micronaut.jpg)![](images/axon.png)![](images/consul.svg)![](images/mongo.png)![](images/tyk.png)![](images/junit5-banner.png)
+</div>
 ## Architecture
 ![Build Status](documentation/services.png)
 <p style="text-align: center;">Figure 1: Overall Banking Example architecture.</p>
 
 ![Build Status](documentation/communication.png)
-<p style="text-align: center;">Figure 2: Flow of communication between domain architectures.</p>
+<p style="text-align: center;">Figure 2: Flow of communication between domain architectures.</p> 
 
 ## Configuration
 The services can be configured in three ways, a local default configuration under each project resources/application.yml, a development coniguration under
@@ -106,9 +109,14 @@ docker-compose -f docker-compose-internal-mocked.yml down
 ## Running Service Isolation Tests
 
 ### Running Externally Mocked Service Isolation Tests
+Mocking all external dependencies to the services allows for very rapid execution of tests and alleviates the need for configuring or utilizing resources for the external dependencies.
 ![Externally Mocked Services](./images/external-mocks.png)
+Docker is not required to run these tests
 ```bash
 sh u-service-readiness-test.sh
+```
+```bash
+docker-compose -f docker-compose-external-mocked.yml down
 ```
 
 ### Running Service Isolation Tests
