@@ -153,9 +153,9 @@ subprojects { project ->
                     host = 'localhost'
                     port = 8082
                     path = '/'
-
-                    // Or if you have many pact files in a directory
-                    hasPactsFromPactBroker('http://localhost:8089')
+                    if ('pactVerify' in gradle.startParameter.taskNames) {
+                        hasPactsFromPactBroker('http://localhost:8089')
+                    }
                 }
 
                 AccountQuery {
@@ -164,9 +164,9 @@ subprojects { project ->
                     host = 'localhost'
                     port = 8084
                     path = '/'
-
-                    // Or if you have many pact files in a directory
-                    hasPactsFromPactBroker('http://localhost:8089')
+                    if ('pactVerify' in gradle.startParameter.taskNames) {
+                        hasPactsFromPactBroker('http://localhost:8089')
+                    }
                 }
 
                 Customers {
@@ -175,9 +175,9 @@ subprojects { project ->
                     host = 'localhost'
                     port = 8085
                     path = '/'
-
-                    // Or if you have many pact files in a directory
-                    hasPactsFromPactBroker('http://localhost:8089')
+                    if ('pactVerify' in gradle.startParameter.taskNames) {
+                        hasPactsFromPactBroker('http://localhost:8089')
+                    }
                 }
 
                 Transactions {
@@ -186,9 +186,9 @@ subprojects { project ->
                     host = 'localhost'
                     port = 8086
                     path = '/'
-
-                    // Or if you have many pact files in a directory
-                    hasPactsFromPactBroker('http://localhost:8089')
+                    if ('pactVerify' in gradle.startParameter.taskNames) {
+                        hasPactsFromPactBroker('http://localhost:8089')
+                    }
                 }
             }
 
