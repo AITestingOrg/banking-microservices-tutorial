@@ -1,4 +1,4 @@
-# Banking Microservices Example
+# Banking Microservices Tutorial
 [![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-example.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-example)
 [![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-example/badge.svg?branch=master)](https://coveralls.io/github/AITestingOrg/banking-microservices-example?branch=master)
 
