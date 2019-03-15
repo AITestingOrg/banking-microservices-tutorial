@@ -1,6 +1,4 @@
 version "0.1"
-mainClassName = "com.ultimatesoftware.banking.Application"
-
 
 dependencies {
     compile project(":api")
@@ -12,6 +10,4 @@ dependencies {
     testCompile 'io.rest-assured:rest-assured:3.3.0'
 }
 
-shadowJar {
-    mergeServiceFiles()
-}
+mainClassName = "com.ultimatesoftware.banking.transactions.Application"

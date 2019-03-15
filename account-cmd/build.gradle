@@ -1,6 +1,4 @@
 version "0.1"
-mainClassName = "com.ultimatesoftware.banking.Application"
-
 
 dependencies {
     compile project(":api")
@@ -12,6 +10,4 @@ dependencies {
     testCompile("org.axonframework:axon-test:${axonVersion}")
 }
 
-shadowJar {
-    mergeServiceFiles()
-}
+mainClassName = "com.ultimatesoftware.banking.account.cmd.Application"

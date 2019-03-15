@@ -81,6 +81,7 @@ sh u-integration-test.sh
 
 ## Running Contract Tests
 Start the domain services with internal mocks so that only the endpoints will be tested.
+![Internally Mocked Services](./images/internal-mocks.png)
 ```bash
 docker-compose -f docker-compose-internal-mocked.yml start
 ```
@@ -102,10 +103,17 @@ Stop the services with internal mocks.
 docker-compose -f docker-compose-internal-mocked.yml down
 ```
 
-## Running Service Readiness Tests
+## Running Service Isolation Tests
+
+### Running Externally Mocked Service Isolation Tests
+![Externally Mocked Services](./images/external-mocks.png)
 ```bash
 sh u-service-readiness-test.sh
 ```
+
+### Running Service Isolation Tests
+![Externally Mocked Services](./images/isolation-mocks.png)
+
 
 ## Running Edge API Tests
 ```bash

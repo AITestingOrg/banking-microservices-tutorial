@@ -1,8 +1,8 @@
 version "0.1"
-mainClassName = "com.ultimatesoftware.banking.Application"
-
 
 dependencies {
     compile project(":api")
     compile "io.micronaut.configuration:micronaut-mongo-reactive"
 }
+
+mainClassName = "com.ultimatesoftware.banking.customers.Application"

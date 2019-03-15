@@ -1,21 +1,21 @@
-package com.ultimatesoftware.banking;
+package com.ultimatesoftware.banking.customers;
 
+import groovy.lang.Singleton;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.inject.Singleton;
 
 @OpenAPIDefinition(
     info = @Info(
-        title = "Account.Query",
+        title = "Customers",
         version = "0.1",
-        description = "Account Query Service",
+        description = "Customer CRUD Service",
         license = @License(name = "Apache 2.0", url = "http://ultimatesoftware.com")
     ),
     tags = {
-        @Tag(name = "Account")
+        @Tag(name = "Customers")
     }
 )
 @Singleton

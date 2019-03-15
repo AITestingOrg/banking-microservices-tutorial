@@ -28,10 +28,9 @@ subprojects { project ->
     apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
     apply plugin: 'groovy'
-    apply plugin: 'net.saliman.cobertura'
-    apply plugin: 'com.github.kt3k.coveralls'
 
-    cobertura.coverageFormats = ['html', 'xml']
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     if(project.name != 'api') {
         apply plugin: "application"
@@ -44,7 +43,6 @@ subprojects { project ->
 
         run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
 
-        mainClassName = "com.ultimatesoftware.banking.Application"
         tasks.withType(JavaCompile) {
             options.encoding = "UTF-8"
             options.compilerArgs.add('-parameters')

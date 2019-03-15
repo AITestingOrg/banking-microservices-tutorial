@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking;
+package com.ultimatesoftware.banking.account.cmd;
 
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -9,13 +9,13 @@ import javax.inject.Singleton;
 
 @OpenAPIDefinition(
     info = @Info(
-        title = "Transactions",
+        title = "Account-Cmd",
         version = "0.1",
-        description = "Transactions service",
+        description = "Account Command Service",
         license = @License(name = "Apache 2.0", url = "http://ultimatesoftware.com")
     ),
     tags = {
-        @Tag(name = "Transaction")
+        @Tag(name = "Account")
     }
 )
 @Singleton
