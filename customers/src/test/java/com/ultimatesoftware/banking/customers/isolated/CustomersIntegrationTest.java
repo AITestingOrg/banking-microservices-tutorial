@@ -1,19 +1,25 @@
 package com.ultimatesoftware.banking.customers.isolated;
 
-import com.mongodb.client.result.DeleteResult;
+import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.customers.models.Customer;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.annotation.MicronautTest;
-import java.util.List;
-import javax.inject.Inject;
 import org.bson.types.ObjectId;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import javax.inject.Inject;
 
-@MicronautTest()
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@MicronautTest(environments = ConfigurationConstants.EXTERNAL_MOCKS)
 public class CustomersIntegrationTest {
     @Inject
     @Client("/api/v1/customers")
@@ -53,7 +59,7 @@ public class CustomersIntegrationTest {
         List<Customer> customersFound = (List<Customer>) client.toBlocking().retrieve(HttpRequest.GET(""), List.class);
 
         // Assert
-        assertEquals(2, customersFound.size());
+        assertEquals(4, customersFound.size());
     }
 
     @Test
@@ -62,38 +68,36 @@ public class CustomersIntegrationTest {
         addCustomer(customer1);
 
         // Act
-        DeleteResult deleteResult = client.toBlocking().retrieve(HttpRequest.DELETE("/" + customer1.getHexId()), DeleteResult.class);
+        String result = client.toBlocking().retrieve(HttpRequest.DELETE(customer1.getHexId()));
 
         // Assert
-        assertEquals(deleteResult.getDeletedCount(), 1);
+        assertEquals("{\"deletedCount\":1}", result);
     }
-    /*
+
     @Test
     public void whenUpdatingACustomer_thenTheCustomerIsUpdated() {
         // Arrange
-        Customer newCustomer = new Customer(id1, "Test", "Joe");
+        addCustomer(customer1);
+        Customer updated = new Customer(customer1.getId(), "Jane", "Doe");
 
         // Act
-        customerController.updateCustomer(id1, newCustomer);
+        String result = client.toBlocking().retrieve(HttpRequest.PUT(updated.getHexId(), updated));
 
         // Assert
-        Optional<Customer> customerFound = customerRepository.findOne(Example.of(newCustomer));
-        assertEquals("Test", customerFound.get().getFirstName());
-        assertEquals("Joe", customerFound.get().getLastName());
+        assertEquals("{\"matchedCount\":1,\"modifiedCount\":1,\"modifiedCountAvailable\":true}", result);
     }
 
     @Test
     public void whenCreatingACustomer_thenTheCustomerExists() {
         // Arrange
-        Customer newCustomer = new Customer("id", "Hello", "World");
 
         // Act
-        String id = customerController.createCustomer(new Customer("id", "Hello", "World"));
+        Customer customer = client.toBlocking().retrieve(HttpRequest.POST("", "{\"firstName\":\"John\", \"lastName\":\"Doe\"}"), Customer.class);
 
         // Assert
-        Optional<Customer> customerFound = customerRepository.findOne(Example.of(newCustomer));
-        assertEquals("Hello", customerFound.get().getFirstName());
-        assertEquals("World", customerFound.get().getLastName());
+        assertEquals(customer.getFirstName(), "John");
+        assertEquals(customer.getLastName(), "Doe");
+        assertNotNull(customer.getHexId());
     }
 
     // Given no customers exist.
@@ -103,33 +107,25 @@ public class CustomersIntegrationTest {
         // Arrange
 
         // Act
-        ResponseEntity response = customerController.getCustomer("1");
+        HttpClientResponseException e = Assertions.assertThrows(HttpClientResponseException.class, () -> {
+                Customer customer =
+                    client.toBlocking().retrieve(HttpRequest.GET("/" + ObjectId.get()), Customer.class);
+            });
 
         // Assert
-        assertEquals(404, response.getStatusCode().value());
+        assertTrue(e.getStatus().getCode() == 404);
     }
 
     @Test
-    public void whenQueryAllCustomers_thenGetAllShouldReturnNoCustomers() {
-        // Arrange
-        customerRepository.deleteAll();
-
-        // Act
-        List<Customer> customersFound = customerController.getCustomers();
-
-        // Assert
-        assertEquals(0, customersFound.size());
-    }
-
-    @Test
-    public void whenDeletingTheCustomer_then404IsReturned() {
+    public void whenDeletingACustomer_thenDeleteShouldReturnA404() {
         // Arrange
 
         // Act
-        ResponseEntity response = customerController.deleteCustomers("1");
+        String result = client.toBlocking().retrieve(HttpRequest.DELETE("/" + ObjectId.get()));
+
 
         // Assert
-        assertEquals(404, response.getStatusCode().value());
+        assertEquals("{\"deletedCount\":0}", result);
     }
 
     @Test
@@ -137,10 +133,9 @@ public class CustomersIntegrationTest {
         // Arrange
 
         // Act
-        ResponseEntity response = customerController.updateCustomer("1", new Customer("1", "Test", "Joe"));
+        String result = client.toBlocking().retrieve(HttpRequest.PUT("/" + ObjectId.get(), customer1));
 
         // Assert
-        assertEquals(404, response.getStatusCode().value());
+        assertEquals("{\"matchedCount\":0,\"modifiedCount\":0,\"modifiedCountAvailable\":true}", result);
     }
-    */
 }

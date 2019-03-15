@@ -40,6 +40,64 @@
                     "name": "A customer does not exist."
                 }
             ]
+        },
+        {
+            "description": "Single valid customer",
+            "request": {
+                "method": "GET",
+                "path": "/api/v1/customers/5c892dbef72465ad7e7dde42",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": {
+                    "id": "5c892dbef72465ad7e7dde42",
+                    "firstName": "Samantha",
+                    "lastName": "Carter"
+                }
+            },
+            "providerStates": [
+                {
+                    "name": "A customer exist."
+                }
+            ]
+        },
+        {
+            "description": "Three customers",
+            "request": {
+                "method": "GET",
+                "path": "/api/v1/customers/",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "5c86d04877970c1fd879a36b",
+                        "firstName": "Jack",
+                        "lastName": "Oneill"
+                    },
+                    {
+                        "id": "5c892dbef72465ad7e7dde42",
+                        "firstName": "Samantha",
+                        "lastName": "Carter"
+                    },
+                    {
+                        "id": "5c89342ef72465c5981bc1fc",
+                        "firstName": "Daniel",
+                        "lastName": "Jackson"
+                    }
+                ]
+            },
+            "providerStates": [
+                {
+                    "name": "Three customers exist."
+                }
+            ]
         }
     ],
     "metadata": {

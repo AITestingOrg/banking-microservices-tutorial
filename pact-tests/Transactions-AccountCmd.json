@@ -1,0 +1,91 @@
+{
+    "provider": {
+        "name": "AccountCmd"
+    },
+    "consumer": {
+        "name": "Transactions"
+    },
+    "interactions": [
+        {
+            "description": "Request to credit account.",
+            "request": {
+                "method": "PUT",
+                "path": "/api/v1/accounts/credit",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": {
+                    "customerId": "5c892dbef72465ad7e7dde42",
+                    "accountId": "5c892dbef72465ad7e7dde42",
+                    "amount": 10.0
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": "SENT COMMAND"
+            },
+            "providerStates": [
+                {
+                    "name": "An account exists."
+                }
+            ]
+        },
+        {
+            "description": "Request to debit account.",
+            "request": {
+                "method": "PUT",
+                "path": "/api/v1/accounts/debit",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": {
+                    "customerId": "5c892dbef72465ad7e7dde42",
+                    "accountId": "5c892dbef72465ad7e7dde42",
+                    "amount": 10.0
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": "SENT COMMAND"
+            },
+            "providerStates": [
+                {
+                    "name": "An account exists."
+                }
+            ]
+        },
+        {
+            "description": "Request to transfer amount to destination account.",
+            "request": {
+                "method": "PUT",
+                "path": "/api/v1/accounts/transfer",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": {
+                    "customerId": "5c892dbef72465ad7e7dde42",
+                    "accountId": "5c892dbef72465ad7e7dde42",
+                    "amount": 10.0,
+                    "destinationAccountId": "5c892dbef72465ad7e7dde42"
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": "SENT COMMAND"
+            },
+            "providerStates": [
+                {
+                    "name": "An account exists."
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "pactSpecification": {
+            "version": "3.0.0"
+        },
+        "pact-jvm": {
+            "version": "3.6.2"
+        }
+    }
+}

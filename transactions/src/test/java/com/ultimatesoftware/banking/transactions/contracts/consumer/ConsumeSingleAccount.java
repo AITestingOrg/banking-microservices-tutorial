@@ -15,30 +15,29 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static io.restassured.RestAssured.given;
 
 @ExtendWith(PactConsumerTestExt.class)
-@PactTestFor(providerName = "Customers", port = "8085")
-public class ConsumeCustomer {
-
-    @Pact(provider="Customers", consumer="Transactions")
-    public RequestResponsePact createPact(PactDslWithProvider builder) {
+@PactTestFor(providerName = "AccountQuery", port = "8084")
+public class ConsumeSingleAccount {
+    @Pact(provider="AccountQuery", consumer="Transactions")
+    public RequestResponsePact createGetOnePact(PactDslWithProvider builder) {
         return builder
-            .given("A customer does not exist.")
-            .uponReceiving("Empty customer list")
-            .path("/api/v1/customers/")
+            .given("An account exists.")
+            .uponReceiving("Request for single account")
+            .path("/api/v1/accounts/5c892dbef72465ad7e7dde42")
             .method("GET")
             .headers(getHeaders())
             .willRespondWith()
             .status(200)
-            .body("[{\"id\":\"5c86d04877970c1fd879a36b\",\"firstName\":\"Jack\",\"lastName\":\"Oneill\"},{\"id\":\"5c892dbef72465ad7e7dde42\",\"firstName\":\"Samantha\",\"lastName\":\"Carter\"},{\"id\":\"5c89342ef72465c5981bc1fc\",\"firstName\":\"Daniel\",\"lastName\":\"Jackson\"}]")
+            .body("{\"id\":\"5c892dbef72465ad7e7dde42\",\"customerId\":\"5c86d04877970c1fd879a36b\",\"balance\":10.0}")
             .toPact();
     }
 
     @Test
-    void test(MockServer mockServer) throws IOException {
+    void testGetOne(MockServer mockServer) throws IOException {
         given()
             .headers(getHeaders()).
-        when()
-            .get(mockServer.getUrl() + "/api/v1/customers/").
-        then()
+            when()
+            .get(mockServer.getUrl() + "/api/v1/accounts/5c892dbef72465ad7e7dde42").
+            then()
             .statusCode(200);
     }
 

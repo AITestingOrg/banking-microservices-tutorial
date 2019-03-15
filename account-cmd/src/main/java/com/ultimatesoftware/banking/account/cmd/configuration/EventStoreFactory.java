@@ -7,7 +7,6 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 
 @Factory
-@Requires(notEnv = ConfigurationConstants.INTERNAL_MOCKS)
 public class EventStoreFactory extends AxonEventStoreFactory<Account> {
     public EventStoreFactory() {
         super(Account.class);

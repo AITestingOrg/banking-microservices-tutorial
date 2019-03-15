@@ -30,6 +30,7 @@ public class AccountsController {
     }
 
     @Put("/debit")
+    @Produces(MediaType.TEXT_PLAIN)
     public String debit(@Valid TransactionDto transaction) {
         DebitAccountCommand command = new DebitAccountCommand(transaction.getAccountId(), transaction.getAmount(), transaction.getId());
         this.commandGateway.send(command);
@@ -37,6 +38,7 @@ public class AccountsController {
     }
 
     @Put("/credit")
+    @Produces(MediaType.TEXT_PLAIN)
     public String credit(@Valid TransactionDto transaction) {
         CreditAccountCommand command = new CreditAccountCommand(transaction.getAccountId(), transaction.getAmount(), transaction.getId());
         this.commandGateway.send(command);
@@ -44,6 +46,7 @@ public class AccountsController {
     }
 
     @Put("/transfer")
+    @Produces(MediaType.TEXT_PLAIN)
     public String transfer(@Valid TransactionDto transaction) {
         StartTransferTransactionCommand command = new StartTransferTransactionCommand(transaction);
         this.commandGateway.send(command);

@@ -4,7 +4,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.ultimatesoftware.banking.account.query.models.Account;
 import com.ultimatesoftware.banking.api.operations.RestController;
-import com.ultimatesoftware.banking.api.repository.MongoRepository;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
@@ -14,17 +14,14 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 import java.util.List;
 import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Controller("/api/v1/accounts")
 public class AccountsController implements RestController<Account> {
-    Logger logger = LoggerFactory.getLogger(AccountsController.class);
-    private final MongoRepository<Account> mongoRepository;
 
-    public AccountsController(MongoRepository<Account> mongoRepository) {
+    private final Repository<Account> mongoRepository;
+
+    public AccountsController(Repository<Account> mongoRepository) {
         this.mongoRepository = mongoRepository;
-        logger.info("Started controller.");
     }
 
     @Get

@@ -87,6 +87,7 @@ subprojects { project ->
         testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
         testCompile "org.mockito:mockito-core:${mockitoVersion}"
         testCompile "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+        testCompile "com.github.tomakehurst:wiremock-jre8:2.21.0"
 
     }
 
@@ -139,11 +140,7 @@ subprojects { project ->
                     path = '/'
 
                     // Or if you have many pact files in a directory
-                    hasPactsWith('manyConsumers') {
-                        // Will define a consumer for each pact file in the directory.
-                        // Consumer name is read from contents of pact file
-                        pactFileLocation = file('./pact-tests')
-                    }
+                    hasPactsFromPactBroker('http://localhost:8089')
                 }
 
                 AccountQuery {
@@ -154,11 +151,7 @@ subprojects { project ->
                     path = '/'
 
                     // Or if you have many pact files in a directory
-                    hasPactsWith('manyConsumers') {
-                        // Will define a consumer for each pact file in the directory.
-                        // Consumer name is read from contents of pact file
-                        pactFileLocation = file('./pact-tests')
-                    }
+                    hasPactsFromPactBroker('http://localhost:8089')
                 }
 
                 Customers {
@@ -169,11 +162,7 @@ subprojects { project ->
                     path = '/'
 
                     // Or if you have many pact files in a directory
-                    hasPactsWith('manyConsumers') {
-                        // Will define a consumer for each pact file in the directory.
-                        // Consumer name is read from contents of pact file
-                        pactFileLocation = file('./pact-tests')
-                    }
+                    hasPactsFromPactBroker('http://localhost:8089')
                 }
 
                 Transactions {
@@ -184,11 +173,7 @@ subprojects { project ->
                     path = '/'
 
                     // Or if you have many pact files in a directory
-                    hasPactsWith('manyConsumers') {
-                        // Will define a consumer for each pact file in the directory.
-                        // Consumer name is read from contents of pact file
-                        pactFileLocation = file('./pact-tests')
-                    }
+                    hasPactsFromPactBroker('http://localhost:8089')
                 }
             }
 
