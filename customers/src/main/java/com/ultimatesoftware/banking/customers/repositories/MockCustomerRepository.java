@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.repositories;
+package com.ultimatesoftware.banking.customers.repositories;
 
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.api.repository.MockRepository;

@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.transactions.contracts.consumer;
+package com.ultimatesoftware.banking.transactions.tests.contracts.consumer;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.Pact;

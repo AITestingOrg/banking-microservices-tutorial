@@ -1,10 +1,10 @@
 package com.ultimatesoftware.banking.transactions.controllers;
 
 import com.ultimatesoftware.banking.transactions.exceptions.BadRequestException;
-import com.ultimatesoftware.banking.transactions.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.exceptions.NoAccountExistsException;
 import com.ultimatesoftware.banking.transactions.models.Transaction;
+import com.ultimatesoftware.banking.transactions.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
 import com.ultimatesoftware.banking.transactions.models.TransferTransactionDto;
 import com.ultimatesoftware.banking.transactions.services.TransactionService;

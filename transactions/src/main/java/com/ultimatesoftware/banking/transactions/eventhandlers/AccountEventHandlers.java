@@ -2,7 +2,7 @@ package com.ultimatesoftware.banking.transactions.eventhandlers;
 
 import com.mongodb.client.result.UpdateResult;
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
-import com.ultimatesoftware.banking.api.repository.MongoRepository;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionStatus;
@@ -10,6 +10,7 @@ import com.ultimatesoftware.banking.transactions.models.TransactionStatus;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
+import io.micronaut.scheduling.annotation.Async;
 import javax.inject.Singleton;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
@@ -23,15 +24,16 @@ import org.slf4j.LoggerFactory;
 public class AccountEventHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);
     private Configuration configurer;
-    private final MongoRepository<Transaction> bankTransactionRepository;
+    private final Repository<Transaction> bankTransactionRepository;
     private final AxonServerConfiguration axonServerConfiguration;
 
-    public AccountEventHandlers(MongoRepository<Transaction> bankTransactionRepository, AxonServerConfiguration axonServerConfiguration) {
+    public AccountEventHandlers(Repository<Transaction> bankTransactionRepository, AxonServerConfiguration axonServerConfiguration) {
         this.bankTransactionRepository = bankTransactionRepository;
         this.axonServerConfiguration = axonServerConfiguration;
     }
 
     @EventListener
+    @Async
     public void configuration(final ServiceStartedEvent event) {
         LOG.info("Configuring Axon server");
         configurer = DefaultConfigurer.defaultConfiguration()

@@ -2,11 +2,12 @@ package com.ultimatesoftware.banking.account.query.eventhandlers;
 
 import com.ultimatesoftware.banking.account.query.models.Account;
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
-import com.ultimatesoftware.banking.api.repository.MongoRepository;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.events.*;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
+import io.micronaut.scheduling.annotation.Async;
 import javax.inject.Singleton;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
@@ -23,15 +24,16 @@ public class AccountEventHandler {
     private Configuration configurer;
     private AxonServerConfiguration axonServerConfiguration;
 
-    private MongoRepository<Account> mongoRepository;
+    private Repository<Account> mongoRepository;
 
-    public AccountEventHandler(MongoRepository<Account> mongoRepository, AxonServerConfiguration axonServerConfiguration) {
+    public AccountEventHandler(Repository<Account> mongoRepository, AxonServerConfiguration axonServerConfiguration) {
         this.mongoRepository = mongoRepository;
         this.axonServerConfiguration = axonServerConfiguration;
         LOG.info("Event handler on service started");
     }
 
     @EventListener
+    @Async
     public void configuration(final ServiceStartedEvent event) {
         LOG.info("Configuring Axon server");
         configurer = DefaultConfigurer.defaultConfiguration()

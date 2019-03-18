@@ -1,17 +1,17 @@
 package com.ultimatesoftware.banking.transactions.services;
 
-import com.ultimatesoftware.banking.api.repository.MongoRepository;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.transactions.clients.BankAccountCmdClient;
 import com.ultimatesoftware.banking.transactions.clients.BankAccountQueryClient;
-import com.ultimatesoftware.banking.transactions.clients.CustomerClient;
-import com.ultimatesoftware.banking.transactions.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.exceptions.ErrorValidatingBankAccountException;
 import com.ultimatesoftware.banking.transactions.exceptions.ErrorValidatingCustomerException;
 import com.ultimatesoftware.banking.transactions.exceptions.InsufficientBalanceException;
 import com.ultimatesoftware.banking.transactions.exceptions.NoAccountExistsException;
+import com.ultimatesoftware.banking.transactions.models.Transaction;
+import com.ultimatesoftware.banking.transactions.clients.CustomerClient;
+import com.ultimatesoftware.banking.transactions.exceptions.CustomerDoesNotExistException;
 import com.ultimatesoftware.banking.transactions.models.BankAccountDto;
 import com.ultimatesoftware.banking.transactions.models.CustomerDto;
-import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
 import com.ultimatesoftware.banking.transactions.models.TransactionType;
 import com.ultimatesoftware.banking.transactions.models.TransferTransactionDto;
@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 public class TransactionService {
     private static final Logger LOG = LoggerFactory.getLogger(TransactionService.class);
 
-    private final MongoRepository<Transaction> transactionRepository;
+    private final Repository<Transaction> transactionRepository;
     private final CustomerClient customerClient;
     private final BankAccountQueryClient bankAccountQueryClient;
     private final BankAccountCmdClient bankAccountCmdClient;
 
     public TransactionService(
-        MongoRepository<Transaction> transactionRepository, CustomerClient customerClient,
+        Repository<Transaction> transactionRepository, CustomerClient customerClient,
             BankAccountQueryClient bankAccountQueryClient, BankAccountCmdClient bankAccountCmdClient) {
         this.transactionRepository = transactionRepository;
         this.customerClient = customerClient;
@@ -148,7 +148,8 @@ public class TransactionService {
         }
     }
 
-    private void validateAccountBalance(BankAccountDto account, double amount) throws InsufficientBalanceException {
+    private void validateAccountBalance(BankAccountDto account, double amount) throws
+        InsufficientBalanceException {
         if (account.getBalance() < amount) {
             String msg = "Insufficient balance on account.";
             LOG.warn(msg);

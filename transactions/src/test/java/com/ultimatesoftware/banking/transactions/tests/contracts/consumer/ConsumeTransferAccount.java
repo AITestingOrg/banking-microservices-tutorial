@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.transactions.contracts.consumer;
+package com.ultimatesoftware.banking.transactions.tests.contracts.consumer;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.Pact;
@@ -8,7 +8,6 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.model.RequestResponsePact;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ultimatesoftware.banking.transactions.models.TransactionDto;
 import com.ultimatesoftware.banking.transactions.models.TransferTransactionDto;
 import java.io.IOException;
 import java.util.HashMap;
