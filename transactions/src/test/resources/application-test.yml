@@ -1,4 +1,9 @@
 consul:
   client:
     registration:
-      enabled: false
+      enabled: true
+    defaultZone: "${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}"
+
+ribbon:
+  VipAddress: test
+  ServerListRefreshInterval: 2000

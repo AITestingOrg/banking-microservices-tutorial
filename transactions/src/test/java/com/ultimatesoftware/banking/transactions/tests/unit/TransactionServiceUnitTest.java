@@ -10,6 +10,7 @@ import com.ultimatesoftware.banking.transactions.exceptions.InsufficientBalanceE
 import com.ultimatesoftware.banking.transactions.exceptions.NoAccountExistsException;
 import com.ultimatesoftware.banking.transactions.models.BankAccountDto;
 import com.ultimatesoftware.banking.transactions.models.CustomerDto;
+import com.ultimatesoftware.banking.transactions.models.MessageDto;
 import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
 import com.ultimatesoftware.banking.transactions.models.TransactionStatus;
@@ -17,7 +18,6 @@ import com.ultimatesoftware.banking.transactions.models.TransactionType;
 import com.ultimatesoftware.banking.transactions.models.TransferTransactionDto;
 import com.ultimatesoftware.banking.transactions.services.TransactionService;
 import com.ultimatesoftware.banking.transactions.tests.TestConstants;
-import io.micronaut.http.HttpStatus;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -72,17 +72,17 @@ public class TransactionServiceUnitTest {
 
     private void buildTransactionCreditMock() {
         String success = "Success";
-        when(accountCmdClient.credit(any())).thenReturn(Flowable.just(success));
+        when(accountCmdClient.credit(any())).thenReturn(Flowable.just(new MessageDto(success)));
     }
 
     private void buildTransactionDebitMock() {
         String success = "Success";
-        when(accountCmdClient.debit(any())).thenReturn(Flowable.just(success));
+        when(accountCmdClient.debit(any())).thenReturn(Flowable.just(new MessageDto(success)));
     }
 
     private void buildTransactionTransferMock() {
         String success = "Success";
-        when(accountCmdClient.transfer(any())).thenReturn(Flowable.just(success));
+        when(accountCmdClient.transfer(any())).thenReturn(Flowable.just(new MessageDto(success)));
     }
 
     private void buildRepositoryAddMock() {

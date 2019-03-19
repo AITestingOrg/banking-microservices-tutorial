@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/v1/accounts/5c8ffe2b7c0bec3538855a06"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"id\": \"5c8ffe2b7c0bec3538855a06\",\"customerId\": \"5c8ffe2b7c0bec3538855a0a\",\"balance\": \"50.00\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
