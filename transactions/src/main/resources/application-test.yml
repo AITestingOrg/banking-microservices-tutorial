@@ -2,6 +2,3 @@ consul:
   client:
     registration:
       enabled: false
-ribbon:
-  VipAddress: test
-  ServerListRefreshInterval: 9999999

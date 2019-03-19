@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.transactions.tests.mocks;
+package com.ultimatesoftware.banking.transactions.mocks;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 

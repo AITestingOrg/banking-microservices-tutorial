@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.transactions.tests.mocks;
+package com.ultimatesoftware.banking.transactions.mocks;
 
 import org.bson.types.ObjectId;
 

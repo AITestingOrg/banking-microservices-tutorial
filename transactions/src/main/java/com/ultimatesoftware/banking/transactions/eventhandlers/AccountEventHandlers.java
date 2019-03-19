@@ -7,10 +7,10 @@ import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionStatus;
 
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
-import io.micronaut.scheduling.annotation.Async;
 import javax.inject.Singleton;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
@@ -24,16 +24,18 @@ import org.slf4j.LoggerFactory;
 public class AccountEventHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);
     private Configuration configurer;
-    private final Repository<Transaction> bankTransactionRepository;
-    private final AxonServerConfiguration axonServerConfiguration;
+    private Repository<Transaction> bankTransactionRepository;
+    private AxonServerConfiguration axonServerConfiguration;
+    private ApplicationContext applicationContext;
 
     public AccountEventHandlers(Repository<Transaction> bankTransactionRepository, AxonServerConfiguration axonServerConfiguration) {
         this.bankTransactionRepository = bankTransactionRepository;
         this.axonServerConfiguration = axonServerConfiguration;
+        this.applicationContext = applicationContext;
+        LOG.info("Event handler on service started");
     }
 
     @EventListener
-    @Async
     public void configuration(final ServiceStartedEvent event) {
         LOG.info("Configuring Axon server");
         configurer = DefaultConfigurer.defaultConfiguration()

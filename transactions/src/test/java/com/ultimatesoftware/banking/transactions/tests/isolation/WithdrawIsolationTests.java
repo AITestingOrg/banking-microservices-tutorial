@@ -3,7 +3,7 @@ package com.ultimatesoftware.banking.transactions.tests.isolation;
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
-import com.ultimatesoftware.banking.transactions.tests.mocks.MockedHttpDependencies;
+import com.ultimatesoftware.banking.transactions.mocks.MockedHttpDependencies;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@MicronautTest(environments = ConfigurationConstants.INTERNAL_MOCKS + "," + ConfigurationConstants.HTTP_MOCKS)
+@MicronautTest(environments = {ConfigurationConstants.INTERNAL_MOCKS, ConfigurationConstants.HTTP_MOCKS})
 public class WithdrawIsolationTests extends MockedHttpDependencies {
     @Inject
     @Client("/api/v1/transactions")

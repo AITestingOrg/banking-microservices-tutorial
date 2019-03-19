@@ -4,6 +4,7 @@ import com.ultimatesoftware.banking.account.query.models.Account;
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.events.*;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
@@ -22,9 +23,8 @@ import org.slf4j.LoggerFactory;
 public class AccountEventHandler {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandler.class);
     private Configuration configurer;
-    private AxonServerConfiguration axonServerConfiguration;
-
-    private Repository<Account> mongoRepository;
+    private final AxonServerConfiguration axonServerConfiguration;
+    private final Repository<Account> mongoRepository;
 
     public AccountEventHandler(Repository<Account> mongoRepository, AxonServerConfiguration axonServerConfiguration) {
         this.mongoRepository = mongoRepository;
@@ -33,7 +33,6 @@ public class AccountEventHandler {
     }
 
     @EventListener
-    @Async
     public void configuration(final ServiceStartedEvent event) {
         LOG.info("Configuring Axon server");
         configurer = DefaultConfigurer.defaultConfiguration()
