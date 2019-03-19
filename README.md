@@ -89,7 +89,7 @@ Start the PactBroker service and check `http://localhost:8089` that it is live.
 ```bash
 docker-compose -f ./pact-broker/docker-compose.yml up -d
 ```
-Generate the PACTs and execute them.
+Generate the PACTs and execute them. Note, if you have not completed the PACT tests in all the projects then you will see build failures during the first step here, these can be ignored.
 ```bash
 sh ./scripts/generate-publish-pact-tests.sh
 sh ./scripts/run-pact-tests.sh
@@ -114,20 +114,27 @@ sh isolation-test-mocked.sh
 ```
 
 ### Running Service Isolation Tests with External Dependencies
-Here only the calls to other services are mocked, but external dependencies like databases, caches, and discovery services are deployed.
+Here only the calls to other services are mocked, but external dependencies like databases, caches, 
+and discovery services are deployed. For this guide we will run the Transaction service isolation tests. 
+We use Docker Compose to stand up Mongo, AxonServer, and Consul; as well as HTTP stubs for all the 
+services Transactions depends on. Transactions is the only service demoed here because in an actual product you will most likely have a cloud
+deployment infrastructure where you can dynamically configure the HTTP stubs, here we simply use a Docker Compose configuration.
 ![Externally Mocked Services](./images/isolation-mocks.png)
 Start the external dependencies with Docker Compose.
 ```bash
-docker-compose -f docker-compose-backing.yml up
+docker-compose -f docker-compose-http-mocks.yml up -d
 ```
 Execute the tests in a new terminal once external dependencies have started.
 ```bash
-sh isolation-test.sh
+sh run-isolation-tests.sh
 ```
 Tear down the external dependencies.
 ```bash
-docker-compose -f docker-compose-backing.yml down
+docker-compose -f docker-compose-http-mocks.yml down
 ```
+
+If you modify or add an HTTP stub under `./wiremock` then you will need to restart the instances so they refresh their mappings. You can read more about the WireMock API [here](http://wiremock.org/docs/stubbing/).
+If you update the WireMock request journal validations under `./transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
 
 ## Running Service Integration Tests
 Coming soon
@@ -198,5 +205,30 @@ To run with centralized logging and logging visualizations follow the steps belo
 * Refresh Kibana to see the logs.
 
 
-### Micronaut Isolation test configs
-`MICRONAUT_ENVIRONMENTS=test,mock` 
+# Troubleshooting
+
+## Docker Issues
+### Orphaned Docker Containers Are Still Running
+If you are seeing issues with port allocations and Docker then try running `docker ps`, 
+if you see something running that should not be you can kill it with `docker rmi --force <ID>`. 
+A useful Docker command for killing all live containers is `docker kill $(docker ps -q)`
+
+### Containers Keep Restarting or Failing
+Try increasing your Docker memory, more than 2 CPUs and 4GB assigned to Docker is preferable for this project.
+
+## Trouble Building
+### General Build Issues
+Try clearing your global Gradle cache by deleting `~/.gradle` and the local `./.gradle` in the project.
+
+### Duplicate class found
+Check that you have the proper version of Java installed `java -version`. If it is not 1.8 then set your JAVA_HOME to 1.8.
+
+### IntelliJ can't find getter methods
+You are probably missing the Lombok annotation plugin listed in the project requirement section or haven't turned on the annotation processor setting in IntelliJ.
+
+## Tests Issues
+### Test Not Running
+Check your imports for JUnit, if you don't see juniper for your `Test` annotation then you are using JUNit 4 and the tests won't run until you fix the imports.
+
+### Mocks are Null
+Check that you are using Mockito the JUnit 5 way, with the `MockitoExtension` and `ExtendWith` annotations.

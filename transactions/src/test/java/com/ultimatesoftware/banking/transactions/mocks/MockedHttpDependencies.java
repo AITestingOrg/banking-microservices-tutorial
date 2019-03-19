@@ -6,7 +6,6 @@ import java.net.URL;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,7 @@ public abstract class MockedHttpDependencies {
         deregisterWithConsul(accountsCmdName);
     }
 
-    private static int registerWithConsul(String serviceName, String host, int port, String path) throws IOException {
+    private static void registerWithConsul(String serviceName, String host, int port, String path) throws IOException {
         URL obj = new URL(String.format("http://%s:%s/v1/agent/service/register", consulHost, consulPort));
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("PUT");
@@ -81,11 +80,9 @@ public abstract class MockedHttpDependencies {
         } else {
             LOG.error(String.format("Registering %s with Consul, got response: %d", serviceName, statusCode));
         }
-
-        return statusCode;
     }
 
-    private static int deregisterWithConsul(String serviceName) throws IOException {
+    private static void deregisterWithConsul(String serviceName) throws IOException {
         URL obj = new URL(String.format("http://%s:%s/v1/agent/force-leave/%s", consulHost, consulPort, serviceName));
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("PUT");
@@ -95,6 +92,5 @@ public abstract class MockedHttpDependencies {
         } else {
             LOG.error(String.format("Deregistering %s with Consul, got response: %d", serviceName, statusCode));
         }
-        return statusCode;
     }
 }
