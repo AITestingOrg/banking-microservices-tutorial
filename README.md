@@ -37,7 +37,7 @@ See each services readme for detailed requirement information
 # Assemble the binaries
 ./gradlew assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
-docker-compose -f docker-compose-backing.yml up
+docker-compose -f docker-compose-backing.yml up --build
 # After the backing services have succesfully loaded, start the domain services
 docker-compose up
 ```
@@ -68,6 +68,10 @@ docker-compose build
 ```
 
 # Executing Tests
+
+## Windows Users
+The following examples use shell scripts, simply replace the `.sh` extentions in the examples with 
+`.bat` in order to execute them in Command Prompt or PowerShell.
 
 ## Running Unit and Integration Tests
 The Gradle task 'test' executes the JUnit tests for each project.
