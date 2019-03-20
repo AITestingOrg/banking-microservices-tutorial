@@ -8,6 +8,7 @@ dependencies {
     compile("org.axonframework:axon-server-connector:${axonVersion}")
     testCompile("org.axonframework:axon-test:${axonVersion}")
     testCompile 'io.rest-assured:rest-assured:3.3.0'
+    testCompile "com.github.tomakehurst:wiremock-jre8:2.22.0"
 }
 
 mainClassName = "com.ultimatesoftware.banking.transactions.Application"
