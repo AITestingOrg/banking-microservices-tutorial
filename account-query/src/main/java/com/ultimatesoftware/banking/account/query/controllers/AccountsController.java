@@ -12,8 +12,10 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import java.util.List;
+
 import javax.validation.Valid;
+
+import java.util.List;
 
 @Controller("/api/v1/accounts")
 public class AccountsController implements RestController<Account> {

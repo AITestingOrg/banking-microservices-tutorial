@@ -6,18 +6,19 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.model.RequestResponsePact;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static io.restassured.RestAssured.given;
 
 @ExtendWith(PactConsumerTestExt.class)
 @PactTestFor(providerName = "Customers", port = "8085")
 public class ConsumeManyCustomers {
-    @Pact(provider="Customers", consumer="Transactions")
+    @Pact(provider = "Customers", consumer = "Transactions")
     public RequestResponsePact createGetManyPact(PactDslWithProvider builder) {
         return builder
             .given("Three customers exist.")

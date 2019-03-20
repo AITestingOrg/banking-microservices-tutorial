@@ -1,13 +1,6 @@
 package com.ultimatesoftware.banking.transactions.mocks;
 
-import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.util.Scanner;
 
 import static com.ultimatesoftware.banking.transactions.utils.StringTools.convertStreamToString;
 

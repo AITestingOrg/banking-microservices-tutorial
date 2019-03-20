@@ -2,9 +2,6 @@ package com.ultimatesoftware.banking.events.factories;
 
 import com.ultimatesoftware.banking.events.*;
 
-import java.util.UUID;
-import org.bson.types.ObjectId;
-
 public class EventFactory {
     public static AccountEvent createEvent(AccountEventType type, String id, String customerId, double amount, double balance, String transactionId, String msg, String destinationAccountId) throws Exception {
         switch(type) {

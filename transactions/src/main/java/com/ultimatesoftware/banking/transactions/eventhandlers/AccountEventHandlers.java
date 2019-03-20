@@ -6,18 +6,18 @@ import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.events.*;
 import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.models.TransactionStatus;
-
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
-import javax.inject.Singleton;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
 import org.axonframework.config.DefaultConfigurer;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Singleton;
 
 @Singleton
 @Requires(notEnv = ConfigurationConstants.INTERNAL_MOCKS)

@@ -2,9 +2,9 @@ package com.ultimatesoftware.banking.transactions.tests.isolation;
 
 import com.ultimatesoftware.banking.transactions.mocks.HttpClient;
 import com.ultimatesoftware.banking.transactions.mocks.HttpMockVerifier;
+import com.ultimatesoftware.banking.transactions.mocks.MockedHttpDependencies;
 import com.ultimatesoftware.banking.transactions.mocks.ResponseDto;
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
-import com.ultimatesoftware.banking.transactions.mocks.MockedHttpDependencies;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -39,7 +39,7 @@ public class Transaction extends Entity {
         this.customerId = customerId;
         this.amount = amount;
         this.destinationAccount = destinationAccount;
-        if(status != null) {
+        if (status != null) {
             this.status = status;
         }
     }

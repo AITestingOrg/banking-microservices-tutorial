@@ -1,17 +1,13 @@
 package com.ultimatesoftware.banking.account.cmd.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import javax.validation.constraints.Min;
+import lombok.Getter;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import java.util.UUID;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @Getter
 @JsonRootName(value = "transaction")

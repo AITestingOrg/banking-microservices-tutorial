@@ -16,8 +16,8 @@ public abstract class MockRepository<T extends Entity> implements Repository<T> 
     }
 
     @Override public Maybe<T> findOne(String id) {
-        for(T entity: entities) {
-            if(entity.getHexId().equals(id)) {
+        for (T entity: entities) {
+            if (entity.getHexId().equals(id)) {
                 return Maybe.just(entity);
             }
         }
@@ -31,8 +31,8 @@ public abstract class MockRepository<T extends Entity> implements Repository<T> 
     }
 
     @Override public Maybe<UpdateResult> replaceOne(String id, T entity) {
-        for(int i = 0; i < entities.size(); i++) {
-            if(entities.get(i).getHexId().equals(id)) {
+        for (int i = 0; i < entities.size(); i++) {
+            if (entities.get(i).getHexId().equals(id)) {
                 entities.set(i, entity);
                 return Maybe.just(UpdateResult.acknowledged(1, 1L, null));
             }
@@ -41,8 +41,8 @@ public abstract class MockRepository<T extends Entity> implements Repository<T> 
     }
 
     @Override public Maybe<DeleteResult> deleteOne(String id) {
-        for(int i = 0; i < entities.size(); i++) {
-            if(entities.get(i).getHexId().equals(id)) {
+        for (int i = 0; i < entities.size(); i++) {
+            if (entities.get(i).getHexId().equals(id)) {
                 entities.remove(i);
                 return Maybe.just(DeleteResult.acknowledged(1L));
             }
