@@ -2,7 +2,6 @@ language: java
 jdk:
 - oraclejdk8
 sudo: required
-script:
-  - ./gradlew test --tests *.unit.*
+script: ./gradlew build test jacocoTestReport
 after_success:
-  - ./gradlew cobertura coveralls
+  - ./gradlew jacocoRootReport coveralls
