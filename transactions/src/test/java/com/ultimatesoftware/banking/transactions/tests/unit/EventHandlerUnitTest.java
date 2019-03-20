@@ -11,14 +11,12 @@ import com.ultimatesoftware.banking.transactions.models.TransactionType;
 import com.ultimatesoftware.banking.transactions.tests.TestConstants;
 import io.reactivex.Maybe;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

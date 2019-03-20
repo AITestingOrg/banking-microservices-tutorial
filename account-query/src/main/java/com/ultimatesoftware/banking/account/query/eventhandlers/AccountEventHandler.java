@@ -4,12 +4,9 @@ import com.ultimatesoftware.banking.account.query.models.Account;
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.events.*;
-import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
-import io.micronaut.scheduling.annotation.Async;
-import javax.inject.Singleton;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
 import org.axonframework.config.DefaultConfigurer;
@@ -17,6 +14,8 @@ import org.axonframework.eventhandling.EventHandler;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Singleton;
 
 @Singleton
 @Requires(notEnv = ConfigurationConstants.INTERNAL_MOCKS)

@@ -9,6 +9,7 @@ buildscript {
         classpath "com.github.jengelman.gradle.plugins:shadow:2.0.2"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE"
         classpath 'au.com.dius:pact-jvm-provider-gradle_2.12:3.6.2'
+        classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.2"
     }
 }
 
@@ -28,6 +29,7 @@ subprojects { project ->
     apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
     apply plugin: 'groovy'
+    apply plugin: "com.github.kt3k.coveralls"
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -89,8 +91,6 @@ subprojects { project ->
         testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
         testCompile "org.mockito:mockito-core:${mockitoVersion}"
         testCompile "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-        testCompile "com.github.tomakehurst:wiremock-jre8:2.21.0"
-
     }
 
     checkstyle {
@@ -100,21 +100,25 @@ subprojects { project ->
     checkstyleTest {
         source = fileTree('src/test') {
             excludes =
-                    ['*.yml', '*contracts/org/springframework/cloud/contract/verifier/tests*']
+                    ['*.yml']
         }
     }
 
     jacoco {
         toolVersion = "0.8.2"
-        reportsDir = file("./coverage")
     }
 
     jacocoTestReport {
+        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories =  files(sourceSets.main.output)
+        executionData = files(jacocoTestReport.executionData)
         reports {
-            html.destination file("${buildDir}/jacocoHtml")
-            html {
-                enabled true
-            }
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
+            xml.destination = "./coverage/${project.name}JacocoTestReport.xml"
+            html.destination = "./coverage/"
         }
         afterEvaluate {
             classDirectories = files(classDirectories.files.collect {
@@ -130,6 +134,11 @@ subprojects { project ->
             })
         }
     }
+
+    coveralls {
+        sourceDirs = files(sourceSets.main.allSource.srcDirs).files.absolutePath
+    }
+
     if(project.name != 'api') {
 
         task clearPactBroker() {
@@ -207,6 +216,22 @@ subprojects { project ->
     test {
         useJUnitPlatform()
         systemProperties['pact.rootDir'] = "../pact-tests"
+        if (!System.env.INTEGRATION_TESTING) {
+            exclude '**/transactions/tests/isolation/**'
+        }
+    }
+
+    task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+        dependsOn = subprojects.test
+        additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
+        sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+        classDirectories =  files(subprojects.sourceSets.main.output)
+        executionData = files(subprojects.jacocoTestReport.executionData)
+        reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
+        }
     }
 
     test.finalizedBy(jacocoTestCoverageVerification)

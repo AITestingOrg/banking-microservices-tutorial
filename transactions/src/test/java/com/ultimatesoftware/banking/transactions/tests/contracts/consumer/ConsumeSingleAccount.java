@@ -6,18 +6,19 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.model.RequestResponsePact;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static io.restassured.RestAssured.given;
 
 @ExtendWith(PactConsumerTestExt.class)
 @PactTestFor(providerName = "AccountQuery", port = "8084")
 public class ConsumeSingleAccount {
-    @Pact(provider="AccountQuery", consumer="Transactions")
+    @Pact(provider = "AccountQuery", consumer = "Transactions")
     public RequestResponsePact createGetOnePact(PactDslWithProvider builder) {
         return builder
             .given("An account exists.")

@@ -1,13 +1,14 @@
 package com.ultimatesoftware.banking.transactions.mocks;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public abstract class MockedHttpDependencies {
     private static final Logger LOG = LoggerFactory.getLogger(MockedHttpDependencies.class);

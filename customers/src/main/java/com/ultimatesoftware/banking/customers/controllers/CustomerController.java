@@ -6,9 +6,9 @@ import com.ultimatesoftware.banking.api.operations.RestController;
 import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.customers.models.Customer;
 import io.micronaut.http.annotation.*;
-
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+
 import javax.validation.Valid;
 
 import java.util.List;

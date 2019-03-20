@@ -73,7 +73,7 @@ public class CustomerControllerUnitTests {
     @Test
     public void onUpdateCustomersWithExistingId_repositorySaveIsCalled() {
         //arrange
-        Maybe<UpdateResult> updateResultOr = Maybe.just(UpdateResult.acknowledged(1,1L, null));
+        Maybe<UpdateResult> updateResultOr = Maybe.just(UpdateResult.acknowledged(1, 1L, null));
         when(customerRepository.replaceOne(id.toHexString(), customer)).thenReturn(updateResultOr);
 
         //act

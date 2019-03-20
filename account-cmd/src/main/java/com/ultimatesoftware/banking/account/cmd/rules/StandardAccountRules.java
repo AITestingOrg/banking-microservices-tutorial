@@ -1,6 +1,7 @@
 package com.ultimatesoftware.banking.account.cmd.rules;
 
 import com.ultimatesoftware.banking.account.cmd.aggregates.Account;
+
 import java.math.BigDecimal;
 
 public class StandardAccountRules implements AccountRules {

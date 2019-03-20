@@ -3,21 +3,13 @@ package com.ultimatesoftware.banking.transactions.services;
 import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.transactions.clients.BankAccountCmdClient;
 import com.ultimatesoftware.banking.transactions.clients.BankAccountQueryClient;
-import com.ultimatesoftware.banking.transactions.exceptions.ErrorValidatingBankAccountException;
-import com.ultimatesoftware.banking.transactions.exceptions.ErrorValidatingCustomerException;
-import com.ultimatesoftware.banking.transactions.exceptions.InsufficientBalanceException;
-import com.ultimatesoftware.banking.transactions.exceptions.NoAccountExistsException;
-import com.ultimatesoftware.banking.transactions.models.Transaction;
 import com.ultimatesoftware.banking.transactions.clients.CustomerClient;
-import com.ultimatesoftware.banking.transactions.exceptions.CustomerDoesNotExistException;
-import com.ultimatesoftware.banking.transactions.models.BankAccountDto;
-import com.ultimatesoftware.banking.transactions.models.CustomerDto;
-import com.ultimatesoftware.banking.transactions.models.TransactionDto;
-import com.ultimatesoftware.banking.transactions.models.TransactionType;
-import com.ultimatesoftware.banking.transactions.models.TransferTransactionDto;
-import javax.inject.Singleton;
+import com.ultimatesoftware.banking.transactions.exceptions.*;
+import com.ultimatesoftware.banking.transactions.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Singleton;
 
 @Singleton
 public class TransactionService {
@@ -109,7 +101,7 @@ public class TransactionService {
         try {
             LOG.info(String.format("Fetching account: %s", accountId));
             BankAccountDto bankAccountDto = bankAccountQueryClient.get(accountId).blockingGet();
-            if( bankAccountDto != null) {
+            if (bankAccountDto != null) {
                 return bankAccountDto;
             }
         } catch (Exception e) {
@@ -137,11 +129,9 @@ public class TransactionService {
     private void updateAccount(Transaction transaction) throws Exception {
         if (transaction.getType().equals(TransactionType.CREDIT)) {
             bankAccountCmdClient.credit(transaction).blockingFirst();
-        }
-        else if (transaction.getType().equals(TransactionType.DEBIT)) {
+        } else if (transaction.getType().equals(TransactionType.DEBIT)) {
             bankAccountCmdClient.debit(transaction).blockingFirst();
-        }
-        else if (transaction.getType().equals(TransactionType.TRANSFER)) {
+        } else if (transaction.getType().equals(TransactionType.TRANSFER)) {
             bankAccountCmdClient.transfer(transaction).blockingFirst();
         } else {
             throw new Exception("An unknown error occured.");
