@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
@@ -94,6 +93,7 @@ public class Account {
             applyEvent(EventFactory.createEvent(AccountEventType.DELETED, deleteAccountCommand.getId().toHexString()));
             return;
         }
+        logger.warn("Account with ineligible balance requested for delete. Account ID: " + deleteAccountCommand.getId().toHexString());
         throw new AccountNotEligibleForDeleteException(deleteAccountCommand.getId().toHexString(), balance.doubleValue());
     }
 

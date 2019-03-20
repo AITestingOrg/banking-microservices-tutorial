@@ -2,7 +2,8 @@ package com.ultimatesoftware.banking.customers.controllers;
 
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import com.ultimatesoftware.banking.api.operations.RestController;
+import com.ultimatesoftware.banking.api.operations.CrudController;
+import com.ultimatesoftware.banking.api.operations.GetController;
 import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.customers.models.Customer;
 import io.micronaut.http.annotation.*;
@@ -14,7 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller("/api/v1/customers")
-public class CustomerController implements RestController<Customer> {
+public class CustomerController implements GetController<Customer>, CrudController<Customer> {
 
     private final Repository<Customer> mongoRepository;
 

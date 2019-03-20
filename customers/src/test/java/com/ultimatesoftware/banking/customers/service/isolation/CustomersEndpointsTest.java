@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.customers.isolated;
+package com.ultimatesoftware.banking.customers.service.isolation;
 
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.customers.models.Customer;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest(environments = ConfigurationConstants.EXTERNAL_MOCKS)
-public class CustomersIntegrationTest {
+public class CustomersEndpointsTest {
     @Inject
     @Client("/api/v1/customers")
     RxHttpClient client;
