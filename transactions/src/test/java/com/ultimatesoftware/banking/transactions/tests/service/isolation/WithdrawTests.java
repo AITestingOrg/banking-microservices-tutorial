@@ -1,6 +1,5 @@
 package com.ultimatesoftware.banking.transactions.tests.service.isolation;
 
-import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.transactions.mocks.HttpClient;
 import com.ultimatesoftware.banking.transactions.mocks.MockedHttpDependencies;
 import com.ultimatesoftware.banking.transactions.mocks.ResponseDto;
