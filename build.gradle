@@ -124,11 +124,13 @@ subprojects { project ->
             classDirectories = files(classDirectories.files.collect {
                 fileTree(dir: it,
                         exclude: [
-                                '**/service/configuration/**',
-                                '**/service/repositories/**',
+                                '**/configuration/**',
+                                '**/repositories/**',
                                 '**/events/**',
                                 '**/exceptions/**',
-                                '**/models/**'
+                                '**/commands/**',
+                                '**/models/**',
+                                '**/Application.java'
                         ]
                 )
             })
