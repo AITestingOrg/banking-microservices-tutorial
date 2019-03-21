@@ -3,13 +3,14 @@ package com.ultimatesoftware.banking.account.query.tests.service.integration;
 import com.ultimatesoftware.banking.account.query.models.Account;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.util.ArrayList;
-import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
