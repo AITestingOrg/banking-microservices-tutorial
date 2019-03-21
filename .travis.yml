@@ -4,5 +4,7 @@ jdk:
 sudo: required
 script:
   - export MICRONAUT_ENVIRONMENTS=external_mocks
-  - ./gradlew build
+  - ./gradlew build -x test
+  - ./gradlew test --tests "*.unit.*"
+  - ./gradlew test --tests "*.isolation.*"
 after_success: ./gradlew jacocoTestReport coveralls
