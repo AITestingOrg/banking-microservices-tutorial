@@ -2,10 +2,10 @@ package com.ultimatesoftware.banking.transactions.tests.service.isolation;
 
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.transactions.mocks.HttpClient;
+import com.ultimatesoftware.banking.transactions.mocks.HttpMockVerifier;
 import com.ultimatesoftware.banking.transactions.mocks.MockedHttpDependencies;
 import com.ultimatesoftware.banking.transactions.mocks.ResponseDto;
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
-import io.micronaut.http.HttpRequest;
 import io.micronaut.test.annotation.MicronautTest;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,17 +51,12 @@ public class WithdrawIsolationTests extends MockedHttpDependencies {
         assertEquals(201, response.getStatusCode());
         assertTrue(ObjectId.isValid(response.getBody()));
     }
-    /*
+
     @Test
     public void givenAccountWithBalance_whenWithdraw_thenAmountIsWithdrawedFromAccount()
         throws Exception {
         TransactionDto transactionDto = new TransactionDto(customerId.toHexString(), accountId.toHexString(), 25.00);
 
-        // Act
-        String transactionId = client.toBlocking().retrieve(HttpRequest.POST("/withdraw", transactionDto));
-
-        // Assert
-        assertTrue(ObjectId.isValid(transactionId));
         // Act
         ResponseDto response = client.post(transactionDto, "/withdraw");
 
@@ -94,10 +89,10 @@ public class WithdrawIsolationTests extends MockedHttpDependencies {
         // Assert
         HttpMockVerifier accountsCmdMockVerifier = new HttpMockVerifier("localhost", 8084);
         assertEquals(1, accountsCmdMockVerifier.verifyRequestCount("verify_account_query_success.json"));
-    } */
+    }
 
     /* Negative withdraw tests */
-    /*@Test
+    @Test
     public void givenCustomerDoesNotExist_whenWithdraw_thenBadRequest()
         throws Exception {
         TransactionDto transactionDto = new TransactionDto(noCustomerId.toHexString(), accountId.toHexString(), 15.00);
@@ -131,6 +126,6 @@ public class WithdrawIsolationTests extends MockedHttpDependencies {
 
         // Assert
         assertEquals(400, response.getStatusCode());
-    }*/
+    }
 
 }

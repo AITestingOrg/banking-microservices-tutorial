@@ -15,9 +15,9 @@ public abstract class MockedHttpDependencies {
     protected final WireMockServer accountCmdService;
 
     public MockedHttpDependencies() {
-        this.customersService = createServer(8085, "/wiremock/customers/mappings");
-        this.accountQueryService = createServer(8084, "/wiremock/accountquery/mappings");
-        this.accountCmdService = createServer(8082, "/wiremock/accountcmd/mappings");;
+        this.customersService = createServer(8085, "wiremock/customers");
+        this.accountQueryService = createServer(8084, "wiremock/accountquery");
+        this.accountCmdService = createServer(8082, "wiremock/accountcmd");;
     }
 
     @BeforeEach
@@ -40,7 +40,7 @@ public abstract class MockedHttpDependencies {
     private WireMockServer createServer(int port, String pathToMappings) {
         return new WireMockServer(options()
             .port(port)
-            .usingFilesUnderDirectory(pathToMappings)
+            .usingFilesUnderClasspath(pathToMappings)
         );
     }
 }
