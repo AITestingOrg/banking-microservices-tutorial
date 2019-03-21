@@ -20,8 +20,8 @@ import static com.ultimatesoftware.banking.transactions.tests.TestConstants.NO_C
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@MicronautTest(environments = {ConfigurationConstants.HTTP_MOCKS, ConfigurationConstants.EXTERNAL_MOCKS})
-public class WithdrawIsolationTests extends MockedHttpDependencies {
+@MicronautTest()
+public class WithdrawTests extends MockedHttpDependencies {
 
     private static final ObjectId customerId = CUSTOMER_ID;
     private static final ObjectId accountId = ACCOUNT_ID;

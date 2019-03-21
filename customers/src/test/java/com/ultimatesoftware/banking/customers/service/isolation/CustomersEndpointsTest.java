@@ -1,14 +1,16 @@
 package com.ultimatesoftware.banking.customers.service.isolation;
 
-import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.customers.models.Customer;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.annotation.MicronautTest;
+import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
@@ -19,16 +21,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@MicronautTest(environments = ConfigurationConstants.EXTERNAL_MOCKS)
+@MicronautTest()
 public class CustomersEndpointsTest {
     @Inject
     @Client("/api/v1/customers")
     RxHttpClient client;
 
+    @Inject
+    Repository<Customer> mongoRepository;
+
     private final ObjectId id1 = ObjectId.get();
     private final ObjectId id2 = ObjectId.get();
     private final Customer customer1 = new Customer(id1, "FirstName1", "LastName1");
     private final Customer customer2 = new Customer(id2, "FirstName2", "LastName2");
+
+
+    @BeforeEach
+    public void beforeEach() {
+        List<String> accountIds = mongoRepository.findMany().blockingGet()
+            .stream()
+            .map(account -> account.getHexId()).collect(Collectors.toList());
+        accountIds.forEach(id -> mongoRepository.deleteOne(id).blockingGet());
+    }
 
     private void addCustomer(Customer customer) {
         client.toBlocking().retrieve(HttpRequest.POST("", customer));
@@ -59,7 +73,7 @@ public class CustomersEndpointsTest {
         List<Customer> customersFound = (List<Customer>) client.toBlocking().retrieve(HttpRequest.GET(""), List.class);
 
         // Assert
-        assertEquals(4, customersFound.size());
+        assertEquals(2, customersFound.size());
     }
 
     @Test

@@ -4,12 +4,12 @@
 
 The Banking Microservices Example project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 
-![](images/micronaut.jpg)![](images/axon.png)![](images/consul.svg)![](images/mongo.png)![](images/tyk.png)![](images/junit5-banner.png)
+![](documentation/images/micronaut.jpg)![](documentation/images/axon.png)![](documentation/images/consul.svg)![](documentation/images/mongo.png)![](documentation/images/tyk.png)![](documentation/images/junit5-banner.png)
 ## Architecture
-![Build Status](documentation/services.png)
+![Build Status](documentation/images/services.png)
 <p style="text-align: center;">Figure 1: Overall Banking Example architecture.</p>
 
-![Build Status](documentation/communication.png)
+![Build Status](documentation/images/communication.png)
 <p style="text-align: center;">Figure 2: Flow of communication between domain architectures.</p> 
 
 ## Configuration
@@ -85,7 +85,7 @@ You can find a JaCoCo coverage report under the "coverage" in transaction servic
 
 ## Running Contract Tests
 Start the domain services with internal mocks so that only the endpoints will be tested.
-![Internally Mocked Services](./images/internal-mocks.png)
+![Internally Mocked Services](documentation/images/internal-mocks.png)
 ```bash
 docker-compose -f docker-compose-internal-mocked.yml up -d
 ```
@@ -108,25 +108,27 @@ docker-compose -f docker-compose-internal-mocked.yml down
 ```
 
 ## Running Service Isolation Tests
-
+The documentation [here](documentation/http_stubbed_isolation_tests.md) provides a guide on creating new isolation tests with HTTP stubs.
 ### Running Service Isolation Tests with All External Dependencies Mocked
-Mocking all external dependencies to the services allows for very rapid execution of tests and alleviates the need for configuring or utilizing resources for the external dependencies.
-![Externally Mocked Services](./images/external-mocks.png)
+Mocking all external dependencies to the services allows for very rapid execution of tests and 
+alleviates the need for configuring or utilizing resources for the external dependencies. 
+In memory databases are used in the place of Mongo, though the the same Mongo code dependencies 
+are used to connect to these in-memory databases. HTTP mock server stubs are used to provide stubbed responses for external services.
+![Externally Mocked Services](documentation/images/external-mocks.png)
 Docker is not required to run these tests as all external dependencies are mocked.
 ```bash
 sh isolation-test-mocked.sh
 ```
 
-### Running Service Isolation Tests with External Dependencies
+### Running Service Isolation Tests with External Databases, Caches, and Etc...
 Here only the calls to other services are mocked, but external dependencies like databases, caches, 
 and discovery services are deployed. For this guide we will run the Transaction service isolation tests. 
-We use Docker Compose to stand up Mongo, AxonServer, and Consul; as well as HTTP stubs for all the 
-services Transactions depends on. Transactions is the only service demoed here because in an actual product you will most likely have a cloud
+We use Docker Compose to stand up Mongo. Transactions is the only service demoed here because in an actual product you will most likely have a cloud
 deployment infrastructure where you can dynamically configure the HTTP stubs, here we simply use a Docker Compose configuration.
-![Externally Mocked Services](./images/isolation-mocks.png)
-Start the external dependencies with Docker Compose.
+![Externally Mocked Services](documentation/images/isolation-mocks.png)
+Start the services database using the backing services.
 ```bash
-docker-compose -f docker-compose-http-mocks.yml up -d
+docker-compse -f docker-compose-backing.yml up -d
 ```
 Execute the tests in a new terminal once external dependencies have started.
 ```bash
@@ -134,7 +136,7 @@ sh run-isolation-tests.sh
 ```
 Tear down the external dependencies.
 ```bash
-docker-compose -f docker-compose-http-mocks.yml down
+docker-compose -f docker-compose-backing.yml down
 ```
 
 If you modify or add an HTTP stub under `./wiremock` then you will need to restart the instances so they refresh their mappings. You can read more about the WireMock API [here](http://wiremock.org/docs/stubbing/).
@@ -142,18 +144,38 @@ If you modify or add an HTTP stub under `./wiremock` then you will need to resta
 If you update the WireMock request journal validations under `./transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
 
 ## Running Service Integration Tests
-Coming soon
+To run the service integration tests, all of the dependencies must be available for the given service under test. In the case of this project, the services are simple and few, therefore requiring the entire project to be live for testing the transaction service.
 
+Use docker to stand up the supporting services, databases, and etc...
+```bash
+docker-compose -f docker-compose-backing.yml up
+```
+Stand up all of the domain services.
+```bash
+docker-compose up
+```
+Execute the tests, note that if you simply want to run tests against one service you can do so via IntelliJ or commands like `./gradlew :account-query:test --tests ""*service.integration*"`.
+```bash
+sh run-integration-tests.sh
+```
+Take down the domain services.
+```bash
+docker-compose down
+```
+Take down the backing services.
+```bash
+docker-compose -f docker-compose-backing.yml down
+```
 
 # API Documentation:
 
 These request can be done using an application like postman or insomnia, directly with curl or using the provided swagger UI.
 Go to the [swagger](http://localhost:8082/swagger-ui.html) for the port that customer application is running. By default, it is 8082 but it can be changed in the docker-compose files.
 
-![alt text](images/customer-swagger.png "Swagger")
+![alt text](documentation/images/customer-swagger.png "Swagger")
 
 From there click on the customer-controller drop down, expand the post endpoint and click the try it out button:
-![alt text](images/customer-create.png "Post customer")
+![alt text](documentation/images/customer-create.png "Post customer")
 
 Then a body can be provided to make a request to the service, here is an example valid body, feel free to put your name here:
 ```json
@@ -166,35 +188,35 @@ Then a body can be provided to make a request to the service, here is an example
 
 Then click on the execute button
 
-![alt text](images/customer-post.png "Post customer")
+![alt text](documentation/images/customer-post.png "Post customer")
 
 And scroll down to see what the response was:
 
-![alt text](images/customer-response.png "Response")
+![alt text](documentation/images/customer-response.png "Response")
 Now to create some accounts for this user: 
 
 Go to the ui for account-cmd, running on 8089. And open account-controller post [endpoint](http://localhost:8089/swagger-ui.html#/account-controller/addAccountUsingPOST)
 
 Put the previous customerId in the body for the request and execute it. 
 
-![alt text](images/account-post.png "create account")
+![alt text](documentation/images/account-post.png "create account")
 The response should have the generated Id for the account just created. 
 Copy it somewhere, then execute again and copy the second account id too, both will be used for transactions in a moment.
 
 First quickly check the accounts got created checking the [account query side](http://localhost:8084/swagger-ui.html#/account-controller/getAccountUsingGET)
 
 Check the two account ids against the get endpoint, they return a 200 response with the account info and balances of 0.
-![alt text](images/account-get.png "check accounts")
+![alt text](documentation/images/account-get.png "check accounts")
 
 Now, making some transactions lets first make a [deposit](http://localhost:8086/swagger-ui.html#/actions-controller/depositUsingGET)
 
 Provide an amount along with the previous obtained ids for account and customer. This will respond with a transaction id that is not important for now. 
-![alt text](images/transaction-deposit.png "put some money in")
+![alt text](documentation/images/transaction-deposit.png "put some money in")
 
 If the same account is now check on the account query side the balance should shown as the deposited account.
 
 Now, going to the transfer endpoint and making a transaction to pass some of that balance to the other account
-![alt text](images/transaction-transfer.png "transfer some money")
+![alt text](documentation/images/transaction-transfer.png "transfer some money")
 
 Check that the response was a 200 and the balances changed
 
