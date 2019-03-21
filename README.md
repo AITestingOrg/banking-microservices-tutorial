@@ -170,12 +170,12 @@ docker-compose -f docker-compose-backing.yml down
 # API Documentation:
 
 These request can be done using an application like postman or insomnia, directly with curl or using the provided swagger UI.
-Go to the [swagger](http://localhost:8082/swagger-ui.html) for the port that customer application is running. By default, it is 8082 but it can be changed in the docker-compose files.
+Go to the [swagger](http://localhost:8082/swagger-ui.html) for the port that personDetails application is running. By default, it is 8082 but it can be changed in the docker-compose files.
 
-![alt text](documentation/images/customer-swagger.png "Swagger")
+![alt text](documentation/images/personDetails-swagger.png "Swagger")
 
-From there click on the customer-controller drop down, expand the post endpoint and click the try it out button:
-![alt text](documentation/images/customer-create.png "Post customer")
+From there click on the personDetails-controller drop down, expand the post endpoint and click the try it out button:
+![alt text](documentation/images/personDetails-create.png "Post personDetails")
 
 Then a body can be provided to make a request to the service, here is an example valid body, feel free to put your name here:
 ```json
@@ -188,11 +188,11 @@ Then a body can be provided to make a request to the service, here is an example
 
 Then click on the execute button
 
-![alt text](documentation/images/customer-post.png "Post customer")
+![alt text](documentation/images/personDetails-post.png "Post personDetails")
 
 And scroll down to see what the response was:
 
-![alt text](documentation/images/customer-response.png "Response")
+![alt text](documentation/images/personDetails-response.png "Response")
 Now to create some accounts for this user: 
 
 Go to the ui for account-cmd, running on 8089. And open account-controller post [endpoint](http://localhost:8089/swagger-ui.html#/account-controller/addAccountUsingPOST)
@@ -210,7 +210,7 @@ Check the two account ids against the get endpoint, they return a 200 response w
 
 Now, making some transactions lets first make a [deposit](http://localhost:8086/swagger-ui.html#/actions-controller/depositUsingGET)
 
-Provide an amount along with the previous obtained ids for account and customer. This will respond with a transaction id that is not important for now. 
+Provide an amount along with the previous obtained ids for account and personDetails. This will respond with a transaction id that is not important for now. 
 ![alt text](documentation/images/transaction-deposit.png "put some money in")
 
 If the same account is now check on the account query side the balance should shown as the deposited account.
