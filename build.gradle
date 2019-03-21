@@ -49,8 +49,6 @@ subprojects { project ->
             options.encoding = "UTF-8"
             options.compilerArgs.add('-parameters')
         }
-
-        build.doFirst { environment 'MICRONAUT_ENVIRONMENTS', 'external_mocks' }
     }
 
     repositories {
