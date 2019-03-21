@@ -5,6 +5,6 @@ sudo: required
 script:
   - export MICRONAUT_ENVIRONMENTS=external_mocks
   - ./gradlew build -x test
-  - ./gradlew test --tests "*.unit.*"
-  - ./gradlew test --tests "*.isolation.*"
+  - ./gradlew test -x :integration-tests:test --tests "*.unit.*"
+  - ./gradlew test -x :integration-tests:test --tests "*.isolation.*"
 after_success: ./gradlew jacocoTestReport coveralls
