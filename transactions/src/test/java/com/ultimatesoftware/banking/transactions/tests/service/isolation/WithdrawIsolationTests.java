@@ -2,7 +2,6 @@ package com.ultimatesoftware.banking.transactions.tests.service.isolation;
 
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.transactions.mocks.HttpClient;
-import com.ultimatesoftware.banking.transactions.mocks.HttpMockVerifier;
 import com.ultimatesoftware.banking.transactions.mocks.MockedHttpDependencies;
 import com.ultimatesoftware.banking.transactions.mocks.ResponseDto;
 import com.ultimatesoftware.banking.transactions.models.TransactionDto;
@@ -11,6 +10,9 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.ultimatesoftware.banking.transactions.tests.TestConstants.ACCOUNT_ID;
 import static com.ultimatesoftware.banking.transactions.tests.TestConstants.CUSTOMER_ID;
 import static com.ultimatesoftware.banking.transactions.tests.TestConstants.NO_ACCOUNT_ID;
@@ -49,7 +51,7 @@ public class WithdrawIsolationTests extends MockedHttpDependencies {
 
         // Assert
         assertEquals(201, response.getStatusCode());
-        assertTrue(ObjectId.isValid(response.getBody()));
+        assertTrue(ObjectId.isValid(response.getBody().replace("\n", "")));
     }
 
     @Test
@@ -61,8 +63,7 @@ public class WithdrawIsolationTests extends MockedHttpDependencies {
         ResponseDto response = client.post(transactionDto, "/withdraw");
 
         // Assert
-        HttpMockVerifier accountsCmdMockVerifier = new HttpMockVerifier("localhost", 8082);
-        assertEquals(1, accountsCmdMockVerifier.verifyRequestCount("verify_account_cmd_debit_success.json"));
+        accountCmdService.verify(1, putRequestedFor(urlEqualTo("/api/v1/accounts/debit")));
     }
 
     @Test
@@ -74,8 +75,7 @@ public class WithdrawIsolationTests extends MockedHttpDependencies {
         ResponseDto response = client.post(transactionDto, "/withdraw");
 
         // Assert
-        HttpMockVerifier accountsCmdMockVerifier = new HttpMockVerifier("localhost", 8085);
-        assertEquals(1, accountsCmdMockVerifier.verifyRequestCount("verify_customer_success.json"));
+        customersService.verify(1, getRequestedFor(urlEqualTo("/api/v1/customers/5c8ffe2b7c0bec3538855a0a")));
     }
 
     @Test
@@ -87,8 +87,7 @@ public class WithdrawIsolationTests extends MockedHttpDependencies {
         ResponseDto response = client.post(transactionDto, "/withdraw");
 
         // Assert
-        HttpMockVerifier accountsCmdMockVerifier = new HttpMockVerifier("localhost", 8084);
-        assertEquals(1, accountsCmdMockVerifier.verifyRequestCount("verify_account_query_success.json"));
+        accountQueryService.verify(1, getRequestedFor(urlEqualTo("/api/v1/accounts/5c8ffe2b7c0bec3538855a06")));
     }
 
     /* Negative withdraw tests */

@@ -1,2 +1,2 @@
 @echo off
-./gradlew :transactions:test --tests "*.isolation.*"
+./gradlew.bat test --tests "*.service.isolation.*"
