@@ -1,5 +1,5 @@
-# Banking Microservices Example
-[![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-tutorial.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-tutorial)
+# Banking Microservices Tutorial
+[![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-example.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-example)
 [![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-example/badge.svg?branch=master)](https://coveralls.io/github/AITestingOrg/banking-microservices-example?branch=master)
 
 The Banking Microservices Example project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
@@ -80,7 +80,7 @@ sh run-unit-tests.sh
 ```
 
 ## Running Code Coverage: Unit and Integration Tests
-JaCoCo is used for code coverage and can be run after the unit and integraiton tests for each service have been executed.
+JaCoCo is used for code coverage and can be run after the unit and integration tests for each service have been executed.
 You can find a JaCoCo coverage report under the "coverage" in transaction service after running the unit tests.
 
 ## Running Contract Tests
