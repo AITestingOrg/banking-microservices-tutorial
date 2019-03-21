@@ -1,4 +1,0 @@
-{
-  "method": "PUT",
-  "url": "/api/v1/accounts/debit"
-}

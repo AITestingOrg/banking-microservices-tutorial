@@ -24,17 +24,6 @@ services:
       - ./wiremock/accountquery:/home/wiremock
     restart: on-failure
 
-#  transactionserver:
-#    build: transactions/
-#    mem_limit: 400m
-#    ports:
-#      - "8086:8086"
-#    environment:
-#      - CONSUL_HOST=discovery-service
-#      - HOST_PORT=8086
-#      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-#    restart: on-failure
-
   discovery-service:
     image: bitnami/consul:latest
     ports:
@@ -55,7 +44,3 @@ services:
     image: 'mongo:3.4.1'
     ports:
       - '27017:27017'
-    volumes:
-      - 'mongo:/data/mongo/db'
-volumes:
-  mongo:

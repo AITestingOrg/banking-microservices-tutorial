@@ -33,6 +33,7 @@ public class HttpClient {
         URL obj = new URL(String.format("http://%s:%d%s/%s", host, port, path, id));
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
+        con.setConnectTimeout(3000);
         int statusCode = con.getResponseCode();
         if (statusCode == 200) {
             LOG.info(String.format("GET request for type %s with status code: %d", type, statusCode));
@@ -47,6 +48,7 @@ public class HttpClient {
         URL obj = new URL(String.format("http://%s:%d%s", host, port, path));
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
+        con.setConnectTimeout(3000);
         int statusCode = con.getResponseCode();
         if (statusCode == 200 || statusCode == 201) {
             LOG.info(String.format("GET request for type %s with status code: %d", type, statusCode));
@@ -62,6 +64,7 @@ public class HttpClient {
         URL obj = new URL(String.format("http://%s:%d%s", host, port, this.path + path));
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
+        con.setConnectTimeout(3000);
         String body = objectMapper.writeValueAsString(entity);
         if (entity instanceof String) {
             body = (String) entity;

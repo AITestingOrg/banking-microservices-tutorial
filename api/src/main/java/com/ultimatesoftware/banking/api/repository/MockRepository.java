@@ -21,7 +21,7 @@ public abstract class MockRepository<T extends Entity> implements Repository<T> 
                 return Maybe.just(entity);
             }
         }
-        return Maybe.never();
+        return Maybe.empty();
     }
 
     @Override public Single<T> add(T entity) {

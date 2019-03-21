@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 @Primary
 @Singleton
-@Requires(env = ConfigurationConstants.INTERNAL_MOCKS)
+@Requires(env = ConfigurationConstants.EXTERNAL_MOCKS)
 public class MockAccountRepository extends MockRepository<Account> {
 
     public MockAccountRepository() {

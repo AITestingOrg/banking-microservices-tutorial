@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: integration.tests
+---
+testFramework: junit
+sourceLanguage: java

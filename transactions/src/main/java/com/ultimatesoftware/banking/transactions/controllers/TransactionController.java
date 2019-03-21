@@ -62,7 +62,7 @@ public class TransactionController {
     }
 
     @Get("/id/{id}")
-    public Transaction getTransaction(@PathVariable("id") String id) {
+    public Transaction getTransaction(String id) {
         Transaction bankTransaction = this.transactionService.getTransaction(id);
         if (bankTransaction != null) {
             return bankTransaction;

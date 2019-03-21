@@ -2,5 +2,9 @@ language: java
 jdk:
 - oraclejdk8
 sudo: required
-script: ./gradlew build test jacocoTestReport
-after_success: ./gradlew coveralls
+script:
+  - export MICRONAUT_ENVIRONMENTS=external_mocks
+  - ./gradlew build -x test
+  - ./gradlew test -x :integration-tests:test --tests "*.unit.*"
+  - ./gradlew test -x :integration-tests:test --tests "*.isolation.*"
+after_success: ./gradlew jacocoTestReport coveralls

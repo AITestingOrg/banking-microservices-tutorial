@@ -1,8 +1,6 @@
 package com.ultimatesoftware.banking.account.cmd.configuration;
 
-import com.ultimatesoftware.banking.account.cmd.aggregates.Account;
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
-import com.ultimatesoftware.banking.api.factories.AxonEventStoreFactory;
 import com.ultimatesoftware.banking.api.test.TestMockCommandGateway;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
@@ -14,11 +12,7 @@ import javax.inject.Singleton;
 
 @Factory
 @Requires(env = ConfigurationConstants.INTERNAL_MOCKS)
-public class EventStoreTestMockFactory extends AxonEventStoreFactory<Account> {
-    public EventStoreTestMockFactory() {
-        super(Account.class);
-    }
-
+public class EventStoreTestMockFactory {
     @Bean
     @Singleton
     @Primary
