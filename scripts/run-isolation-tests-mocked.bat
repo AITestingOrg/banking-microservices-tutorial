@@ -1,3 +1,3 @@
 @echo off
-export MICRONAUT_ENVIRONMENTS=test,external_mocks
-./gradlew :customers:test --tests "*.isolated.*"
+$env:MICRONAUT_ENVIRONMENTS = "test,external_mocks"
+./gradlew.bat test --tests "*.service.isolation.*"
