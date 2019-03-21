@@ -3,6 +3,6 @@ jdk:
 - oraclejdk8
 sudo: required
 script:
-  - export MICRONAUT_ENVIROMENTS=external_mocks
+  - export MICRONAUT_ENVIRONMENTS=external_mocks
   - ./gradlew build
 after_success: ./gradlew jacocoTestReport coveralls
