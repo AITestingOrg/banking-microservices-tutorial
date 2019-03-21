@@ -1,0 +1,23 @@
+micronaut:
+    application:
+        name: people-cmd
+    router:
+        static-resources:
+            swagger:
+                enabled: true
+                paths: classpath:META-INF/swagger
+                mapping: /swagger/**
+    server:
+        port: "${HOST_PORT:8087}"
+axon:
+    axonserver:
+        servers: ${AXON_HOST:localhost}
+        component-name: people-cmd
+
+consul:
+    client:
+        registration:
+            enabled: true
+        defaultZone: "${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}"
+
+

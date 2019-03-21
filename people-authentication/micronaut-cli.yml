@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: com.ultimatesoftware.banking.people
+---
+testFramework: junit
+sourceLanguage: java

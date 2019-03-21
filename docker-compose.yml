@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   customers:
-    build: customers/
+    build: people-details/
     mem_limit: 400m
     ports:
       - "8085:8085"
@@ -44,7 +44,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   transactionserver:
-    build: transactions/
+    build: account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"

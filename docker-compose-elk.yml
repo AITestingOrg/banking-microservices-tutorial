@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   customers:
-    build: customers/
+    build: people-details/
     depends_on:
       - mongo
       - rabbitmq
