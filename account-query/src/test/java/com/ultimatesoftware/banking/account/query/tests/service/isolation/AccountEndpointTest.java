@@ -21,7 +21,7 @@ import static com.ultimatesoftware.banking.api.configuration.ConfigurationConsta
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@MicronautTest
+@MicronautTest(environments = EXTERNAL_MOCKS)
 public class AccountEndpointTest {
     @Inject
     @Client("/api/v1/accounts")
@@ -37,6 +37,7 @@ public class AccountEndpointTest {
 
     @BeforeEach
     public void beforeEach() {
+        List<Account> accountsFound = (List<Account>) client.toBlocking().retrieve(HttpRequest.GET(""), List.class);
         List<String> accountIds = mongoRepository.findMany().blockingGet()
             .stream()
             .map(account -> account.getHexId()).collect(Collectors.toList());
