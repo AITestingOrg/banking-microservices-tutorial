@@ -1,4 +1,4 @@
 @echo off
-./gradlew test --tests "*.unit.*"
-./gradlew jacocoTestCoverageVerification
-./gradlew jacocoTestReport
+./gradlew.bat test --tests "*.unit.*"
+./gradlew.bat jacocoTestCoverageVerification
+./gradlew.bat jacocoTestReport

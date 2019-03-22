@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @MicronautTest()
 public class PersonDetailsEndpointsTest {
     @Inject
-    @Client("/api/v1/customers")
+    @Client("/api/v1/people")
     RxHttpClient client;
 
     @Inject
@@ -46,16 +46,11 @@ public class PersonDetailsEndpointsTest {
         accountIds.forEach(id -> mongoRepository.deleteOne(id).blockingGet());
     }
 
-    private void addCustomer(
-        PersonDetails personDetails) {
-        client.toBlocking().retrieve(HttpRequest.POST("", personDetails));
-    }
-
     // Given Customers Exist
     @Test
     public void whenQueryingACustomer_thenReturnThatCustomer() {
         // Arrange
-        addCustomer(personDetails1);
+        mongoRepository.add(personDetails1).blockingGet();
 
         // Act
         PersonDetails
@@ -70,55 +65,14 @@ public class PersonDetailsEndpointsTest {
     @Test
     public void whenQueryingAllCustomers_thenReturnAllCustomers() {
         // Arrange
-        addCustomer(personDetails1);
-        addCustomer(personDetails2);
+        mongoRepository.add(personDetails1).blockingGet();
+        mongoRepository.add(personDetails2).blockingGet();
 
         // Act
         List<PersonDetails> customersFound = (List<PersonDetails>) client.toBlocking().retrieve(HttpRequest.GET(""), List.class);
 
         // Assert
         assertEquals(2, customersFound.size());
-    }
-
-    @Test
-    public void whenDeletingTheCustomer_thenTheCustomerNoLongerExists() {
-        // Arrange
-        addCustomer(personDetails1);
-
-        // Act
-        String result = client.toBlocking().retrieve(HttpRequest.DELETE(personDetails1.getHexId()));
-
-        // Assert
-        assertEquals("{\"deletedCount\":1}", result);
-    }
-
-    @Test
-    public void whenUpdatingACustomer_thenTheCustomerIsUpdated() {
-        // Arrange
-        addCustomer(personDetails1);
-        PersonDetails
-            updated = new PersonDetails(
-            personDetails1.getId(), "Jane", "Doe");
-
-        // Act
-        String result = client.toBlocking().retrieve(HttpRequest.PUT(updated.getHexId(), updated));
-
-        // Assert
-        assertEquals("{\"matchedCount\":1,\"modifiedCount\":1,\"modifiedCountAvailable\":true}", result);
-    }
-
-    @Test
-    public void whenCreatingACustomer_thenTheCustomerExists() {
-        // Arrange
-
-        // Act
-        PersonDetails
-            personDetails = client.toBlocking().retrieve(HttpRequest.POST("", "{\"firstName\":\"John\", \"lastName\":\"Doe\"}"), PersonDetails.class);
-
-        // Assert
-        assertEquals(personDetails.getFirstName(), "John");
-        assertEquals(personDetails.getLastName(), "Doe");
-        assertNotNull(personDetails.getHexId());
     }
 
     // Given no customers exist.
@@ -135,29 +89,5 @@ public class PersonDetailsEndpointsTest {
 
         // Assert
         assertTrue(e.getStatus().getCode() == 404);
-    }
-
-    @Test
-    public void whenDeletingACustomer_thenDeleteShouldReturnA404() {
-        // Arrange
-
-        // Act
-        String result = client.toBlocking().retrieve(HttpRequest.DELETE("/" + ObjectId.get()));
-
-
-        // Assert
-        assertEquals("{\"deletedCount\":0}", result);
-    }
-
-    @Test
-    public void whenUpdatingACustomer_thenA404IsReturned() {
-        // Arrange
-
-        // Act
-        String result = client.toBlocking().retrieve(HttpRequest.PUT("/" + ObjectId.get(),
-            personDetails1));
-
-        // Assert
-        assertEquals("{\"matchedCount\":0,\"modifiedCount\":0,\"modifiedCountAvailable\":true}", result);
     }
 }

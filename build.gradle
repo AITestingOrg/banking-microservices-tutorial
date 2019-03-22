@@ -34,7 +34,7 @@ subprojects { project ->
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    if(project.name != 'api' && project.name != 'integration-tests') {
+    if(project.name != 'api' && project.name != 'test-api' && project.name != 'integration-tests') {
         apply plugin: "application"
         apply plugin: 'com.github.johnrengelman.shadow'
         apply plugin: 'au.com.dius.pact'
@@ -78,7 +78,7 @@ subprojects { project ->
         compileOnly "io.micronaut:micronaut-inject-java"
         compile "io.micronaut:micronaut-discovery-client"
         compile "io.micronaut.configuration:micronaut-hibernate-validator"
-        if(project.name != 'api' && project.name != 'integration-tests') {
+        if(project.name != 'api' && project.name != 'test-api' && project.name != 'integration-tests') {
             compile "au.com.dius:pact-jvm-consumer-junit5_2.12:3.6.2"
             runtime "ch.qos.logback:logback-classic:1.2.3"
         }
@@ -141,11 +141,11 @@ subprojects { project ->
         sourceDirs = files(sourceSets.main.allSource.srcDirs).files.absolutePath
     }
 
-    if(project.name != 'api' && project.name != 'integration-tests') {
+    if(project.name != 'api' && project.name != 'test-api' && project.name != 'integration-tests') {
 
         task clearPactBroker() {
             doLast() {
-                def services = ['Customers', 'AccountCmd', 'AccountQuery', 'Transactions']
+                def services = ['AccountCmd', 'AccountQuery', 'AccountTransactions', 'PeopleDetails']
                 for (service in services) {
                     println "http://localhost:8089/pacticipants/" + service
                     def p = ['curl', '-X', 'DELETE', "http://localhost:8089/pacticipants/" + service].
@@ -180,7 +180,7 @@ subprojects { project ->
                     }
                 }
 
-                Customers {
+                PeopleDetails {
                     // All the provider properties are optional, and have sensible defaults (shown below)
                     protocol = 'http'
                     host = 'localhost'
@@ -191,7 +191,7 @@ subprojects { project ->
                     }
                 }
 
-                Transactions {
+                AccountTransactions {
                     // All the provider properties are optional, and have sensible defaults (shown below)
                     protocol = 'http'
                     host = 'localhost'
@@ -218,9 +218,6 @@ subprojects { project ->
     test {
         useJUnitPlatform()
         systemProperties['pact.rootDir'] = "../pact-tests"
-        if (!System.env.INTEGRATION_TESTING) {
-            exclude '**/transactions/tests/isolation/**'
-        }
     }
 
     task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {

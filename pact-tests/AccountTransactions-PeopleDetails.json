@@ -1,0 +1,76 @@
+{
+    "provider": {
+        "name": "PeopleDetails"
+    },
+    "consumer": {
+        "name": "AccountTransactions"
+    },
+    "interactions": [
+        {
+            "description": "Single PersonDetails",
+            "request": {
+                "method": "GET",
+                "path": "/api/v1/people/5c892dbef72465ad7e7dde42",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": {
+                    "id": "5c892dbef72465ad7e7dde42",
+                    "firstName": "Samantha",
+                    "lastName": "Carter"
+                }
+            },
+            "providerStates": [
+                {
+                    "name": "A person exist."
+                }
+            ]
+        },
+        {
+            "description": "Three PersonDetails",
+            "request": {
+                "method": "GET",
+                "path": "/api/v1/people/",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "5c86d04877970c1fd879a36b",
+                        "firstName": "Jack",
+                        "lastName": "Oneill"
+                    },
+                    {
+                        "id": "5c892dbef72465ad7e7dde42",
+                        "firstName": "Samantha",
+                        "lastName": "Carter"
+                    },
+                    {
+                        "id": "5c89342ef72465c5981bc1fc",
+                        "firstName": "Daniel",
+                        "lastName": "Jackson"
+                    }
+                ]
+            },
+            "providerStates": [
+                {
+                    "name": "Three person exist."
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "pactSpecification": {
+            "version": "3.0.0"
+        },
+        "pact-jvm": {
+            "version": "3.6.2"
+        }
+    }
+}

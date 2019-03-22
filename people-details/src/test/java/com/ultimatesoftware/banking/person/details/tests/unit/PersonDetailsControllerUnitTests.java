@@ -1,6 +1,5 @@
 package com.ultimatesoftware.banking.person.details.tests.unit;
 
-import com.mongodb.client.result.UpdateResult;
 import com.ultimatesoftware.banking.api.repository.MongoRepository;
 
 import com.ultimatesoftware.banking.people.details.controllers.PersonDetailsController;
@@ -13,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,42 +57,5 @@ public class PersonDetailsControllerUnitTests {
 
         //assert
         customer.test().assertEmpty();
-    }
-
-    @Test
-    public void onCreateCustomers_repositorySaveIsCalled() {
-        // arrange
-
-        //act
-        personDetailsController.create(personDetails);
-
-        //assert
-        verify(customerRepository, times(1)).add(personDetails);
-    }
-
-    @Test
-    public void onUpdateCustomersWithExistingId_repositorySaveIsCalled() {
-        //arrange
-        Maybe<UpdateResult> updateResultOr = Maybe.just(UpdateResult.acknowledged(1, 1L, null));
-        when(customerRepository.replaceOne(id.toHexString(), personDetails)).thenReturn(updateResultOr);
-
-        //act
-        Maybe<UpdateResult> updateResult = personDetailsController.update(id.toHexString(),
-            personDetails);
-
-        //assert
-        verify(customerRepository, times(1)).replaceOne(id.toHexString(), personDetails);
-        assertEquals(updateResult, updateResultOr);
-    }
-
-    @Test
-    public void onDeleteCustomersWithExistingId_repositoryDeleteIsCalled() {
-        //arrange
-
-        //act
-        personDetailsController.delete(id.toHexString());
-
-        //assert
-        verify(customerRepository, times(1)).deleteOne(id.toHexString());
     }
 }

@@ -1,7 +1,7 @@
 package com.ultimatesoftware.banking.people.cmd.configuration;
 
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
-import com.ultimatesoftware.banking.api.test.TestMockCommandGateway;
+import com.ultimatesoftware.banking.api.configuration.TestMockCommandGateway;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;

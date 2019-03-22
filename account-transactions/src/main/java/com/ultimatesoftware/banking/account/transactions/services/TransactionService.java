@@ -1,9 +1,9 @@
 package com.ultimatesoftware.banking.account.transactions.services;
 
+import com.ultimatesoftware.banking.account.transactions.clients.PeopleDetailsClient;
 import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.account.transactions.clients.BankAccountCmdClient;
 import com.ultimatesoftware.banking.account.transactions.clients.BankAccountQueryClient;
-import com.ultimatesoftware.banking.account.transactions.clients.CustomerClient;
 import com.ultimatesoftware.banking.account.transactions.exceptions.*;
 import com.ultimatesoftware.banking.account.transactions.models.*;
 import org.slf4j.Logger;
@@ -16,15 +16,15 @@ public class TransactionService {
     private static final Logger LOG = LoggerFactory.getLogger(TransactionService.class);
 
     private final Repository<Transaction> transactionRepository;
-    private final CustomerClient customerClient;
+    private final PeopleDetailsClient peopleDetailsClient;
     private final BankAccountQueryClient bankAccountQueryClient;
     private final BankAccountCmdClient bankAccountCmdClient;
 
     public TransactionService(
-        Repository<Transaction> transactionRepository, CustomerClient customerClient,
+        Repository<Transaction> transactionRepository, PeopleDetailsClient peopleDetailsClient,
             BankAccountQueryClient bankAccountQueryClient, BankAccountCmdClient bankAccountCmdClient) {
         this.transactionRepository = transactionRepository;
-        this.customerClient = customerClient;
+        this.peopleDetailsClient = peopleDetailsClient;
         this.bankAccountQueryClient = bankAccountQueryClient;
         this.bankAccountCmdClient = bankAccountCmdClient;
     }
@@ -111,11 +111,11 @@ public class TransactionService {
         throw new NoAccountExistsException(String.format("No account with id %s exists", accountId));
     }
 
-    private CustomerDto getCustomer(String customerId)
+    private PersonDetailsDto getCustomer(String customerId)
         throws CustomerDoesNotExistException, ErrorValidatingCustomerException {
         try {
             LOG.info(String.format("Fetching customer: %s", customerId));
-            CustomerDto customer =  this.customerClient.get(customerId).blockingGet();
+            PersonDetailsDto customer =  this.peopleDetailsClient.get(customerId).blockingGet();
             if (customer != null) {
                 return customer;
             }

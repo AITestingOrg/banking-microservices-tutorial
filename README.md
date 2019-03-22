@@ -7,14 +7,17 @@ The Banking Microservices Example project is a small system used to show how mic
 ![](documentation/images/micronaut.jpg)![](documentation/images/axon.png)![](documentation/images/consul.svg)![](documentation/images/mongo.png)![](documentation/images/tyk.png)![](documentation/images/junit5-banner.png)
 ## Architecture
 ![Build Status](documentation/images/services.png)
-<p style="text-align: center;">Figure 1: Overall Banking Example architecture.</p>
+<p style="text-align: center;">Overall Banking Example architecture.</p>
 
-![Build Status](documentation/images/communication.png)
-<p style="text-align: center;">Figure 2: Flow of communication between domain architectures.</p> 
+![Build Status](documentation/images/activity.png)
+<p style="text-align: center;">Example of flow of data after issueing a withdraw command.</p> 
+
+![Build Status](documentation/images/routing.png)
+<p style="text-align: center;">Routing configuration of gateways.</p> 
 
 ## Configuration
 The services can be configured in three ways, a local default configuration under each project resources/application.yml, a development coniguration under
-resources/application-dev.yml, and the centralized configuration service.
+resources/application-dev.yml, and the centralized configuration service. 
 
 ## Requirements
 See each services readme for detailed requirement information
@@ -84,6 +87,7 @@ JaCoCo is used for code coverage and can be run after the unit and integration t
 You can find a JaCoCo coverage report under the "coverage" in transaction service after running the unit tests.
 
 ## Running Contract Tests
+Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
 Start the domain services with internal mocks so that only the endpoints will be tested.
 ![Internally Mocked Services](documentation/images/internal-mocks.png)
 ```bash

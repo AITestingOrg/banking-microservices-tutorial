@@ -1,14 +1,21 @@
 package com.ultimatesoftware.banking.account.events;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@JsonDeserialize(builder = TransferWithdrawConcludedEvent.TransferWithdrawConcludedEventBuilder.class)
 public class TransferWithdrawConcludedEvent extends AccountTransactionEvent {
     private double balance;
 
-    public TransferWithdrawConcludedEvent(String id, double balance, String transactionId) {
+    @Builder
+    protected TransferWithdrawConcludedEvent(String id, double balance, String transactionId) {
         super(id, transactionId);
         this.balance = balance;
     }
 
-    public double getBalance() {
-        return balance;
-    }
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class TransferWithdrawConcludedEventBuilder {}
 }

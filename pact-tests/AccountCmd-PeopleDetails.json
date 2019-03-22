@@ -1,0 +1,41 @@
+{
+    "provider": {
+        "name": "PeopleDetails"
+    },
+    "consumer": {
+        "name": "AccountCmd"
+    },
+    "interactions": [
+        {
+            "description": "Single valid person",
+            "request": {
+                "method": "GET",
+                "path": "/api/v1/people/5c892dbef72465ad7e7dde42",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": {
+                    "id": "5c892dbef72465ad7e7dde42",
+                    "firstName": "Samantha",
+                    "lastName": "Carter"
+                }
+            },
+            "providerStates": [
+                {
+                    "name": "A person exist."
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "pactSpecification": {
+            "version": "3.0.0"
+        },
+        "pact-jvm": {
+            "version": "3.6.2"
+        }
+    }
+}

@@ -1,0 +1,14 @@
+version "0.1"
+group "com.ultimatesoftware.banking.api"
+
+dependencies {
+    compile "io.micronaut.configuration:micronaut-mongo-reactive"
+    compile "com.github.tomakehurst:wiremock-jre8:2.22.0"
+    compile "io.micronaut.test:micronaut-test-junit5:1.0.2"
+    compile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+}

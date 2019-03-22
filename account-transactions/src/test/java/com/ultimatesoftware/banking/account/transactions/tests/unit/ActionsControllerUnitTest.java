@@ -15,7 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.*;
+import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.ACCOUNT_EXISTS_EXCEPTION;
+import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.INSUFFICIENT_BALANCE_EXCEPTION;
+import static com.ultimatesoftware.banking.api.test.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

@@ -10,9 +10,9 @@ import javax.inject.Singleton;
 
 @OpenAPIDefinition(
     info = @Info(
-        title = "Transactions",
+        title = "Account Transactions",
         version = "0.1",
-        description = "Transactions service",
+        description = "Account Transactions service",
         license = @License(name = "Apache 2.0", url = "http://ultimatesoftware.com")
     ),
     tags = {

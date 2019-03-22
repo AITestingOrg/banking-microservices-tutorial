@@ -1,47 +1,24 @@
 package com.ultimatesoftware.banking.account.transactions.eventhandlers;
 
 import com.mongodb.client.result.UpdateResult;
-import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
+import com.ultimatesoftware.banking.api.operations.AxonEventHandler;
 import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.account.events.*;
 import com.ultimatesoftware.banking.account.transactions.models.Transaction;
 import com.ultimatesoftware.banking.account.transactions.models.TransactionStatus;
-import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.annotation.Requires;
-import io.micronaut.discovery.event.ServiceStartedEvent;
-import io.micronaut.runtime.event.annotation.EventListener;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
-import org.axonframework.config.Configuration;
-import org.axonframework.config.DefaultConfigurer;
 import org.axonframework.eventhandling.EventHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 
 @Singleton
-@Requires(notEnv = ConfigurationConstants.INTERNAL_MOCKS)
-public class AccountEventHandlers {
-    private static final Logger LOG = LoggerFactory.getLogger(AccountEventHandlers.class);
-    private Configuration configurer;
-    private Repository<Transaction> bankTransactionRepository;
-    private AxonServerConfiguration axonServerConfiguration;
-    private ApplicationContext applicationContext;
+public class AccountEventHandlers extends AxonEventHandler {
+    private Repository<Transaction> mongoRepository;
 
-    public AccountEventHandlers(Repository<Transaction> bankTransactionRepository, AxonServerConfiguration axonServerConfiguration) {
-        this.bankTransactionRepository = bankTransactionRepository;
-        this.axonServerConfiguration = axonServerConfiguration;
-        this.applicationContext = applicationContext;
+    public AccountEventHandlers(Repository<Transaction> mongoRepository, AxonServerConfiguration axonServerConfiguration) {
+        super(axonServerConfiguration);
+        this.mongoRepository = mongoRepository;
         LOG.info("Event handler on service started");
-    }
-
-    @EventListener
-    public void configuration(final ServiceStartedEvent event) {
-        LOG.info("Configuring Axon server");
-        configurer = DefaultConfigurer.defaultConfiguration()
-            .registerComponent(AxonServerConfiguration.class, c -> axonServerConfiguration)
-            .eventProcessing(eventProcessingConfigurer -> eventProcessingConfigurer
-                .registerEventHandler(conf -> this)).start();
     }
 
     @EventHandler
@@ -75,11 +52,11 @@ public class AccountEventHandlers {
     }
 
     private void updateTransaction(AccountTransactionEvent event) {
-        bankTransactionRepository.findOne(event.getTransactionId()).subscribe(
+        mongoRepository.findOne(event.getTransactionId()).subscribe(
             transaction -> {
                 if (transaction != null) {
                     transaction.setStatus(TransactionStatus.SUCCESSFUL);
-                    UpdateResult ur = bankTransactionRepository.replaceOne(transaction.getHexId(), transaction).blockingGet();
+                    UpdateResult ur = mongoRepository.replaceOne(transaction.getHexId(), transaction).blockingGet();
                 } else {
                     LOG.warn("Attempted to update transaction that does not exist {}.", event.getTransactionId());
                 }
@@ -87,10 +64,10 @@ public class AccountEventHandlers {
     }
 
     private void updateTransaction(String transactionId, TransactionStatus status) {
-        bankTransactionRepository.findOne(transactionId).subscribe(transaction -> {
+        mongoRepository.findOne(transactionId).subscribe(transaction -> {
             if (transaction != null) {
                 transaction.setStatus(status);
-                UpdateResult ur = bankTransactionRepository.replaceOne(transactionId, transaction).blockingGet();
+                UpdateResult ur = mongoRepository.replaceOne(transactionId, transaction).blockingGet();
             } else {
                 LOG.warn("Attempted to update transaction that does not exist {}.", transactionId);
             }

@@ -81,6 +81,7 @@ services:
       - MONGO_HOST=mongo
       - AXON_HOST=axonserver
       - HOST_PORT=8086
+      - PEOPLE_DETAILS_HOST=
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     networks:
       - banking-microservices-example_bank

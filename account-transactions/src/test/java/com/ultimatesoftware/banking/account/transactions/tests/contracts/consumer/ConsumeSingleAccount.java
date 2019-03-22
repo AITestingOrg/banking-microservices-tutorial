@@ -18,7 +18,7 @@ import static io.restassured.RestAssured.given;
 @ExtendWith(PactConsumerTestExt.class)
 @PactTestFor(providerName = "AccountQuery", port = "8084")
 public class ConsumeSingleAccount {
-    @Pact(provider = "AccountQuery", consumer = "Transactions")
+    @Pact(provider = "AccountQuery", consumer = "AccountTransactions")
     public RequestResponsePact createGetOnePact(PactDslWithProvider builder) {
         return builder
             .given("An account exists.")

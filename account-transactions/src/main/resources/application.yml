@@ -1,6 +1,6 @@
 micronaut:
     application:
-        name: transactions
+        name: account-transactions
     router:
         static-resources:
             swagger:
@@ -20,7 +20,7 @@ ribbon:
 axon:
     axonserver:
         servers: ${AXON_HOST:localhost}
-        component-name: transactions
+        component-name: account-transactions
 
 consul:
     client:

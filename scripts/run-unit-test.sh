@@ -1,4 +1,5 @@
+#!/usr/bin/env bash
 '#!/bin/sh'
-./gradlew test --tests "*.unit.*"
+./gradlew test -x :integration-tests:test --tests "*.unit.*"
 ./gradlew jacocoTestCoverageVerification
 ./gradlew jacocoTestReport

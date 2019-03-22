@@ -1,9 +1,9 @@
 package com.ultimatesoftware.banking.account.transactions.tests.service.isolation;
 
-import com.ultimatesoftware.banking.account.transactions.mocks.HttpClient;
-import com.ultimatesoftware.banking.account.transactions.mocks.MockedHttpDependencies;
-import com.ultimatesoftware.banking.account.transactions.mocks.ResponseDto;
 import com.ultimatesoftware.banking.account.transactions.models.TransactionDto;
+import com.ultimatesoftware.banking.api.test.HttpClient;
+import com.ultimatesoftware.banking.api.test.MockedHttpDependencies;
+import com.ultimatesoftware.banking.api.test.ResponseDto;
 import io.micronaut.test.annotation.MicronautTest;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,14 +12,14 @@ import org.junit.jupiter.api.Test;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.ACCOUNT_ID;
-import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.CUSTOMER_ID;
-import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.NO_ACCOUNT_ID;
-import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.NO_CUSTOMER_ID;
+import static com.ultimatesoftware.banking.api.test.TestConstants.ACCOUNT_ID;
+import static com.ultimatesoftware.banking.api.test.TestConstants.CUSTOMER_ID;
+import static com.ultimatesoftware.banking.api.test.TestConstants.NO_ACCOUNT_ID;
+import static com.ultimatesoftware.banking.api.test.TestConstants.NO_CUSTOMER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@MicronautTest()
+@MicronautTest
 public class WithdrawTests extends MockedHttpDependencies {
 
     private static final ObjectId customerId = CUSTOMER_ID;
@@ -74,7 +74,7 @@ public class WithdrawTests extends MockedHttpDependencies {
         ResponseDto response = client.post(transactionDto, "/withdraw");
 
         // Assert
-        customersService.verify(1, getRequestedFor(urlEqualTo("/api/v1/customers/5c8ffe2b7c0bec3538855a0a")));
+        customersService.verify(1, getRequestedFor(urlEqualTo("/api/v1/people/5c8ffe2b7c0bec3538855a0a")));
     }
 
     @Test

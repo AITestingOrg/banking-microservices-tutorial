@@ -6,13 +6,11 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.bson.types.ObjectId;
 
 @Getter
-public class CreatePersonCommand {
-    @TargetAggregateIdentifier
-    private ObjectId id;
+public class CreatePersonCommand extends Command {
     private CreatePersonDto person;
 
     public CreatePersonCommand(CreatePersonDto person) {
-        this.id = ObjectId.get();
+        super(ObjectId.get());
         this.person = person;
     }
 }

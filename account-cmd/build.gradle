@@ -8,6 +8,7 @@ dependencies {
     compile("org.axonframework:axon-server-connector:${axonVersion}")
     compile("org.axonframework:axon-modelling:${axonVersion}")
     testCompile("org.axonframework:axon-test:${axonVersion}")
+    testCompile project(":test-api")
 }
 
 mainClassName = "com.ultimatesoftware.banking.account.cmd.Application"

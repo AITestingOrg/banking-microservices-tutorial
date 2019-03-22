@@ -1,9 +1,9 @@
 micronaut:
   http:
     services:
-      customers:
+      people-details:
         urls:
-          - "http://localhost:8085"
+          - "http://localhost:8081"
       account-cmd:
         urls:
           - "http://localhost:8082"

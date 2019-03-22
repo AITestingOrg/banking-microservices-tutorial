@@ -23,7 +23,7 @@ import static io.restassured.RestAssured.given;
 public class ConsumeDepositAccount {
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Pact(provider = "AccountCmd", consumer = "Transactions")
+    @Pact(provider = "AccountCmd", consumer = "AccountTransactions")
     public RequestResponsePact createGetOnePact(PactDslWithProvider builder)
         throws JsonProcessingException {
         return builder

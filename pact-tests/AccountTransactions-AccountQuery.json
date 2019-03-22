@@ -1,0 +1,41 @@
+{
+    "provider": {
+        "name": "AccountQuery"
+    },
+    "consumer": {
+        "name": "AccountTransactions"
+    },
+    "interactions": [
+        {
+            "description": "Request for single account",
+            "request": {
+                "method": "GET",
+                "path": "/api/v1/accounts/5c892dbef72465ad7e7dde42",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            },
+            "response": {
+                "status": 200,
+                "body": {
+                    "id": "5c892dbef72465ad7e7dde42",
+                    "customerId": "5c86d04877970c1fd879a36b",
+                    "balance": 10.0
+                }
+            },
+            "providerStates": [
+                {
+                    "name": "An account exists."
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "pactSpecification": {
+            "version": "3.0.0"
+        },
+        "pact-jvm": {
+            "version": "3.6.2"
+        }
+    }
+}

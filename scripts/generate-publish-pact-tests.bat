@@ -5,14 +5,11 @@
 # An example change could be `systemProperties['pact.rootDir'] = "${buildDir}/pact-tests"` to
 # store them in each projects directory, but then the publish location needs to be created for each
 # provider.
-./gradlew :account-cmd:test --tests "*.contract.consumer.*"
-./gradlew clean
-./gradlew :account-query:test --tests "*.contract.consumer.*"
-./gradlew clean
-./gradlew :customers:test --tests "*.contract.consumer.*"
-./gradlew clean
-./gradlew :transactions:test --tests "*.contract.consumer.*"
+./gradlew.bat :account-cmd:test --tests "*.contracts.consumer.*"
+./gradlew.bat :account-query:test --tests "*.contracts.consumer.*"
+./gradlew.bat :people-details:test --tests "*.contracts.consumer.*"
+./gradlew.bat :account-transactions:test --tests "*.contracts.consumer.*"
 
 # Since the PACT plugin is global to all projects this will publish all provider pacts, not just
 # transactions.
-./gradlew :transactions:pactPublish
+./gradlew.bat :account-transactions:pactPublish

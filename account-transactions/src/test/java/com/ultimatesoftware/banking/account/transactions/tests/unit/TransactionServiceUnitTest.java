@@ -3,11 +3,11 @@ package com.ultimatesoftware.banking.account.transactions.tests.unit;
 import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.account.transactions.clients.BankAccountCmdClient;
 import com.ultimatesoftware.banking.account.transactions.clients.BankAccountQueryClient;
-import com.ultimatesoftware.banking.account.transactions.clients.CustomerClient;
+import com.ultimatesoftware.banking.account.transactions.clients.PeopleDetailsClient;
 import com.ultimatesoftware.banking.account.transactions.exceptions.*;
 import com.ultimatesoftware.banking.account.transactions.models.*;
 import com.ultimatesoftware.banking.account.transactions.services.TransactionService;
-import com.ultimatesoftware.banking.account.transactions.tests.TestConstants;
+import com.ultimatesoftware.banking.api.test.TestConstants;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -36,7 +36,7 @@ public class TransactionServiceUnitTest {
     private Repository<Transaction> bankTransactionRepository;
 
     @Mock
-    protected CustomerClient customerClient;
+    protected PeopleDetailsClient peopleDetailsClient;
 
     @Mock
     protected BankAccountQueryClient accountQueryClient;
@@ -53,11 +53,11 @@ public class TransactionServiceUnitTest {
     }
 
     private void buildGetCustomerMock(String customerId) {
-        when(customerClient.get(customerId)).thenReturn(Maybe.just(new CustomerDto(customerId, "", "")));
+        when(peopleDetailsClient.get(customerId)).thenReturn(Maybe.just(new PersonDetailsDto(customerId, "", "")));
     }
 
     private void buildGetNoCustomerMock() {
-        when(customerClient.get(any())).thenReturn(Maybe.empty());
+        when(peopleDetailsClient.get(any())).thenReturn(Maybe.empty());
     }
 
     private void buildTransactionCreditMock() {
