@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 
 @Primary
 @Singleton
-@Requires(env = ConfigurationConstants.EXTERNAL_MOCKS)
+@Requires(env = ConfigurationConstants.INTERNAL_MOCKS)
 public class MockAuthenticationRepository extends MockRepository<Authentication> {
 
     public MockAuthenticationRepository() {

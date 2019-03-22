@@ -22,7 +22,9 @@
             },
             "response": {
                 "status": 200,
-                "body": "SENT COMMAND"
+                "body": {
+                    "message": "SENT COMMAND"
+                }
             },
             "providerStates": [
                 {
@@ -46,7 +48,9 @@
             },
             "response": {
                 "status": 200,
-                "body": "SENT COMMAND"
+                "body": {
+                    "message": "SENT COMMAND"
+                }
             },
             "providerStates": [
                 {
@@ -71,7 +75,9 @@
             },
             "response": {
                 "status": 200,
-                "body": "SENT COMMAND"
+                "body": {
+                    "message": "SENT COMMAND"
+                }
             },
             "providerStates": [
                 {

@@ -35,7 +35,7 @@ public class ConsumeTransferAccount {
             .body(objectMapper.writeValueAsString(new TransferTransactionDto("5c892dbef72465ad7e7dde42", "5c892dbef72465ad7e7dde42", 10.0, "5c892dbef72465ad7e7dde42")))
             .willRespondWith()
             .status(200)
-            .body("SENT COMMAND")
+            .body("{\"message\": \"SENT COMMAND\"}")
             .toPact();
     }
 

@@ -35,7 +35,7 @@ public class ConsumeDepositAccount {
             .body(objectMapper.writeValueAsString(new TransactionDto("5c892dbef72465ad7e7dde42", "5c892dbef72465ad7e7dde42", 10.0)))
             .willRespondWith()
             .status(200)
-            .body("SENT COMMAND")
+            .body("{\"message\": \"SENT COMMAND\"}")
             .toPact();
     }
 

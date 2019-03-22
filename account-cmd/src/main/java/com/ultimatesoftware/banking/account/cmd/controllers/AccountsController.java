@@ -7,6 +7,7 @@ import com.ultimatesoftware.banking.account.cmd.models.AccountDto;
 import com.ultimatesoftware.banking.account.cmd.models.MessageDto;
 import com.ultimatesoftware.banking.account.cmd.models.PersonDetailsDto;
 import com.ultimatesoftware.banking.account.cmd.models.TransactionDto;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
@@ -42,27 +43,24 @@ public class AccountsController {
     }
 
     @Put("/debit")
-    @Produces(MediaType.TEXT_PLAIN)
-    public MessageDto debit(@Valid TransactionDto transaction) {
+    public HttpResponse<MessageDto> debit(@Valid TransactionDto transaction) {
         DebitAccountCommand command = new DebitAccountCommand(transaction.getAccountId(), transaction.getAmount(), transaction.getId());
         this.commandGateway.send(command);
-        return new MessageDto(SUCCESS);
+        return HttpResponse.ok(new MessageDto(SUCCESS));
     }
 
     @Put("/credit")
-    @Produces(MediaType.TEXT_PLAIN)
-    public MessageDto credit(@Valid TransactionDto transaction) {
+    public HttpResponse<MessageDto> credit(@Valid TransactionDto transaction) {
         CreditAccountCommand command = new CreditAccountCommand(transaction.getAccountId(), transaction.getAmount(), transaction.getId());
         this.commandGateway.send(command);
-        return new MessageDto(SUCCESS);
+        return HttpResponse.ok(new MessageDto(SUCCESS));
     }
 
     @Put("/transfer")
-    @Produces(MediaType.TEXT_PLAIN)
-    public MessageDto transfer(@Valid TransactionDto transaction) {
+    public HttpResponse<MessageDto> transfer(@Valid TransactionDto transaction) {
         StartTransferTransactionCommand command = new StartTransferTransactionCommand(transaction);
         this.commandGateway.send(command);
-        return new MessageDto(SUCCESS);
+        return HttpResponse.ok(new MessageDto(SUCCESS));
     }
 
     @Delete("/{id}")
