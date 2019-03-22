@@ -10,12 +10,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
     info = @Info(
         title = "People.Cmd",
         version = "0.1",
-        description = "PersonDetails Command Service",
+        description = "Person Command Service",
         license = @License(name = "Apache 2.0", url = "http://ultimatesoftware.com")
     ),
     tags = {
         @Tag(name = "People"),
-        @Tag(name = "PeopleDetails")
+        @Tag(name = "PersonDetails"),
+        @Tag(name = "Authentication")
     }
 )
 public class Application {

@@ -1,17 +1,14 @@
 package com.ultimatesoftware.banking.account.cmd.sagas;
 
 import com.ultimatesoftware.banking.account.cmd.commands.*;
-import com.ultimatesoftware.banking.events.*;
+import com.ultimatesoftware.banking.account.events.*;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
 import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.StartSaga;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.UUID;
 
 public class TransactionSaga {
     private static final Logger logger = LoggerFactory.getLogger(TransactionSaga.class);

@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-@Controller("/api/v1/customers")
+@Controller("/api/v1/people")
 public class PersonDetailsController implements GetController<PersonDetails>, CrudController<PersonDetails> {
 
     private final Repository<PersonDetails> mongoRepository;

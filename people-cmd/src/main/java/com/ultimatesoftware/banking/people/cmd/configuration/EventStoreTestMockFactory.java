@@ -6,8 +6,9 @@ import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
-import javax.inject.Singleton;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+
+import javax.inject.Singleton;
 
 @Factory
 @Requires(env = ConfigurationConstants.INTERNAL_MOCKS)

@@ -3,7 +3,7 @@ package com.ultimatesoftware.banking.account.query.eventhandlers;
 import com.ultimatesoftware.banking.account.query.models.Account;
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.api.repository.Repository;
-import com.ultimatesoftware.banking.events.*;
+import com.ultimatesoftware.banking.account.events.*;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;

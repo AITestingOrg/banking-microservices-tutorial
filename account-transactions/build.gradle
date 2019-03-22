@@ -10,4 +10,4 @@ dependencies {
     testCompile "com.github.tomakehurst:wiremock-jre8:2.22.0"
 }
 
-mainClassName = "com.ultimatesoftware.banking.transactions.Application"
+mainClassName = "com.ultimatesoftware.banking.account.transactions.Application"
