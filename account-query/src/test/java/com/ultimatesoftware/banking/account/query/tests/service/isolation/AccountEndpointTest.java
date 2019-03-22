@@ -17,11 +17,10 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ultimatesoftware.banking.api.configuration.ConfigurationConstants.EXTERNAL_MOCKS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@MicronautTest(environments = EXTERNAL_MOCKS)
+@MicronautTest
 public class AccountEndpointTest {
     @Inject
     @Client("/api/v1/accounts")
@@ -37,7 +36,6 @@ public class AccountEndpointTest {
 
     @BeforeEach
     public void beforeEach() {
-        List<Account> accountsFound = (List<Account>) client.toBlocking().retrieve(HttpRequest.GET(""), List.class);
         List<String> accountIds = mongoRepository.findMany().blockingGet()
             .stream()
             .map(account -> account.getHexId()).collect(Collectors.toList());
