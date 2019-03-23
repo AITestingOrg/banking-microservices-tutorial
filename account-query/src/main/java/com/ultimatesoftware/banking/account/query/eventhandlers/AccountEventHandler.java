@@ -1,10 +1,9 @@
 package com.ultimatesoftware.banking.account.query.eventhandlers;
 
+import com.ultimatesoftware.banking.account.events.*;
 import com.ultimatesoftware.banking.account.query.models.Account;
-import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import com.ultimatesoftware.banking.api.operations.AxonEventHandler;
 import com.ultimatesoftware.banking.api.repository.Repository;
-import com.ultimatesoftware.banking.account.events.*;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.eventhandling.EventHandler;
 import org.bson.types.ObjectId;
