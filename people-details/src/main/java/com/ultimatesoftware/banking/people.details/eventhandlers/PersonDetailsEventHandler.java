@@ -5,10 +5,11 @@ import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.people.details.models.PersonDetails;
 import com.ultimatesoftware.banking.people.events.DetailsUpdatedEvent;
 import com.ultimatesoftware.banking.people.events.PersonCreatedEvent;
-import javax.inject.Singleton;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.eventhandling.EventHandler;
 import org.bson.types.ObjectId;
+
+import javax.inject.Singleton;
 
 @Singleton
 public class PersonDetailsEventHandler extends AxonEventHandler {

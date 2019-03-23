@@ -1,8 +1,10 @@
 package com.ultimatesoftware.banking.people.cmd.rules;
 
 import com.ultimatesoftware.banking.people.cmd.exceptions.InvalidPasswordException;
-import java.util.regex.Pattern;
+
 import javax.inject.Singleton;
+
+import java.util.regex.Pattern;
 
 @Singleton
 public class PasswordRulesImpl implements PasswordRules {
@@ -15,9 +17,9 @@ public class PasswordRulesImpl implements PasswordRules {
             throw new InvalidPasswordException("The password must be at least 8 characters.");
         } else if (!symbol.matcher(password).find()) {
             throw new InvalidPasswordException("The password must contain at least one non alpha-numeric character.");
-        } else if(!upperCase.matcher(password).find()) {
+        } else if (!upperCase.matcher(password).find()) {
             throw new InvalidPasswordException("The password must be at least one upper-case character.");
-        } else if(!lowerCase.matcher(password).find()) {
+        } else if (!lowerCase.matcher(password).find()) {
             throw new InvalidPasswordException("The password must be at least one lower-case character.");
         }
     }

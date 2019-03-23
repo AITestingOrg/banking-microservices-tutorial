@@ -1,11 +1,9 @@
 package com.ultimatesoftware.banking.account.transactions.services;
 
-import com.ultimatesoftware.banking.account.transactions.clients.PeopleDetailsClient;
-import com.ultimatesoftware.banking.api.repository.Repository;
-import com.ultimatesoftware.banking.account.transactions.clients.BankAccountCmdClient;
-import com.ultimatesoftware.banking.account.transactions.clients.BankAccountQueryClient;
+import com.ultimatesoftware.banking.account.transactions.clients.*;
 import com.ultimatesoftware.banking.account.transactions.exceptions.*;
 import com.ultimatesoftware.banking.account.transactions.models.*;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

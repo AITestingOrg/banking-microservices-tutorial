@@ -1,11 +1,11 @@
 package com.ultimatesoftware.banking.account.transactions.eventhandlers;
 
 import com.mongodb.client.result.UpdateResult;
-import com.ultimatesoftware.banking.api.operations.AxonEventHandler;
-import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.account.events.*;
 import com.ultimatesoftware.banking.account.transactions.models.Transaction;
 import com.ultimatesoftware.banking.account.transactions.models.TransactionStatus;
+import com.ultimatesoftware.banking.api.operations.AxonEventHandler;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.eventhandling.EventHandler;
 

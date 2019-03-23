@@ -1,9 +1,10 @@
 package com.ultimatesoftware.banking.people.cmd.commands;
 
 import com.ultimatesoftware.banking.people.cmd.models.PersonDetailsDto;
-import javax.validation.Valid;
 import lombok.Getter;
 import org.bson.types.ObjectId;
+
+import javax.validation.Valid;
 
 @Getter
 public class UpdateDetailsCommand extends Command {
