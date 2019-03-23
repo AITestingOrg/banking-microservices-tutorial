@@ -1,13 +1,12 @@
 package com.ultimatesoftware.banking.account.transactions.tests.unit;
 
 import com.mongodb.client.result.UpdateResult;
-import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.account.events.*;
-
 import com.ultimatesoftware.banking.account.transactions.eventhandlers.AccountEventHandlers;
 import com.ultimatesoftware.banking.account.transactions.models.Transaction;
 import com.ultimatesoftware.banking.account.transactions.models.TransactionStatus;
 import com.ultimatesoftware.banking.account.transactions.models.TransactionType;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.api.test.TestConstants;
 import io.reactivex.Maybe;
 import org.bson.types.ObjectId;

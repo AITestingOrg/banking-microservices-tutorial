@@ -1,12 +1,12 @@
 package com.ultimatesoftware.banking.account.transactions.tests.unit;
 
-import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.account.transactions.clients.BankAccountCmdClient;
 import com.ultimatesoftware.banking.account.transactions.clients.BankAccountQueryClient;
 import com.ultimatesoftware.banking.account.transactions.clients.PeopleDetailsClient;
 import com.ultimatesoftware.banking.account.transactions.exceptions.*;
 import com.ultimatesoftware.banking.account.transactions.models.*;
 import com.ultimatesoftware.banking.account.transactions.services.TransactionService;
+import com.ultimatesoftware.banking.api.repository.Repository;
 import com.ultimatesoftware.banking.api.test.TestConstants;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
