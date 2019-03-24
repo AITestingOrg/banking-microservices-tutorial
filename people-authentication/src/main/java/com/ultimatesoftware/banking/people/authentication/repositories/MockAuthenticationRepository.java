@@ -5,9 +5,11 @@ import com.ultimatesoftware.banking.api.repository.MockRepository;
 import com.ultimatesoftware.banking.people.authentication.models.Authentication;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
-import java.util.ArrayList;
-import javax.inject.Singleton;
 import org.bson.types.ObjectId;
+
+import javax.inject.Singleton;
+
+import java.util.ArrayList;
 
 @Primary
 @Singleton

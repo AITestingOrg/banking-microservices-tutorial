@@ -6,6 +6,7 @@ import com.ultimatesoftware.banking.people.authentication.models.AuthenticationD
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Post;
+
 import javax.validation.Valid;
 
 @Controller("/api/v1/login")
