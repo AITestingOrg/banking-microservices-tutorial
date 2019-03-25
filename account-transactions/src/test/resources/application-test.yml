@@ -1,0 +1,17 @@
+micronaut:
+  http:
+    services:
+      people:
+        urls:
+          - "http://localhost:8081"
+      account-cmd:
+        urls:
+          - "http://localhost:8082"
+      account-query:
+        urls:
+          - "http://localhost:8084"
+
+consul:
+  client:
+    registration:
+      enabled: false

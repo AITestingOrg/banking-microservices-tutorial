@@ -1,7 +1,27 @@
 version: '2.1'
 services:
-  customers:
-    build: customers/
+  peopleauthentication:
+    build: people-authentication/
+    mem_limit: 400m
+    ports:
+      - "8088:8088"
+    restart: on-failure
+    environment:
+      - MICRONAUT_ENVIRONMENTS=test,internal_mocks
+      - HOST_PORT=8088
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+  peoplecmd:
+      build: people-cmd/
+      mem_limit: 400m
+      ports:
+        - "8087:8087"
+      restart: on-failure
+      environment:
+        - MICRONAUT_ENVIRONMENTS=test,internal_mocks
+        - HOST_PORT=8087
+        - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+  peopledetails:
+    build: people-details/
     mem_limit: 400m
     ports:
       - "8085:8085"
@@ -32,8 +52,8 @@ services:
       - HOST_PORT=8084
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
-  transactionserver:
-    build: transactions/
+  accounttransactions:
+    build: account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"

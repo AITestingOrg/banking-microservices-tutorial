@@ -6,9 +6,9 @@ import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleFor
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.rules.AccountRules;
 import com.ultimatesoftware.banking.account.cmd.rules.StandardAccountRules;
-import com.ultimatesoftware.banking.events.*;
-import com.ultimatesoftware.banking.events.factories.AccountEventType;
-import com.ultimatesoftware.banking.events.factories.EventFactory;
+import com.ultimatesoftware.banking.account.events.*;
+import com.ultimatesoftware.banking.account.events.factories.AccountEventType;
+import com.ultimatesoftware.banking.account.events.factories.EventFactory;
 import lombok.Getter;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;

@@ -9,7 +9,7 @@ import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleFor
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForDeleteException;
 import com.ultimatesoftware.banking.account.cmd.rules.AccountRules;
-import com.ultimatesoftware.banking.events.*;
+import com.ultimatesoftware.banking.account.events.*;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

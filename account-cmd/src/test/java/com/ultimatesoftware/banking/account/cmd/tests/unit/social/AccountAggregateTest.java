@@ -7,7 +7,7 @@ import com.ultimatesoftware.banking.account.cmd.commands.DebitAccountCommand;
 import com.ultimatesoftware.banking.account.cmd.commands.DeleteAccountCommand;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForCreditException;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForDebitException;
-import com.ultimatesoftware.banking.events.*;
+import com.ultimatesoftware.banking.account.events.*;
 import org.axonframework.eventsourcing.AggregateDeletedException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;

@@ -7,14 +7,17 @@ The Banking Microservices Example project is a small system used to show how mic
 ![](documentation/images/micronaut.jpg)![](documentation/images/axon.png)![](documentation/images/consul.svg)![](documentation/images/mongo.png)![](documentation/images/tyk.png)![](documentation/images/junit5-banner.png)
 ## Architecture
 ![Build Status](documentation/images/services.png)
-<p style="text-align: center;">Figure 1: Overall Banking Example architecture.</p>
+<p style="text-align: center;">Overall Banking Example architecture.</p>
 
-![Build Status](documentation/images/communication.png)
-<p style="text-align: center;">Figure 2: Flow of communication between domain architectures.</p> 
+![Build Status](documentation/images/activity.png)
+<p style="text-align: center;">Example of flow of data after issueing a withdraw command.</p> 
+
+![Build Status](documentation/images/routing.png)
+<p style="text-align: center;">Routing configuration of gateways.</p> 
 
 ## Configuration
 The services can be configured in three ways, a local default configuration under each project resources/application.yml, a development coniguration under
-resources/application-dev.yml, and the centralized configuration service.
+resources/application-dev.yml, and the centralized configuration service. 
 
 ## Requirements
 See each services readme for detailed requirement information
@@ -84,6 +87,7 @@ JaCoCo is used for code coverage and can be run after the unit and integration t
 You can find a JaCoCo coverage report under the "coverage" in transaction service after running the unit tests.
 
 ## Running Contract Tests
+Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
 Start the domain services with internal mocks so that only the endpoints will be tested.
 ![Internally Mocked Services](documentation/images/internal-mocks.png)
 ```bash
@@ -144,28 +148,26 @@ If you modify or add an HTTP stub under `./wiremock` then you will need to resta
 If you update the WireMock request journal validations under `./transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
 
 ## Running Service Integration Tests
-To run the service integration tests, all of the dependencies must be available for the given service under test. In the case of this project, the services are simple and few, therefore requiring the entire project to be live for testing the transaction service.
+
+### Sub-Domain Service Integration Testing
+To run the sub-domain service integration tests, all of the dependencies must be available for the given service under test. For this case we will be running integration tests for the Account sub-domain, which means that the gateway for the People domain will be mocked, but all Account related services should be up.
+![Sub-Domain Integration Testing](documentation/images/subdomain-integration-testing.png)
 
 Use docker to stand up the supporting services, databases, and etc...
 ```bash
-docker-compose -f docker-compose-backing.yml up
+docker-compose -f docker-compose-sub-domain-testing.yml up
 ```
-Stand up all of the domain services.
+Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
 ```bash
-docker-compose up
+sh run-sub-domain-integration-tests.sh
 ```
-Execute the tests, note that if you simply want to run tests against one service you can do so via IntelliJ or commands like `./gradlew :account-query:test --tests ""*service.integration*"`.
+Take down the services in the other terminal window.
 ```bash
-sh run-integration-tests.sh
+docker-compose -f docker-compose-sub-domain-testing.yml down
 ```
-Take down the domain services.
-```bash
-docker-compose down
-```
-Take down the backing services.
-```bash
-docker-compose -f docker-compose-backing.yml down
-```
+
+### Pairwise Service Integration Testing
+Coming soon...
 
 # API Documentation:
 

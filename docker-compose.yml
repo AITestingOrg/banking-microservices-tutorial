@@ -1,7 +1,7 @@
 version: '2.1'
 services:
-  customers:
-    build: customers/
+  people-details:
+    build: people-details/
     mem_limit: 400m
     ports:
       - "8085:8085"
@@ -14,7 +14,35 @@ services:
       - HOST_PORT=8085
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
-  accountcmd:
+  people-cmd:
+    build: people-cmd/
+    mem_limit: 400m
+    ports:
+      - "8087:8087"
+    networks:
+      - banking-microservices-example_bank
+    restart: on-failure
+    environment:
+      - CONSUL_HOST=discovery-service
+      - MONGO_HOST=mongo
+      - HOST_PORT=8087
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+
+  people-authentication:
+    build: people-authentication/
+    mem_limit: 400m
+    ports:
+      - "8088:8088"
+    networks:
+      - banking-microservices-example_bank
+    restart: on-failure
+    environment:
+      - CONSUL_HOST=discovery-service
+      - MONGO_HOST=mongo
+      - HOST_PORT=8088
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+
+  account-cmd:
     build: account-cmd/
     mem_limit: 400m
     ports:
@@ -28,7 +56,7 @@ services:
       - AXON_HOST=axonserver
       - HOST_PORT=8082
 
-  accountquery:
+  account-query:
     build: account-query/
     mem_limit: 400m
     ports:
@@ -43,8 +71,8 @@ services:
       - HOST_PORT=8084
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
-  transactionserver:
-    build: transactions/
+  account-transaction:
+    build: account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"
@@ -53,6 +81,7 @@ services:
       - MONGO_HOST=mongo
       - AXON_HOST=axonserver
       - HOST_PORT=8086
+      - PEOPLE_DETAILS_HOST=
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     networks:
       - banking-microservices-example_bank

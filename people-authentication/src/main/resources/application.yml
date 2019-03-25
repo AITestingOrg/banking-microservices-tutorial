@@ -1,0 +1,17 @@
+micronaut:
+    application:
+        name: authentication
+    router:
+        static-resources:
+            swagger:
+                enabled: true
+                paths: classpath:META-INF/swagger
+                mapping: /swagger/**
+    server:
+        port: "${HOST_PORT:8088}"
+
+consul:
+    client:
+        registration:
+            enabled: true
+        defaultZone: "${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}"

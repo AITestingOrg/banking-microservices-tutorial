@@ -1,2 +1,2 @@
 @echo off
-./gradlew pactVerify
+./gradlew.bat pactVerify
