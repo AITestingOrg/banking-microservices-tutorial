@@ -157,7 +157,7 @@ Use docker to stand up the supporting services, databases, and etc...
 ```bash
 docker-compose -f docker-compose-sub-domain-testing.yml up
 ```
-Once the services stabalize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
+Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
 ```bash
 sh run-sub-domain-integration-tests.sh
 ```
