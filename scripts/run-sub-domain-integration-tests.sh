@@ -1,2 +1,3 @@
+#!/usr/bin/env bash
 '#!/bin/sh'
-../gradlew cleanTest :account.cmd:test --tests "*.AccountAggregateTest"
+./gradlew cleanTest :integration-tests:test --tests "*.subdomain.*"
