@@ -148,28 +148,26 @@ If you modify or add an HTTP stub under `./wiremock` then you will need to resta
 If you update the WireMock request journal validations under `./transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
 
 ## Running Service Integration Tests
-To run the service integration tests, all of the dependencies must be available for the given service under test. In the case of this project, the services are simple and few, therefore requiring the entire project to be live for testing the transaction service.
+
+### Sub-Domain Service Integration Testing
+To run the sub-domain service integration tests, all of the dependencies must be available for the given service under test. For this case we will be running integration tests for the Account sub-domain, which means that the gateway for the People domain will be mocked, but all Account related services should be up.
+![Sub-Domain Integration Testing](documentation/images/subdomain-integration-testing.png)
 
 Use docker to stand up the supporting services, databases, and etc...
 ```bash
-docker-compose -f docker-compose-backing.yml up
+docker-compose -f docker-compose-sub-domain-testing.yml up
 ```
-Stand up all of the domain services.
+Once the services stabalize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
 ```bash
-docker-compose up
+sh run-sub-domain-integration-tests.sh
 ```
-Execute the tests, note that if you simply want to run tests against one service you can do so via IntelliJ or commands like `./gradlew :account-query:test --tests ""*service.integration*"`.
+Take down the services in the other terminal window.
 ```bash
-sh run-integration-tests.sh
+docker-compose -f docker-compose-sub-domain-testing.yml down
 ```
-Take down the domain services.
-```bash
-docker-compose down
-```
-Take down the backing services.
-```bash
-docker-compose -f docker-compose-backing.yml down
-```
+
+### Pairwise Service Integration Testing
+Coming soon...
 
 # API Documentation:
 
