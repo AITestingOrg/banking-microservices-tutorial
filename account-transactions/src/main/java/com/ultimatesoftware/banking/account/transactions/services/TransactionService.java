@@ -119,9 +119,9 @@ public class TransactionService {
             }
         } catch (Exception e) {
             LOG.error(e.getMessage());
-            throw new ErrorValidatingCustomerException("An unknown error occurred while attempting to validate the customer.");
+            throw new ErrorValidatingCustomerException("An unknown error occurred while attempting to validate the account owner.");
         }
-        throw new CustomerDoesNotExistException(String.format("No customer with id %s exists", customerId));
+        throw new CustomerDoesNotExistException(String.format("No person with id %s exists", customerId));
     }
 
     private void updateAccount(Transaction transaction) throws Exception {

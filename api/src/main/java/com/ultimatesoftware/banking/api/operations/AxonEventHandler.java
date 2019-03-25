@@ -1,7 +1,6 @@
 package com.ultimatesoftware.banking.api.operations;
 
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
-import com.ultimatesoftware.banking.api.repository.Repository;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.event.ServiceStartedEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
@@ -13,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 @Requires(notEnv = ConfigurationConstants.EXTERNAL_MOCKS)
 @Requires(notEnv = ConfigurationConstants.INTERNAL_MOCKS)
-public abstract class AxonEventHandler {
+public class AxonEventHandler {
     protected static final Logger LOG = LoggerFactory.getLogger(AxonEventHandler.class);
     private Configuration configurer;
     private final AxonServerConfiguration axonServerConfiguration;

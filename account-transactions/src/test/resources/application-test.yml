@@ -1,7 +1,7 @@
 micronaut:
   http:
     services:
-      people-details:
+      people:
         urls:
           - "http://localhost:8081"
       account-cmd:
