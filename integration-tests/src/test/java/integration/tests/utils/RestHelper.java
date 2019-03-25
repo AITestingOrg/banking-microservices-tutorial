@@ -4,10 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static integration.tests.utils.MockHttpConstants.VALID_PERSON_ID;
 import static integration.tests.utils.MockHttpConstants.delta;
