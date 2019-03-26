@@ -3,7 +3,6 @@ package integration.tests.utils;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 
 import static integration.tests.utils.MockHttpConstants.delta;
 import static org.junit.jupiter.api.Assertions.assertTrue;
