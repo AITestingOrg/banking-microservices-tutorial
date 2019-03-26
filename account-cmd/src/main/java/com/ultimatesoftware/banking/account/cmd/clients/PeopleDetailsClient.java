@@ -5,8 +5,8 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.client.annotation.Client;
 import io.reactivex.Maybe;
 
-@Client(id = "people-gateway", path = "/api/v1/people")
+@Client(id = "people-gateway")
 public interface PeopleDetailsClient {
-    @Get("/{id}")
+    @Get("/api/v1/people/{id}")
     Maybe<PersonDetailsDto> get(String id);
 }

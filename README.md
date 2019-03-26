@@ -4,10 +4,10 @@
 
 The Banking Microservices Example project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 
-![](documentation/images/micronaut.jpg)![](documentation/images/axon.png)![](documentation/images/consul.svg)![](documentation/images/mongo.png)![](documentation/images/tyk.png)![](documentation/images/junit5-banner.png)
+![](documentation/images/micronaut.jpg)![](documentation/images/axon.png)![](documentation/images/consul.svg)![](documentation/images/mongo.png)![](documentation/images/express-gateway.png)![](documentation/images/junit5-banner.png)
 ## Architecture
 ![Build Status](documentation/images/services.png)
-<p style="text-align: center;">Overall Banking Example architecture.</p>
+<p style="text-align: center;">The overall Banking Example architecture is broken into two sub-domains, Accounts and People.</p>
 
 ![Build Status](documentation/images/activity.png)
 <p style="text-align: center;">Example of flow of data after issueing a withdraw command.</p> 

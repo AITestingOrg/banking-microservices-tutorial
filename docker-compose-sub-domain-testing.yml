@@ -90,7 +90,15 @@ services:
     ports:
       - '8124:8124'
       - '8024:8024'
+    environment:
+      - AXONSERVER_EVENTSTORE=/eventstore
+      - AXONSERVER_CONTROLDB=/controldb
+    volumes:
+      - ./axonserver-eventstore:/eventstore
+      - ./axonserver-controldb:/controldb
 
 volumes:
+  axonserver-eventstore:
+  axonserver-controldb:
   redis:
   mongo:

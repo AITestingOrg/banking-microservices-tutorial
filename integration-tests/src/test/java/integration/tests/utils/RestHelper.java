@@ -1,9 +1,11 @@
 package integration.tests.utils;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,15 +43,17 @@ public class RestHelper {
             logger.info(String.format("Account with ID %s not found for balance check.", id));
             return;
         }
-        JsonPath jsonPath = response.jsonPath();
-        float balance = jsonPath.get("balance");
+        DocumentContext cd = JsonPath.parse(bodyStringValue);
 
-        if (delta(0.0f, balance) > 0.0001) {
+        double balance = cd.read("$['balance']", Double.class);
+
+        if (delta(0.0, balance) > 0.0001) {
             String transaction = "{\n"
                 + "\t\"accountId\": \"%s\",\n"
                 + "\t\"customerId\": \"%s\",\n"
                 + "\t\"amount\": %.2f\n"
                 + "}";
+            String hello = String.format(transaction, id, VALID_PERSON_ID, balance);
             RestAssured.baseURI = "http://localhost:" + TRANSACTION_PORT;
             given().urlEncodingEnabled(true)
                 .contentType(ContentType.JSON)
