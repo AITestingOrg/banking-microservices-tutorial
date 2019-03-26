@@ -18,9 +18,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountControllerUnitTests {
-
     @InjectMocks
     private AccountsController accountController;
+
     @Mock
     private Repository<Account> mongoRepository;
 

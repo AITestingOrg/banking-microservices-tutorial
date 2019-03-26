@@ -14,11 +14,8 @@ import static io.restassured.RestAssured.given;
 
 // Requires docker-compose-sub-domain-testing.yml be up.
 public class DepositTests {
-    private static final String TRANSACTION_PORT = "8086";
-    private static final String ACCOUNT_QUERY_PORT = "8084";
     private final RestHelper restHelper = new RestHelper();
     private String accountId1;
-    private String accountId2;
 
     @BeforeEach
     public void beforeAll() {
@@ -40,14 +37,14 @@ public class DepositTests {
             + "}";
 
         // Act
-        RestAssured.baseURI = "http://localhost:" + TRANSACTION_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
         given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .body(String.format(transaction, accountId1, VALID_PERSON_ID))
             .post("/api/v1/transactions/deposit");
 
         // Assert
-        RestAssured.baseURI = "http://localhost:" + ACCOUNT_QUERY_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_QUERY_PORT;
         Response response = given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .get("/api/v1/accounts/" + accountId1);
@@ -63,7 +60,7 @@ public class DepositTests {
             + "\t\"customerId\": \"%s\",\n"
             + "\t\"amount\": 999999999.24\n"
             + "}";
-        RestAssured.baseURI = "http://localhost:" + TRANSACTION_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
         given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .body(String.format(transaction, accountId1, VALID_PERSON_ID))
@@ -76,11 +73,36 @@ public class DepositTests {
             .post("/api/v1/transactions/deposit");
 
         // Assert
-        RestAssured.baseURI = "http://localhost:" + ACCOUNT_QUERY_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_QUERY_PORT;
         Response response = given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .get("/api/v1/accounts/" + accountId1);
 
         assertValueInJsonField(response, "balance", 1999999998.48);
+    }
+
+    @Test
+    public void givenCorrectInput_whenDepositing_thenTransactionIsMarkedSuccessful() {
+        // Arrange
+        String transaction = "{\n"
+            + "\t\"accountId\": \"%s\",\n"
+            + "\t\"customerId\": \"%s\",\n"
+            + "\t\"amount\": 100.0\n"
+            + "}";
+        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
+
+        // Act
+        Response transactionResponse = given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .body(String.format(transaction, accountId1, VALID_PERSON_ID))
+            .post("/api/v1/transactions/deposit");
+
+        // Assert
+        String transactionId = transactionResponse.getBody().asString();
+        Response response = given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .get("/api/v1/transactions/id/" + transactionId);
+
+        assertValueInJsonField(response, "status", "SUCCESSFUL");
     }
 }
