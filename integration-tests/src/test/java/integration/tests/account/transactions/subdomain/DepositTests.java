@@ -3,24 +3,19 @@ package integration.tests.account.transactions.subdomain;
 import integration.tests.utils.RestHelper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static integration.tests.utils.AssertHelper.assertValueInJsonField;
 import static integration.tests.utils.MockHttpConstants.VALID_PERSON_ID;
-import static integration.tests.utils.MockHttpConstants.delta;
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // Requires docker-compose-sub-domain-testing.yml be up.
 public class DepositTests {
-    private static final String TRANSACTION_PORT = "8086";
-    private static final String ACCOUNT_QUERY_PORT = "8084";
     private final RestHelper restHelper = new RestHelper();
     private String accountId1;
-    private String accountId2;
 
     @BeforeEach
     public void beforeAll() {
@@ -42,24 +37,72 @@ public class DepositTests {
             + "}";
 
         // Act
-        RestAssured.baseURI = "http://localhost:" + TRANSACTION_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
         given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .body(String.format(transaction, accountId1, VALID_PERSON_ID))
             .post("/api/v1/transactions/deposit");
 
         // Assert
-        RestAssured.baseURI = "http://localhost:" + ACCOUNT_QUERY_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_QUERY_PORT;
         Response response = given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .get("/api/v1/accounts/" + accountId1);
 
-        String bodyStringValue = response.getBody().asString();
+        assertValueInJsonField(response, "balance", 10.0);
+    }
 
-        assertTrue(bodyStringValue.contains("balance"));
-        JsonPath jsonPath = response.jsonPath();
-        float balance = jsonPath.get("balance");
+    @Test
+    public void givenLargeSequentialDeposits_whenDepositing_thenAccountIsUpdatedCorrectly() {
+        // Arrange
+        String transaction = "{\n"
+            + "\t\"accountId\": \"%s\",\n"
+            + "\t\"customerId\": \"%s\",\n"
+            + "\t\"amount\": 999999999.24\n"
+            + "}";
+        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
+        given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .body(String.format(transaction, accountId1, VALID_PERSON_ID))
+            .post("/api/v1/transactions/deposit");
 
-        assertTrue(delta(10.0f, balance) <= 0.001);
+        // Act
+        given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .body(String.format(transaction, accountId1, VALID_PERSON_ID))
+            .post("/api/v1/transactions/deposit");
+
+        // Assert
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_QUERY_PORT;
+        Response response = given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .get("/api/v1/accounts/" + accountId1);
+
+        assertValueInJsonField(response, "balance", 1999999998.48);
+    }
+
+    @Test
+    public void givenCorrectInput_whenDepositing_thenTransactionIsMarkedSuccessful() {
+        // Arrange
+        String transaction = "{\n"
+            + "\t\"accountId\": \"%s\",\n"
+            + "\t\"customerId\": \"%s\",\n"
+            + "\t\"amount\": 100.0\n"
+            + "}";
+        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
+
+        // Act
+        Response transactionResponse = given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .body(String.format(transaction, accountId1, VALID_PERSON_ID))
+            .post("/api/v1/transactions/deposit");
+
+        // Assert
+        String transactionId = transactionResponse.getBody().asString();
+        Response response = given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .get("/api/v1/transactions/id/" + transactionId);
+
+        assertValueInJsonField(response, "status", "SUCCESSFUL");
     }
 }

@@ -14,7 +14,8 @@ micronaut:
     http:
         services:
             people-gateway:
-                url: "http://${PEOPLE_GATEWAY:localhost}:${PEOPLE_GATEWAY_PORT:8081}"
+                urls:
+                    - "http://${PEOPLE_GATEWAY:localhost}:${PEOPLE_GATEWAY_PORT:8081}"
 axon:
     axonserver:
         servers: ${AXON_HOST:localhost}

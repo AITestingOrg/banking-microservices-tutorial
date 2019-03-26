@@ -77,6 +77,7 @@ subprojects { project ->
         compile "io.micronaut:micronaut-http-server-netty"
         compileOnly "io.micronaut:micronaut-inject-java"
         compile "io.micronaut:micronaut-discovery-client"
+        compile "io.swagger.core.v3:swagger-annotations"
         compile "io.micronaut.configuration:micronaut-hibernate-validator"
         if(project.name != 'api' && project.name != 'test-api' && project.name != 'integration-tests') {
             compile "au.com.dius:pact-jvm-consumer-junit5_2.12:3.6.2"
@@ -88,6 +89,7 @@ subprojects { project ->
         testCompile "org.assertj:assertj-core:3.12.1"
         testCompile 'io.rest-assured:rest-assured:3.3.0'
         testCompile "io.micronaut.test:micronaut-test-junit5:1.0.2"
+        testCompile "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
         testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
         testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
         testCompile "org.mockito:mockito-core:${mockitoVersion}"
@@ -130,7 +132,7 @@ subprojects { project ->
                                 '**/exceptions/**',
                                 '**/commands/**',
                                 '**/models/**',
-                                '**/Application.java'
+                                '**/Application'
                         ]
                 )
             })

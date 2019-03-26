@@ -1,7 +1,9 @@
 version "0.1"
 
 dependencies {
-    compile project(":api")
     compile project(":account-query")
+    compile project(":api")
+    compile project(":test-api")
     compile 'org.mongodb:mongo-java-driver:3.4.1'
+    compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
 }
