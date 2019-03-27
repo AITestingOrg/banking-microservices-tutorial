@@ -2,7 +2,8 @@ package com.ultimatesoftware.banking.account.cmd.sagas;
 
 import com.ultimatesoftware.banking.account.cmd.commands.*;
 import com.ultimatesoftware.banking.account.events.*;
-
+import io.micronaut.context.annotation.Prototype;
+import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
 import org.axonframework.modelling.saga.SagaEventHandler;
@@ -10,6 +11,10 @@ import org.axonframework.modelling.saga.StartSaga;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
+@Prototype
+@NoArgsConstructor
 public class TransactionSaga {
     private static final Logger logger = LoggerFactory.getLogger(TransactionSaga.class);
 
@@ -17,11 +22,9 @@ public class TransactionSaga {
     private String sourceAccountId;
     private String destinationAccountId;
     private double amount;
-    private CommandGateway commandGateway;
 
-    public TransactionSaga(CommandGateway commandGateway) {
-        this.commandGateway = commandGateway;
-    }
+    @Inject
+    private CommandGateway commandGateway;
 
     @StartSaga
     @SagaEventHandler(associationProperty = "transactionId")
@@ -33,8 +36,7 @@ public class TransactionSaga {
 
         logger.info("A new transfer transaction is started with id {}, from account {} to account {} and amount {}",
                     transactionId, sourceAccountId, destinationAccountId, amount);
-        StartTransferWithdrawCommand
-            command = new StartTransferWithdrawCommand(sourceAccountId, amount, transactionId);
+        StartTransferWithdrawCommand command = new StartTransferWithdrawCommand(sourceAccountId, amount, transactionId);
         commandGateway.send(command);
     }
 
@@ -44,7 +46,6 @@ public class TransactionSaga {
                     transactionId, sourceAccountId);
         ConcludeTransferDepositCommand command
                 = new ConcludeTransferDepositCommand(destinationAccountId, amount, transactionId);
-        CancelTransferCommand cancelCommand = new CancelTransferCommand(sourceAccountId, amount, transactionId);
         commandGateway.send(command);
     }
 

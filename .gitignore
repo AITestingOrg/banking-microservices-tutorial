@@ -36,3 +36,5 @@ dist/
 nbdist/
 .nb-gradle/
 target
+/axonserver-eventstore
+/axonserver-controldb
