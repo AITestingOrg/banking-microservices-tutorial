@@ -2,7 +2,6 @@ package com.ultimatesoftware.banking.api.operations;
 
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.runtime.server.event.ServerStartupEvent;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
 import org.axonframework.config.DefaultConfigurer;
@@ -11,21 +10,20 @@ import org.slf4j.LoggerFactory;
 
 @Requires(notEnv = ConfigurationConstants.EXTERNAL_MOCKS)
 @Requires(notEnv = ConfigurationConstants.INTERNAL_MOCKS)
-public class AxonEventHandler {
+public class SagaManagerConfiguration<T> {
     protected static final Logger LOG = LoggerFactory.getLogger(AxonEventHandler.class);
+    private Class<T> type;
     private Configuration configurer;
     private final AxonServerConfiguration axonServerConfiguration;
 
-    public AxonEventHandler(AxonServerConfiguration axonServerConfiguration) {
+    public SagaManagerConfiguration(AxonServerConfiguration axonServerConfiguration, Class<T> type) {
         this.axonServerConfiguration = axonServerConfiguration;
-        LOG.info("Configuring Axon server");
-    }
-
-    public void configure(ServerStartupEvent event) {
+        this.type = type;
+        LOG.info("Configuring Axon server for Saga Manager");
         configurer = DefaultConfigurer.defaultConfiguration()
             .registerComponent(AxonServerConfiguration.class, c -> axonServerConfiguration)
             .eventProcessing(eventProcessingConfigurer -> eventProcessingConfigurer
-                .registerEventHandler(conf -> this)).start();
-        LOG.info("Event handler on service started");
+                .registerSaga(type)).start();
+        LOG.info("Axon Saga Manager on service started");
     }
 }

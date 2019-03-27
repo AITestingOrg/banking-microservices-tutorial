@@ -27,7 +27,10 @@ public class TransactionService {
         this.bankAccountCmdClient = bankAccountCmdClient;
     }
 
-    public String transfer(TransferTransactionDto transferTransactionDto) throws Exception {
+    public String transfer(TransferTransactionDto transferTransactionDto)
+        throws CustomerDoesNotExistException, ErrorValidatingBankAccountException,
+        NoAccountExistsException, ErrorValidatingCustomerException, InsufficientBalanceException,
+        AccountUpdateException {
         String customerId = transferTransactionDto.getCustomerId();
         String accountId = transferTransactionDto.getAccountId();
         Double amount = transferTransactionDto.getAmount();
@@ -52,7 +55,10 @@ public class TransactionService {
         return transaction.getHexId();
     }
 
-    public String withdraw(TransactionDto transactionDto) throws Exception {
+    public String withdraw(TransactionDto transactionDto)
+        throws CustomerDoesNotExistException, ErrorValidatingBankAccountException,
+        NoAccountExistsException, ErrorValidatingCustomerException, InsufficientBalanceException,
+        AccountUpdateException {
         String customerId = transactionDto.getCustomerId();
         String accountId = transactionDto.getAccountId();
         Double amount = transactionDto.getAmount();
@@ -74,7 +80,9 @@ public class TransactionService {
         return transaction.getHexId();
     }
 
-    public String deposit(TransactionDto transactionDto) throws Exception {
+    public String deposit(TransactionDto transactionDto)
+        throws CustomerDoesNotExistException, ErrorValidatingBankAccountException,
+        NoAccountExistsException, ErrorValidatingCustomerException, AccountUpdateException {
         String customerId = transactionDto.getCustomerId();
         String accountId = transactionDto.getAccountId();
         Double amount = transactionDto.getAmount();
@@ -124,7 +132,7 @@ public class TransactionService {
         throw new CustomerDoesNotExistException(String.format("No person with id %s exists", customerId));
     }
 
-    private void updateAccount(Transaction transaction) throws Exception {
+    private void updateAccount(Transaction transaction) throws AccountUpdateException {
         if (transaction.getType().equals(TransactionType.CREDIT)) {
             bankAccountCmdClient.credit(transaction).blockingFirst();
         } else if (transaction.getType().equals(TransactionType.DEBIT)) {
@@ -132,7 +140,9 @@ public class TransactionService {
         } else if (transaction.getType().equals(TransactionType.TRANSFER)) {
             bankAccountCmdClient.transfer(transaction).blockingFirst();
         } else {
-            throw new Exception("An unknown error occured.");
+            String msg = "An unknown error occurred during account update.";
+            LOG.error(msg);
+            throw new AccountUpdateException(msg);
         }
     }
 
