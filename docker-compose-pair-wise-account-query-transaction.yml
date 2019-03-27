@@ -1,0 +1,104 @@
+version: '2.1'
+services:
+  discovery-service:
+    image: bitnami/consul:1.4.3
+    ports:
+      - '8300:8300'
+      - '8301:8301'
+      - '8301:8301/udp'
+      - '8500:8500'
+      - '8600:8600'
+      - '8600:8600/udp'
+    depends_on:
+      - redis
+
+  people-gateway:
+    build: ./wiremock/images/people
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./wiremock/people:/home/wiremock
+    restart: on-failure
+
+  account-cmd:
+    build: account-cmd/
+    mem_limit: 400m
+    ports:
+      - "8082:8082"
+    restart: on-failure
+    environment:
+      - PEOPLE_GATEWAY=people-gateway
+      - CONSUL_HOST=discovery-service
+      - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
+      - HOST_PORT=8082
+    depends_on:
+      - axonserver
+
+  ubuntu:
+    image: ubuntu
+
+  account-query:
+    build: account-query/
+    mem_limit: 400m
+    ports:
+      - "8084:8084"
+    restart: on-failure
+    environment:
+      - CONSUL_HOST=discovery-service
+      - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
+      - HOST_PORT=8084
+      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+    depends_on:
+      - axonserver
+      - mongo
+
+  account-transaction:
+    build: account-transactions/
+    mem_limit: 400m
+    ports:
+      - "8086:8086"
+    environment:
+      - PEOPLE_GATEWAY=people-gateway
+      - CONSUL_HOST=discovery-service
+      - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
+      - HOST_PORT=8086
+      - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
+    restart: on-failure
+    depends_on:
+      - axonserver
+      - mongo
+
+  mongo:
+    image: mongo:3.4.1
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/mongo/db'
+
+  redis:
+    image: redis:5.0.4
+    ports:
+      - "6379:6379"
+    volumes:
+      - 'redis:/data/redis'
+
+  axonserver:
+    image: axoniq/axonserver:4.1
+    ports:
+      - '8124:8124'
+      - '8024:8024'
+    environment:
+      - AXONSERVER_EVENTSTORE=/eventstore
+      - AXONSERVER_CONTROLDB=/controldb
+    volumes:
+      - ./axonserver-eventstore:/eventstore
+      - ./axonserver-controldb:/controldb
+
+volumes:
+  axonserver-eventstore:
+  axonserver-controldb:
+  redis:
+  mongo:
