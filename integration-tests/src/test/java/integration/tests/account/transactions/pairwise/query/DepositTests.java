@@ -1,4 +1,4 @@
-package integration.tests.account.transactions.pairwise;
+package integration.tests.account.transactions.pairwise.query;
 
 import integration.tests.utils.RestHelper;
 import io.restassured.RestAssured;
@@ -48,7 +48,10 @@ public class DepositTests {
             .contentType(ContentType.JSON)
             .get("/api/v1/accounts/" + accountId1);
 
-        assertValueInJsonField(response, "balance", 10.0);
+        // Assert
+        response
+            .then()
+            .statusCode(201);
     }
 
     @Test

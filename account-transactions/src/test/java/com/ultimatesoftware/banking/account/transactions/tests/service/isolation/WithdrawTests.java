@@ -74,7 +74,7 @@ public class WithdrawTests extends MockedHttpDependencies {
         ResponseDto response = client.post(transactionDto, "/withdraw");
 
         // Assert
-        customersService.verify(1, getRequestedFor(urlEqualTo("/api/v1/people/5c8ffe2b7c0bec3538855a0a")));
+        personService.verify(1, getRequestedFor(urlEqualTo("/api/v1/people/5c8ffe2b7c0bec3538855a0a")));
     }
 
     @Test

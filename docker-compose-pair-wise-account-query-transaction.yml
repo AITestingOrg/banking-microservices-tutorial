@@ -12,31 +12,13 @@ services:
     depends_on:
       - redis
 
-  people-gateway:
+  people-gateway-mock:
     build: ./wiremock/images/people
     ports:
       - "8081:8081"
     volumes:
       - ./wiremock/people:/home/wiremock
     restart: on-failure
-
-  account-cmd:
-    build: account-cmd/
-    mem_limit: 400m
-    ports:
-      - "8082:8082"
-    restart: on-failure
-    environment:
-      - PEOPLE_GATEWAY=people-gateway
-      - CONSUL_HOST=discovery-service
-      - MONGO_HOST=mongo
-      - AXON_HOST=axonserver
-      - HOST_PORT=8082
-    depends_on:
-      - axonserver
-
-  ubuntu:
-    image: ubuntu
 
   account-query:
     build: account-query/
@@ -60,7 +42,8 @@ services:
     ports:
       - "8086:8086"
     environment:
-      - PEOPLE_GATEWAY=people-gateway
+      - PEOPLE_GATEWAY=people-gateway-mock
+      - MICRONAUT_ENVIRONMENTS=mockcmd
       - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
       - AXON_HOST=axonserver

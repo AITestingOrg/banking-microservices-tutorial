@@ -1,7 +1,7 @@
 micronaut:
   http:
     services:
-      people:
+      people-gateway:
         urls:
           - "http://localhost:8081"
       account-cmd:

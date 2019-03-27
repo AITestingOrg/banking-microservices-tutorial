@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "PUT",
+    "url": "/api/v1/accounts/transfer"
+  },
+  "response": {
+    "status": 200,
+    "body": "{ \"message\": \"SENT COMMAND\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

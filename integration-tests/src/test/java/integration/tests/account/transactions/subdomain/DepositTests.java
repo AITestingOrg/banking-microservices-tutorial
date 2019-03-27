@@ -103,6 +103,7 @@ public class DepositTests {
             .contentType(ContentType.JSON)
             .get("/api/v1/transactions/id/" + transactionId);
 
+        response.then().statusCode(200);
         assertValueInJsonField(response, "status", "SUCCESSFUL");
     }
 }
