@@ -6,12 +6,13 @@ import com.ultimatesoftware.banking.account.transactions.models.Transaction;
 import com.ultimatesoftware.banking.account.transactions.models.TransactionStatus;
 import com.ultimatesoftware.banking.api.operations.AxonEventHandler;
 import com.ultimatesoftware.banking.api.repository.Repository;
+import io.micronaut.context.annotation.Infrastructure;
+import io.micronaut.runtime.event.annotation.EventListener;
+import io.micronaut.runtime.server.event.ServerStartupEvent;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.eventhandling.EventHandler;
 
-import javax.inject.Singleton;
-
-@Singleton
+@Infrastructure
 public class AccountEventHandlers extends AxonEventHandler {
     private Repository<Transaction> mongoRepository;
 
@@ -19,6 +20,12 @@ public class AccountEventHandlers extends AxonEventHandler {
         super(axonServerConfiguration);
         this.mongoRepository = mongoRepository;
         LOG.info("Event handler on service started");
+    }
+
+    @EventListener
+    @Override
+    public void configure(ServerStartupEvent event) {
+        super.configure(event);
     }
 
     @EventHandler

@@ -7,7 +7,7 @@ import com.ultimatesoftware.banking.account.transactions.models.Transaction;
 import com.ultimatesoftware.banking.account.transactions.models.TransactionStatus;
 import com.ultimatesoftware.banking.account.transactions.models.TransactionType;
 import com.ultimatesoftware.banking.api.repository.Repository;
-import com.ultimatesoftware.banking.api.test.TestConstants;
+import com.ultimatesoftware.banking.test.utils.TestConstants;
 import io.reactivex.Maybe;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;

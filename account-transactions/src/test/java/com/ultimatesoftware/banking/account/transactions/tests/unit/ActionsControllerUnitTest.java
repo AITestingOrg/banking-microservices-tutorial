@@ -16,8 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.ACCOUNT_EXISTS_EXCEPTION;
+import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.ACCOUNT_UPDATE_EXCEPTION;
 import static com.ultimatesoftware.banking.account.transactions.tests.TestConstants.INSUFFICIENT_BALANCE_EXCEPTION;
-import static com.ultimatesoftware.banking.api.test.TestConstants.*;
+import static com.ultimatesoftware.banking.test.utils.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -183,5 +184,50 @@ public class ActionsControllerUnitTest {
         // Assert
         Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
         Assert.assertEquals(Optional.of(ACCOUNT_EXISTS_EXCEPTION.getMessage()), response.getBody());
+    }
+
+    @Test
+    public void whenTransferIsCalledAndAccountUpdateErrors_thenReturnInternalServerError() throws Exception {
+        // Arrange
+        TransferTransactionDto transferTransactionDto = new TransferTransactionDto(CUSTOMER_ID.toHexString(), ACCOUNT_ID.toHexString(), BASE_AMOUNT, DESTINATION_ID.toHexString());
+        when(transactionService.transfer(any()))
+            .thenThrow(ACCOUNT_UPDATE_EXCEPTION);
+
+        // Act
+        HttpResponse<String> response = actionsController.transfer(transferTransactionDto);
+
+        // Assert
+        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatus());
+        Assert.assertEquals(Optional.empty(), response.getBody());
+    }
+
+    @Test
+    public void whenDepositIsCalledAndAccountUpdateErrors_thenReturnInternalServerError() throws Exception {
+        // Arrange
+        TransactionDto transactionDto = new TransactionDto(CUSTOMER_ID.toHexString(), ACCOUNT_ID.toHexString(), BASE_AMOUNT);
+        when(transactionService.deposit(any()))
+            .thenThrow(ACCOUNT_UPDATE_EXCEPTION);
+
+        // Act
+        HttpResponse<String> response = actionsController.deposit(transactionDto);
+
+        // Assert
+        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatus());
+        Assert.assertEquals(Optional.empty(), response.getBody());
+    }
+
+    @Test
+    public void whenWithdrawIsCalledAndAccountUpdateErrors_thenReturnInternalServerError() throws Exception {
+        // Arrange
+        TransactionDto transactionDto = new TransactionDto(CUSTOMER_ID.toHexString(), ACCOUNT_ID.toHexString(), BASE_AMOUNT);
+        when(transactionService.withdraw(any()))
+            .thenThrow(ACCOUNT_UPDATE_EXCEPTION);
+
+        // Act
+        HttpResponse<String> response = actionsController.withdraw(transactionDto);
+
+        // Assert
+        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatus());
+        Assert.assertEquals(Optional.empty(), response.getBody());
     }
 }

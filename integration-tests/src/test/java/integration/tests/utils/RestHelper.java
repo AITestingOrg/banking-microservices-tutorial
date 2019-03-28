@@ -69,7 +69,7 @@ public class RestHelper {
     }
 
     public String createAccount(String customerId, double balance) {
-        RestAssured.baseURI = "http://localhost:8082";
+        RestAssured.baseURI = "http://localhost:" + ACCOUMT_CMD_PORT;
         String accountId =  given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .body(String.format("{\"customerId\": \"%s\", \"balance\": %.2f}", customerId, balance))
@@ -86,11 +86,20 @@ public class RestHelper {
     }
 
     public void deleteAccount(String accountId) {
-        RestAssured.baseURI = "http://localhost:8082";
+        RestAssured.baseURI = "http://localhost:" + ACCOUMT_CMD_PORT;
         given().urlEncodingEnabled(true)
             .delete("/api/v1/accounts/" + accountId)
             .then()
             .statusCode(200);
         logger.info("Deleted account with ID: " + accountId);
+    }
+
+    public void pushMappingToAccountQueryMock(HttpStub mapping) {
+        RestAssured.baseURI = "http://localhost:" + ACCOUNT_QUERY_PORT;
+        given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .body(mapping)
+            .post("__admin/mappings");
+        logger.info("Mapping pushed to Account Query Mock Server: " + mapping);
     }
 }

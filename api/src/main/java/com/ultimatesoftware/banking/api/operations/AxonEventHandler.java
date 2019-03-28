@@ -2,8 +2,7 @@ package com.ultimatesoftware.banking.api.operations;
 
 import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.discovery.event.ServiceStartedEvent;
-import io.micronaut.runtime.event.annotation.EventListener;
+import io.micronaut.runtime.server.event.ServerStartupEvent;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
 import org.axonframework.config.DefaultConfigurer;
@@ -19,15 +18,14 @@ public class AxonEventHandler {
 
     public AxonEventHandler(AxonServerConfiguration axonServerConfiguration) {
         this.axonServerConfiguration = axonServerConfiguration;
-        LOG.info("Event handler on service started");
+        LOG.info("Configuring Axon server");
     }
 
-    @EventListener
-    public void configuration(final ServiceStartedEvent event) {
-        LOG.info("Configuring Axon server");
+    public void configure(ServerStartupEvent event) {
         configurer = DefaultConfigurer.defaultConfiguration()
             .registerComponent(AxonServerConfiguration.class, c -> axonServerConfiguration)
             .eventProcessing(eventProcessingConfigurer -> eventProcessingConfigurer
                 .registerEventHandler(conf -> this)).start();
+        LOG.info("Event handler on service started");
     }
 }

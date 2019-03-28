@@ -45,22 +45,10 @@ docker-compose -f docker-compose-backing.yml up --build
 docker-compose up
 ```
 
-## Start the Microservices with ELK Stack
-```bash
-# Assemble the binaries
-gradle assemble
-# Start the backing services: service discovery, configuration, authentication, edge service
-docker-compse -f docker-compose-backing.yml up
-# While the backing services are starting, start the ELK stack, note you will need to also follow the ELK steps below
-docker-compose -f elk/docker-compose.yml up
-# Once all the supporting services are loaded, start the domain services configured to log to ELK
-docker-compose -f docker-compose-elk.yml up
-```
-
 ## Stop the Containers
 ```bash
 docker-compose down
-docker-compose -f docker-compose-elk.yml down
+docker-compose -f docker-compose.yml down
 docker-compose -f docker-compose-backing.yml down
 
 ```
@@ -220,19 +208,7 @@ If the same account is now check on the account query side the balance should sh
 Now, going to the transfer endpoint and making a transaction to pass some of that balance to the other account
 ![alt text](documentation/images/transaction-transfer.png "transfer some money")
 
-Check that the response was a 200 and the balances changed
-
-## Running with Centralized Logging (ELK stack)
-To run with centralized logging and logging visualizations follow the steps below.
-
-### Start the ELK stack
-* `cd elk`
-* `docker-compose up` wait for everything to start
-* Check that http://localhost:5601 is accessible in your browser, you can read about configuration Kibana here https://www.elastic.co/guide/en/kibana/4.0/setup.html
-* `cd ../`
-* `docker-compose up -f docker-compose-elk.yml`
-* Refresh Kibana to see the logs.
-
+Check that the response was a 200 and the balances changed.
 
 # Troubleshooting
 

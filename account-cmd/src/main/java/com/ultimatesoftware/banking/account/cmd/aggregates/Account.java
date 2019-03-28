@@ -10,6 +10,7 @@ import com.ultimatesoftware.banking.account.events.*;
 import com.ultimatesoftware.banking.account.events.factories.AccountEventType;
 import com.ultimatesoftware.banking.account.events.factories.EventFactory;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -22,15 +23,15 @@ import java.math.BigDecimal;
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
 
-@Getter
+@NoArgsConstructor
 public class Account {
     Logger logger = LoggerFactory.getLogger(Account.class);
 
     @AggregateIdentifier
-    private ObjectId id;
-    private String customerId;
-    private BigDecimal balance;
-    private int activeTransfers;
+    private @Getter ObjectId id;
+    private @Getter String customerId;
+    private @Getter BigDecimal balance;
+    private @Getter int activeTransfers;
 
     private AccountRules accountRules = new StandardAccountRules();
 
@@ -47,15 +48,6 @@ public class Account {
         this.id = id;
         this.customerId = customerId;
         this.balance = balance;
-        activeTransfers = 0;
-    }
-
-    public Account(String customerId) {
-        this.customerId = customerId;
-        activeTransfers = 0;
-    }
-
-    public Account() {
         activeTransfers = 0;
     }
 
@@ -94,7 +86,7 @@ public class Account {
             return;
         }
         logger.warn("Account with ineligible balance requested for delete. Account ID: " + deleteAccountCommand.getId().toHexString());
-        throw new AccountNotEligibleForDeleteException(deleteAccountCommand.getId().toHexString(), balance.doubleValue());
+        throw new AccountNotEligibleForDeleteException(deleteAccountCommand.getId().toHexString(), this.balance.doubleValue());
     }
 
     @CommandHandler

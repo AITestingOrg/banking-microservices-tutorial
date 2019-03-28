@@ -12,7 +12,7 @@ services:
     depends_on:
       - redis
 
-  people-gateway:
+  people-gateway-mock:
     build: ./wiremock/images/people
     ports:
       - "8081:8081"
@@ -27,7 +27,7 @@ services:
       - "8082:8082"
     restart: on-failure
     environment:
-      - PEOPLE_GATEWAY=people-gateway
+      - PEOPLE_GATEWAY=people-gateway-mock
       - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
       - AXON_HOST=axonserver
@@ -60,7 +60,7 @@ services:
     ports:
       - "8086:8086"
     environment:
-      - PEOPLE_GATEWAY=people-gateway
+      - PEOPLE_GATEWAY=people-gateway-mock
       - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
       - AXON_HOST=axonserver
