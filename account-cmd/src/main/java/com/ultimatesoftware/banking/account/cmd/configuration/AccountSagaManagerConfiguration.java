@@ -1,7 +1,7 @@
 package com.ultimatesoftware.banking.account.cmd.configuration;
 
 import com.ultimatesoftware.banking.account.cmd.sagas.TransactionSaga;
-import com.ultimatesoftware.banking.api.operations.SagaManagerConfiguration;
+import com.ultimatesoftware.banking.api.configuration.SagaManagerConfiguration;
 import io.micronaut.context.annotation.Infrastructure;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 

@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.api.test;
+package com.ultimatesoftware.banking.test.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import static com.ultimatesoftware.banking.api.test.utils.StringTools.convertStreamToString;
+import static com.ultimatesoftware.banking.test.utils.StringTools.convertStreamToString;
 
 public class HttpClient {
     private static final Logger LOG = LoggerFactory.getLogger(HttpClient.class);

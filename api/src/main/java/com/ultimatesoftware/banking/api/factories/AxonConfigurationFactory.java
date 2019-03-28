@@ -9,6 +9,7 @@ import org.axonframework.axonserver.connector.AxonServerConfiguration;
 
 import javax.inject.Singleton;
 
+@Singleton
 @Factory
 @Requires(property = "micronaut.application.name")
 @Requires(property = "axon.axonserver.servers")

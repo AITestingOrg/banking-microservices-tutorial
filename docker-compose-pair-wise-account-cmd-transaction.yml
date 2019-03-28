@@ -12,12 +12,18 @@ services:
     depends_on:
       - redis
 
-  people-gateway:
+  people-gateway-mock:
     build: ./wiremock/images/people
     ports:
       - "8081:8081"
     volumes:
       - ./wiremock/people:/home/wiremock
+    restart: on-failure
+
+  account-query-mock:
+    build: ./wiremock/images/account-query
+    ports:
+      - "8084:8084"
     restart: on-failure
 
   account-cmd:
@@ -27,7 +33,8 @@ services:
       - "8082:8082"
     restart: on-failure
     environment:
-      - PEOPLE_GATEWAY=people-gateway
+      - MICRONAUT_ENVIRONMENTS=mockquery
+      - PEOPLE_GATEWAY=people-gateway-mock
       - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
       - AXON_HOST=axonserver
@@ -35,32 +42,14 @@ services:
     depends_on:
       - axonserver
 
-  ubuntu:
-    image: ubuntu
-
-  account-query:
-    build: account-query/
-    mem_limit: 400m
-    ports:
-      - "8084:8084"
-    restart: on-failure
-    environment:
-      - CONSUL_HOST=discovery-service
-      - MONGO_HOST=mongo
-      - AXON_HOST=axonserver
-      - HOST_PORT=8084
-      - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
-    depends_on:
-      - axonserver
-      - mongo
-
   account-transaction:
     build: account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"
     environment:
-      - PEOPLE_GATEWAY=people-gateway
+      - MICRONAUT_ENVIRONMENTS=mockquery
+      - PEOPLE_GATEWAY=people-gateway-mock
       - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
       - AXON_HOST=axonserver

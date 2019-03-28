@@ -7,7 +7,7 @@ import com.ultimatesoftware.banking.account.transactions.exceptions.*;
 import com.ultimatesoftware.banking.account.transactions.models.*;
 import com.ultimatesoftware.banking.account.transactions.services.TransactionService;
 import com.ultimatesoftware.banking.api.repository.Repository;
-import com.ultimatesoftware.banking.api.test.TestConstants;
+import com.ultimatesoftware.banking.test.utils.TestConstants;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;

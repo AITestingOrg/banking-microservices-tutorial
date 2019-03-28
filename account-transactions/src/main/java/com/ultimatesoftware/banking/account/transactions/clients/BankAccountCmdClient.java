@@ -6,7 +6,7 @@ import io.micronaut.http.annotation.Put;
 import io.micronaut.http.client.annotation.Client;
 import io.reactivex.Flowable;
 
-@Client(id = "account-cmd", path = "/api/v1/accounts")
+@Client(value = "account-cmd", path = "/api/v1/accounts")
 public interface BankAccountCmdClient {
     @Put("/credit")
     Flowable<MessageDto> credit(Transaction transaction);

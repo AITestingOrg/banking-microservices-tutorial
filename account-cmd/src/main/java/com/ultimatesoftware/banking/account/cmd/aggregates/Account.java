@@ -86,7 +86,7 @@ public class Account {
             return;
         }
         logger.warn("Account with ineligible balance requested for delete. Account ID: " + deleteAccountCommand.getId().toHexString());
-        throw new AccountNotEligibleForDeleteException(deleteAccountCommand.getId().toHexString(), balance.doubleValue());
+        throw new AccountNotEligibleForDeleteException(deleteAccountCommand.getId().toHexString(), this.balance.doubleValue());
     }
 
     @CommandHandler

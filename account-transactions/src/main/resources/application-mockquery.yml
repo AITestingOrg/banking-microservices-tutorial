@@ -1,0 +1,6 @@
+micronaut:
+  http:
+    services:
+      account-query:
+        urls:
+          - "http://account-query-mock:8084"

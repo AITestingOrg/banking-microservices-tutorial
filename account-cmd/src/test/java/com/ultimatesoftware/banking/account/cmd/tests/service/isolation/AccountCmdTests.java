@@ -1,14 +1,14 @@
 package com.ultimatesoftware.banking.account.cmd.tests.service.isolation;
 
 import com.ultimatesoftware.banking.account.cmd.models.AccountDto;
-import com.ultimatesoftware.banking.api.test.HttpClient;
-import com.ultimatesoftware.banking.api.test.ResponseDto;
+import com.ultimatesoftware.banking.test.utils.HttpClient;
+import com.ultimatesoftware.banking.test.utils.ResponseDto;
 import io.micronaut.test.annotation.MicronautTest;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static com.ultimatesoftware.banking.api.test.TestConstants.*;
+import static com.ultimatesoftware.banking.test.utils.TestConstants.*;
 
 @MicronautTest
 public class AccountCmdTests {

@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.api.test.utils;
+package com.ultimatesoftware.banking.test.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

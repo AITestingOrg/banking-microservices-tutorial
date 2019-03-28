@@ -1,0 +1,6 @@
+micronaut:
+  http:
+    services:
+      account-cmd:
+        urls:
+          - "http://account-cmd-mock:8082"
