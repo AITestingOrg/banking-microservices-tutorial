@@ -67,7 +67,7 @@ The following examples use shell scripts, simply replace the `.sh` extentions in
 ## Running Unit and Integration Tests
 The Gradle task 'test' executes the JUnit tests for each project.
 ```bash
-sh run-unit-tests.sh
+sh ./scripts/run-unit-tests.sh
 ```
 
 ## Running Code Coverage: Unit and Integration Tests
@@ -109,7 +109,7 @@ are used to connect to these in-memory databases. HTTP mock server stubs are use
 ![Externally Mocked Services](documentation/images/external-mocks.png)
 Docker is not required to run these tests as all external dependencies are mocked.
 ```bash
-sh isolation-test-mocked.sh
+sh ./scripts/run-isolation-tests-mocked.sh
 ```
 
 ### Running Service Isolation Tests with External Databases, Caches, and Etc...
@@ -120,11 +120,11 @@ deployment infrastructure where you can dynamically configure the HTTP stubs, he
 ![Externally Mocked Services](documentation/images/isolation-mocks.png)
 Start the services database using the backing services.
 ```bash
-docker-compse -f docker-compose-backing.yml up -d
+docker-compose -f docker-compose-backing.yml up -d
 ```
 Execute the tests in a new terminal once external dependencies have started.
 ```bash
-sh run-isolation-tests.sh
+sh ./scripts/run-isolation-tests.sh
 ```
 Tear down the external dependencies.
 ```bash
