@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.test;
+package com.ultimatesoftware.banking.test.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

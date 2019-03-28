@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.test;
+package com.ultimatesoftware.banking.test.utils;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;
@@ -36,6 +36,9 @@ public abstract class MockedHttpDependencies {
         this.enableAccountCmdMock = true;
         this.enableAccountQueryMock = true;
         this.enablePersonMock = true;
+        this.personService = createServer(8081, "wiremock/people");
+        this.accountQueryService = createServer(8084, "wiremock/accountquery");
+        this.accountCmdService = createServer(8082, "wiremock/accountcmd");
     }
 
     @BeforeEach

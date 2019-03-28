@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.test;
+package com.ultimatesoftware.banking.test.utils;
 
 import org.bson.types.ObjectId;
 

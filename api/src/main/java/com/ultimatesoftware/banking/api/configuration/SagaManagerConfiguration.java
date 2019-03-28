@@ -1,6 +1,6 @@
-package com.ultimatesoftware.banking.api.operations;
+package com.ultimatesoftware.banking.api.configuration;
 
-import com.ultimatesoftware.banking.api.configuration.ConfigurationConstants;
+import com.ultimatesoftware.banking.api.operations.AxonEventHandler;
 import io.micronaut.context.annotation.Requires;
 import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.config.Configuration;
