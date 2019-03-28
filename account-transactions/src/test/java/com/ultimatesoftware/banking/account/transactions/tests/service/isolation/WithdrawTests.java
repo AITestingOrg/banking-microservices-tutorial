@@ -1,9 +1,9 @@
 package com.ultimatesoftware.banking.account.transactions.tests.service.isolation;
 
 import com.ultimatesoftware.banking.account.transactions.models.TransactionDto;
-import com.ultimatesoftware.banking.api.test.HttpClient;
-import com.ultimatesoftware.banking.api.test.MockedHttpDependencies;
-import com.ultimatesoftware.banking.api.test.ResponseDto;
+import com.ultimatesoftware.banking.test.utils.HttpClient;
+import com.ultimatesoftware.banking.test.utils.MockedHttpDependencies;
+import com.ultimatesoftware.banking.test.utils.ResponseDto;
 import io.micronaut.test.annotation.MicronautTest;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.ultimatesoftware.banking.api.test.TestConstants.ACCOUNT_ID;
-import static com.ultimatesoftware.banking.api.test.TestConstants.CUSTOMER_ID;
-import static com.ultimatesoftware.banking.api.test.TestConstants.NO_ACCOUNT_ID;
-import static com.ultimatesoftware.banking.api.test.TestConstants.NO_CUSTOMER_ID;
+import static com.ultimatesoftware.banking.test.utils.TestConstants.ACCOUNT_ID;
+import static com.ultimatesoftware.banking.test.utils.TestConstants.CUSTOMER_ID;
+import static com.ultimatesoftware.banking.test.utils.TestConstants.NO_ACCOUNT_ID;
+import static com.ultimatesoftware.banking.test.utils.TestConstants.NO_CUSTOMER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

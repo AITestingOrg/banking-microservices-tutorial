@@ -1,4 +1,4 @@
-package com.ultimatesoftware.banking.api.test;
+package com.ultimatesoftware.banking.test;
 
 public class ResponseDto {
     private String body;

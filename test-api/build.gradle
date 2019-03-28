@@ -1,5 +1,5 @@
 version "0.1"
-group "com.ultimatesoftware.banking.api"
+group "com.ultimatesoftware.banking.test"
 
 dependencies {
     compile "io.micronaut.configuration:micronaut-mongo-reactive"

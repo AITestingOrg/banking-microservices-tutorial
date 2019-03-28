@@ -2,12 +2,16 @@ package com.ultimatesoftware.banking.api.repository;
 
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import io.micronaut.context.annotation.Requires;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
+import static com.ultimatesoftware.banking.api.configuration.ConfigurationConstants.INTERNAL_MOCKS;
+
+@Requires(env = INTERNAL_MOCKS)
 public abstract class MockRepository<T extends Entity> implements Repository<T> {
     protected List<T> entities;
 
