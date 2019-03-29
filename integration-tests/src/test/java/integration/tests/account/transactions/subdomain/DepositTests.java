@@ -37,14 +37,14 @@ public class DepositTests {
             + "}";
 
         // Act
-        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_GATEWAY_PORT;
         given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .body(String.format(transaction, accountId1, VALID_PERSON_ID))
             .post("/api/v1/transactions/deposit");
 
         // Assert
-        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_QUERY_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_GATEWAY_PORT;
         Response response = given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .get("/api/v1/accounts/" + accountId1);
@@ -60,7 +60,7 @@ public class DepositTests {
             + "\t\"customerId\": \"%s\",\n"
             + "\t\"amount\": 999999999.24\n"
             + "}";
-        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_GATEWAY_PORT;
         given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .body(String.format(transaction, accountId1, VALID_PERSON_ID))
@@ -73,7 +73,7 @@ public class DepositTests {
             .post("/api/v1/transactions/deposit");
 
         // Assert
-        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_QUERY_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_GATEWAY_PORT;
         Response response = given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .get("/api/v1/accounts/" + accountId1);
@@ -89,7 +89,7 @@ public class DepositTests {
             + "\t\"customerId\": \"%s\",\n"
             + "\t\"amount\": 100.0\n"
             + "}";
-        RestAssured.baseURI = "http://localhost:" + RestHelper.TRANSACTION_PORT;
+        RestAssured.baseURI = "http://localhost:" + RestHelper.ACCOUNT_GATEWAY_PORT;
 
         // Act
         Response transactionResponse = given().urlEncodingEnabled(true)

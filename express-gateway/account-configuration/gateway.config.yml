@@ -2,16 +2,30 @@ http:
   port: 8080
 admin:
   port: 9876
-  hostname: 0.0.0.0
+  host: localhost
 apiEndpoints:
-  # see: http://www.express-gateway.io/docs/configuration/gateway.config.yml/apiEndpoints
-  api:
-    host: '*'
-    paths: '/ip'
+  account-query-api:
+    host: localhost
+    paths: '/api/v1/accounts/*'
+    methods: ["GET", "OPTIONS"]
+    scopes: ["localhost:read"]
+  account-cmd-api:
+    host: localhost
+    paths: '/api/v1/accounts/*'
+    methods: ["PUT", "POST", "PATCH", "DELETE"]
+    scopes: ["localhost:write"]
+  account-transactions-api:
+    host: localhost
+    paths: '/api/v1/transactions/*'
+    methods: ["GET", "POST"]
+    scopes: ["localhost:write", "localhost:read"]
 serviceEndpoints:
-  # see: http://www.express-gateway.io/docs/configuration/gateway.config.yml/serviceEndpoints
-  people-details:
-    url: 'https://localhost:8085'
+  people-service:
+    url: 'http://account-query:8084'
+  account-cmd:
+    url: 'http://account-cmd:8082'
+  account-transactions:
+    url: 'http://account-transaction:8086'
 policies:
   - basic-auth
   - cors
@@ -22,15 +36,27 @@ policies:
   - proxy
   - rate-limit
 pipelines:
-  # see: https://www.express-gateway.io/docs/configuration/gateway.config.yml/pipelines
-  basic:
+  default:
     apiEndpoints:
-      api:
-        host: 'localhost'
-        paths: '/api/v1/people'
+      - account-query-api
     policies:
-      - key-auth:
       - proxy:
           - action:
-              serviceEndpoint: people-details
+              serviceEndpoint: people-service
+              changeOrigin: true
+  default2:
+    apiEndpoints:
+      - account-cmd-api
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: account-cmd
+              changeOrigin: true
+  default3:
+    apiEndpoints:
+      - account-transactions-api
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: account-transactions
               changeOrigin: true

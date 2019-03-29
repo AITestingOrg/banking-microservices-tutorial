@@ -18,7 +18,7 @@ public class DepositTests {
     private String accountId1;
 
     @BeforeEach
-    public void beforeAll() {
+    public void beforeEach() {
         accountId1 = restHelper.createAccount(VALID_PERSON_ID);
         restHelper.pushMappingToAccountQueryMock(HttpStub.builder()
             .setRequestType("GET")

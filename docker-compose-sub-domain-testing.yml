@@ -12,6 +12,18 @@ services:
     depends_on:
       - redis
 
+  account-gateway:
+    build: express-gateway/
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "9876:9876"
+    volumes:
+      - ./express-gateway/account-configuration/system.config.yml:/usr/src/app/config/system.config.yml
+      - ./express-gateway/account-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
+    depends_on:
+      - redis
+
   people-gateway-mock:
     build: ./wiremock/images/people
     ports:
@@ -33,6 +45,7 @@ services:
       - AXON_HOST=axonserver
       - HOST_PORT=8082
     depends_on:
+      - discovery-service
       - axonserver
 
   ubuntu:
@@ -51,6 +64,7 @@ services:
       - HOST_PORT=8084
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
     depends_on:
+      - discovery-service
       - axonserver
       - mongo
 
@@ -68,6 +82,7 @@ services:
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     restart: on-failure
     depends_on:
+      - discovery-service
       - axonserver
       - mongo
 

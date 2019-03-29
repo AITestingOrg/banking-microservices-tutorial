@@ -6,12 +6,12 @@ admin:
 apiEndpoints:
   people-details-api:
     host: localhost
-    paths: '/api/v1/people'
+    paths: '/api/v1/people/*'
     methods: ["GET", "OPTIONS"]
     scopes: ["localhost:read"]
   people-cmd-api:
     host: localhost
-    paths: '/api/v1/people'
+    paths: '/api/v1/people/*'
     methods: ["PUT", "POST", "PATCH", "DELETE"]
     scopes: ["localhost:write"]
   people-auth-api:

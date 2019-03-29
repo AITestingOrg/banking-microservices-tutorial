@@ -20,7 +20,8 @@ public class RestHelper {
     private final List<String> accounts = new ArrayList<>();
     public static final String ACCOUNT_QUERY_PORT = "8084";
     public static final String TRANSACTION_PORT = "8086";
-    public static final String ACCOUMT_CMD_PORT = "8082";
+    public static final String ACCOUNT_CMD_PORT = "8082";
+    public static final String ACCOUNT_GATEWAY_PORT = "8080";
 
     public void clearAccounts() {
         for (String id: accounts) {
@@ -69,7 +70,7 @@ public class RestHelper {
     }
 
     public String createAccount(String customerId, double balance) {
-        RestAssured.baseURI = "http://localhost:" + ACCOUMT_CMD_PORT;
+        RestAssured.baseURI = "http://localhost:" + ACCOUNT_CMD_PORT;
         String accountId =  given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .body(String.format("{\"customerId\": \"%s\", \"balance\": %.2f}", customerId, balance))
@@ -86,7 +87,7 @@ public class RestHelper {
     }
 
     public void deleteAccount(String accountId) {
-        RestAssured.baseURI = "http://localhost:" + ACCOUMT_CMD_PORT;
+        RestAssured.baseURI = "http://localhost:" + ACCOUNT_CMD_PORT;
         given().urlEncodingEnabled(true)
             .delete("/api/v1/accounts/" + accountId)
             .then()

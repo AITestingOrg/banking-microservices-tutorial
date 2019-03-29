@@ -3,6 +3,7 @@ package integration.tests.account.query.subdomain;
 import com.ultimatesoftware.banking.account.query.models.Account;
 import integration.tests.utils.RestHelper;
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -32,15 +33,16 @@ public class AccountEventConsumptionTest {
 
         // Act
         RestAssured.baseURI = "http://localhost:8084";
-        Account account =  given().urlEncodingEnabled(true)
-            .get("/api/v1/accounts/" + accountId)
-            .then()
+        Response response =  given().urlEncodingEnabled(true)
+            .get("/api/v1/accounts/" + accountId);
+
+
+        // Assert
+        Account account = response.then()
             .statusCode(200)
             .extract()
             .response()
             .as(Account.class);
-
-        // Assert
         assertEquals(accountId, account.getId().toHexString());
         assertEquals(customerId, account.getCustomerId());
         assertEquals(balance, account.getBalance());
@@ -55,15 +57,16 @@ public class AccountEventConsumptionTest {
 
         // Act
         RestAssured.baseURI = "http://localhost:8084";
-        Account account =  given().urlEncodingEnabled(true)
-            .get("/api/v1/accounts/" + accountId)
-            .then()
+        Response response =  given().urlEncodingEnabled(true)
+            .get("/api/v1/accounts/" + accountId);
+
+
+        // Assert
+        Account account = response.then()
             .statusCode(200)
             .extract()
             .response()
             .as(Account.class);
-
-        // Assert
         assertEquals(accountId, account.getId().toHexString());
         assertEquals(customerId, account.getCustomerId());
         assertEquals(0, account.getBalance());
@@ -75,15 +78,15 @@ public class AccountEventConsumptionTest {
 
         // Act
         RestAssured.baseURI = "http://localhost:8084";
-        List list =  given().urlEncodingEnabled(true)
-            .get("/api/v1/accounts/")
-            .then()
+        Response response =  given().urlEncodingEnabled(true)
+            .get("/api/v1/accounts/");
+
+        // Assert
+        List list =response.then()
             .statusCode(200)
             .extract()
             .response()
             .as(List.class);
-
-        // Assert
         assertEquals(0, list.size());
     }
 
@@ -93,15 +96,15 @@ public class AccountEventConsumptionTest {
         restHelper.createAccount("5c8ffe2b7c0bec3538855a0a", 0.0);
         // Act
         RestAssured.baseURI = "http://localhost:8084";
-        List list =  given().urlEncodingEnabled(true)
-            .get("/api/v1/accounts/")
-            .then()
+        Response response =  given().urlEncodingEnabled(true)
+            .get("/api/v1/accounts/");
+
+        // Assert
+        List list =response.then()
             .statusCode(200)
             .extract()
             .response()
             .as(List.class);
-
-        // Assert
         assertEquals(1, list.size());
     }
 
@@ -113,15 +116,15 @@ public class AccountEventConsumptionTest {
         restHelper.createAccount("5c8ffe2b7c0bec3538855a0a", 0.0);
         // Act
         RestAssured.baseURI = "http://localhost:8084";
-        List list =  given().urlEncodingEnabled(true)
-            .get("/api/v1/accounts/")
-            .then()
+        Response response =  given().urlEncodingEnabled(true)
+            .get("/api/v1/accounts/");
+
+        // Assert
+        List list =response.then()
             .statusCode(200)
             .extract()
             .response()
             .as(List.class);
-
-        // Assert
         assertEquals(3, list.size());
     }
 

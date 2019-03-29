@@ -6,7 +6,7 @@ services:
     ports:
       - "8085:8085"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -20,7 +20,7 @@ services:
     ports:
       - "8087:8087"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -34,7 +34,7 @@ services:
     ports:
       - "8088:8088"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -48,7 +48,7 @@ services:
     ports:
       - "8082:8082"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -62,7 +62,7 @@ services:
     ports:
       - "8084:8084"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -84,11 +84,11 @@ services:
       - PEOPLE_DETAILS_HOST=
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
 
 networks:
-  banking-microservices-example_bank:
+  banking-microservices-tutorial_bank:
     external: true
 
 volumes:
