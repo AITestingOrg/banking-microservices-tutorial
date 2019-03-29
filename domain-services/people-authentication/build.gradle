@@ -1,0 +1,8 @@
+version "0.1"
+
+dependencies {
+    compile project(":libs:api")
+    compile "io.micronaut.configuration:micronaut-mongo-reactive"
+}
+
+mainClassName = "com.ultimatesoftware.banking.people.authentication.Application"

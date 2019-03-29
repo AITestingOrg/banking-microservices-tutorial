@@ -13,28 +13,28 @@ services:
       - '8600:8600/udp'
 
   people-gateway:
-    build: express-gateway/
+    build: docker/express-gateway/
     ports:
       - "8081:8080"
       - "8443:8443"
       - "9876:9876"
     volumes:
-      - ./express-gateway/people-configuration/system.config.yml:/usr/src/app/config/system.config.yml
-      - ./express-gateway/people-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
+      - ./docker/express-gateway/people-configuration/system.config.yml:/usr/src/app/config/system.config.yml
+      - ./docker/express-gateway/people-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
     networks:
       - bank
     depends_on:
       - redis
 
   account-gateway:
-    build: express-gateway/
+    build: docker/express-gateway/
     ports:
       - "8080:8080"
-      - "8443:8443"
-      - "9876:9876"
+      - "8444:8443"
+      - "9877:9876"
     volumes:
-      - ./express-gateway/account-configuration/system.config.yml:/usr/src/app/config/system.config.yml
-      - ./express-gateway/account-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
+      - ./docker/express-gateway/account-configuration/system.config.yml:/usr/src/app/config/system.config.yml
+      - ./docker/express-gateway/account-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
     depends_on:
       - redis
 

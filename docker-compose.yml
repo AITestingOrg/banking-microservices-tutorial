@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   people-details:
-    build: people-details/
+    build: domain-services/people-details/
     mem_limit: 400m
     ports:
       - "8085:8085"
@@ -15,7 +15,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   people-cmd:
-    build: people-cmd/
+    build: domain-services/people-cmd/
     mem_limit: 400m
     ports:
       - "8087:8087"
@@ -29,7 +29,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   people-authentication:
-    build: people-authentication/
+    build: domain-services/people-authentication/
     mem_limit: 400m
     ports:
       - "8088:8088"
@@ -43,7 +43,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   account-cmd:
-    build: account-cmd/
+    build: domain-services/account-cmd/
     mem_limit: 400m
     ports:
       - "8082:8082"
@@ -57,7 +57,7 @@ services:
       - HOST_PORT=8082
 
   account-query:
-    build: account-query/
+    build: domain-services/account-query/
     mem_limit: 400m
     ports:
       - "8084:8084"
@@ -72,7 +72,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   account-transaction:
-    build: account-transactions/
+    build: domain-services/account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"

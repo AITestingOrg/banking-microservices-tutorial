@@ -1,2 +1,2 @@
 @echo off
-./gradlew.bat test -x :integration-tests:test -x :account-cmd:test --tests "*.service.isolation.*"
+./gradlew.bat test -x :tests:integration-tests:test -x :domain-services:account-cmd:test --tests "*.service.isolation.*"

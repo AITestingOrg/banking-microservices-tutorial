@@ -59,6 +59,7 @@ docker-compose build
 ```
 
 # Executing Tests
+The following guides are meant to get your environment up and running tests, not necessarily a guide to the most effective way to execute the tests while you are developing them.
 
 ## Windows Users
 The following examples use shell scripts, simply replace the `.sh` extentions in the examples with 
@@ -67,7 +68,7 @@ The following examples use shell scripts, simply replace the `.sh` extentions in
 ## Running Unit and Integration Tests
 The Gradle task 'test' executes the JUnit tests for each project.
 ```bash
-sh run-unit-tests.sh
+sh ./scripts/run-unit-tests.sh
 ```
 
 ## Running Code Coverage: Unit and Integration Tests
@@ -84,7 +85,7 @@ are used to connect to these in-memory databases. HTTP mock server stubs are use
 ![Externally Mocked Services](documentation/images/external-mocks.png)
 Docker is not required to run these tests as all external dependencies are mocked.
 ```bash
-sh isolation-test-mocked.sh
+sh ./scripts/isolation-tests-mocked.sh
 ```
 
 ### Running Service Isolation Tests with External Databases, Caches, and Etc...
@@ -95,11 +96,11 @@ deployment infrastructure where you can dynamically configure the HTTP stubs, he
 ![Externally Mocked Services](documentation/images/isolation-mocks.png)
 Start the services database using the backing services.
 ```bash
-docker-compse -f docker-compose-backing.yml up -d
+docker-compose -f docker-compose-backing.yml up -d
 ```
 Execute the tests in a new terminal once external dependencies have started.
 ```bash
-sh run-isolation-tests.sh
+sh ./scripts/run-isolation-tests.sh
 ```
 Tear down the external dependencies.
 ```bash
@@ -119,7 +120,7 @@ docker-compose -f docker-compose-internal-mocked.yml up -d
 ```
 Start the PactBroker service and check `http://localhost:8089` that it is live.
 ```bash
-docker-compose -f ./pact-broker/docker-compose.yml up -d
+docker-compose -f ./docker/pact-broker/docker-compose.yml up -d
 ```
 Generate the PACTs and execute them. Note, if you have not completed the PACT tests in all the projects then you will see build failures during the first step here, these can be ignored.
 ```bash
@@ -128,12 +129,14 @@ sh ./scripts/run-pact-tests.sh
 ```
 Stop the PactBroker.
 ```bash
-docker-compose -f ./pact-broker/docker-compose.yml down
+docker-compose -f ./docker/pact-broker/docker-compose.yml down
 ```
 Stop the services with internal mocks.
 ```bash
 docker-compose -f docker-compose-internal-mocked.yml down
 ```
+
+Note, if you want to examine the individual PACTs, these are generated in `tests/pact-tests` as JSON files.
 
 ## Running Service Integration Tests
 

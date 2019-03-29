@@ -13,27 +13,27 @@ services:
       - redis
 
   account-gateway:
-    build: express-gateway/
+    build: docker/express-gateway/
     ports:
       - "8080:8080"
       - "8443:8443"
       - "9876:9876"
     volumes:
-      - ./express-gateway/account-configuration/system.config.yml:/usr/src/app/config/system.config.yml
-      - ./express-gateway/account-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
+      - ./docker/express-gateway/account-configuration/system.config.yml:/usr/src/app/config/system.config.yml
+      - ./docker/express-gateway/account-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
     depends_on:
       - redis
 
   people-gateway-mock:
-    build: ./wiremock/images/people
+    build: docker/wiremock/images/people
     ports:
       - "8081:8081"
     volumes:
-      - ./wiremock/people:/home/wiremock
+      - ./docker/wiremock/people:/home/wiremock
     restart: on-failure
 
   account-cmd:
-    build: account-cmd/
+    build: domain-services/account-cmd/
     mem_limit: 400m
     ports:
       - "8082:8082"
@@ -52,7 +52,7 @@ services:
     image: ubuntu
 
   account-query:
-    build: account-query/
+    build: domain-services/account-query/
     mem_limit: 400m
     ports:
       - "8084:8084"
@@ -69,7 +69,7 @@ services:
       - mongo
 
   account-transaction:
-    build: account-transactions/
+    build: domain-services/account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"

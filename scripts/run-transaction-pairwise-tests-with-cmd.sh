@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-./gradlew cleanTest :integration-tests:test --tests "*.transactions.pairwise.cmd.*"
+./gradlew cleanTest :tests:integration-tests:test --tests "*.transactions.pairwise.cmd.*"

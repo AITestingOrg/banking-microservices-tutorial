@@ -1,0 +1,35 @@
+version: '3'
+services:
+  mongo:
+    image: 'mongo:3.4.1'
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/mongo/db'
+    networks:
+      - bank
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - 'redis:/data/redis'
+    networks:
+      - bank
+
+  axonserver:
+    image: 'axoniq/axonserver'
+    ports:
+      - '8124:8124'
+      - '8024:8024'
+    networks:
+      - bank
+
+networks:
+  bank:
+    driver: bridge
+
+volumes:
+  redis:
+  mongo:
