@@ -175,6 +175,7 @@ sh ./scripts/run-transaction-pairwise-tests-with-cmd.sh
 Take down the services in the other terminal window.
 ```bash
 docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml down
+```
 
 # API Documentation:
 
