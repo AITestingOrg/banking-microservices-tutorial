@@ -85,7 +85,7 @@ are used to connect to these in-memory databases. HTTP mock server stubs are use
 ![Externally Mocked Services](documentation/images/external-mocks.png)
 Docker is not required to run these tests as all external dependencies are mocked.
 ```bash
-sh ./scripts/isolation-tests-mocked.sh
+sh ./scripts/run-isolation-tests-mocked.sh
 ```
 
 ### Running Service Isolation Tests with External Databases, Caches, and Etc...
@@ -96,7 +96,7 @@ deployment infrastructure where you can dynamically configure the HTTP stubs, he
 ![Externally Mocked Services](documentation/images/isolation-mocks.png)
 Start the services database using the backing services.
 ```bash
-docker-compose -f docker-compose-backing.yml up -d
+docker-compose -f docker-compose-mongo-axon.yml up -d
 ```
 Execute the tests in a new terminal once external dependencies have started.
 ```bash
@@ -104,7 +104,7 @@ sh ./scripts/run-isolation-tests.sh
 ```
 Tear down the external dependencies.
 ```bash
-docker-compose -f docker-compose-backing.yml down
+docker-compose -f docker-compose-mongo-axon.yml down
 ```
 
 If you modify or add an HTTP stub under `./wiremock` then you will need to restart the instances so they refresh their mappings. You can read more about the WireMock API [here](http://wiremock.org/docs/stubbing/).
