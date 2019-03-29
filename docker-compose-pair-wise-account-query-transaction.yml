@@ -13,15 +13,15 @@ services:
       - redis
 
   people-gateway-mock:
-    build: ./wiremock/images/people
+    build: docker/wiremock/images/people
     ports:
       - "8081:8081"
     volumes:
-      - ./wiremock/people:/home/wiremock
+      - ./docker/wiremock/people:/home/wiremock
     restart: on-failure
 
   account-query:
-    build: account-query/
+    build: domain-services/account-query/
     mem_limit: 400m
     ports:
       - "8084:8084"
@@ -37,7 +37,7 @@ services:
       - mongo
 
   account-transaction:
-    build: account-transactions/
+    build: domain-services/account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"

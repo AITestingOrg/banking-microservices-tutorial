@@ -59,6 +59,7 @@ docker-compose build
 ```
 
 # Executing Tests
+The following guides are meant to get your environment up and running tests, not necessarily a guide to the most effective way to execute the tests while you are developing them.
 
 ## Windows Users
 The following examples use shell scripts, simply replace the `.sh` extentions in the examples with 
@@ -73,31 +74,6 @@ sh ./scripts/run-unit-tests.sh
 ## Running Code Coverage: Unit and Integration Tests
 JaCoCo is used for code coverage and can be run after the unit and integration tests for each service have been executed.
 You can find a JaCoCo coverage report under the "coverage" in transaction service after running the unit tests.
-
-## Running Contract Tests
-Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
-Start the domain services with internal mocks so that only the endpoints will be tested.
-![Internally Mocked Services](documentation/images/internal-mocks.png)
-```bash
-docker-compose -f docker-compose-internal-mocked.yml up -d
-```
-Start the PactBroker service and check `http://localhost:8089` that it is live.
-```bash
-docker-compose -f ./pact-broker/docker-compose.yml up -d
-```
-Generate the PACTs and execute them. Note, if you have not completed the PACT tests in all the projects then you will see build failures during the first step here, these can be ignored.
-```bash
-sh ./scripts/generate-publish-pact-tests.sh
-sh ./scripts/run-pact-tests.sh
-```
-Stop the PactBroker.
-```bash
-docker-compose -f ./pact-broker/docker-compose.yml down
-```
-Stop the services with internal mocks.
-```bash
-docker-compose -f docker-compose-internal-mocked.yml down
-```
 
 ## Running Service Isolation Tests
 The documentation [here](documentation/http_stubbed_isolation_tests.md) provides a guide on creating new isolation tests with HTTP stubs.
@@ -120,7 +96,7 @@ deployment infrastructure where you can dynamically configure the HTTP stubs, he
 ![Externally Mocked Services](documentation/images/isolation-mocks.png)
 Start the services database using the backing services.
 ```bash
-docker-compose -f docker-compose-backing.yml up -d
+docker-compose -f docker-compose-mongo-axon.yml up -d
 ```
 Execute the tests in a new terminal once external dependencies have started.
 ```bash
@@ -128,12 +104,39 @@ sh ./scripts/run-isolation-tests.sh
 ```
 Tear down the external dependencies.
 ```bash
-docker-compose -f docker-compose-backing.yml down
+docker-compose -f docker-compose-mongo-axon.yml down
 ```
 
-If you modify or add an HTTP stub under `./wiremock` then you will need to restart the instances so they refresh their mappings. You can read more about the WireMock API [here](http://wiremock.org/docs/stubbing/).
+If you modify or add an HTTP stub under `./test/resources/wiremock` then you will need to restart the instances so they refresh their mappings. You can read more about the WireMock API [here](http://wiremock.org/docs/stubbing/).
 
-If you update the WireMock request journal validations under `./transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
+If you update the WireMock request journal validations under `./domain-services/account-transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
+
+## Running Contract Tests
+Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
+Start the domain services with internal mocks so that only the endpoints will be tested.
+![Internally Mocked Services](documentation/images/internal-mocks.png)
+```bash
+docker-compose -f docker-compose-internal-mocked.yml up -d
+```
+Start the PactBroker service and check `http://localhost:8089` that it is live.
+```bash
+docker-compose -f ./docker/pact-broker/docker-compose.yml up -d
+```
+Generate the PACTs and execute them. Note, if you have not completed the PACT tests in all the projects then you will see build failures during the first step here, these can be ignored.
+```bash
+sh ./scripts/generate-publish-pact-tests.sh
+sh ./scripts/run-pact-tests.sh
+```
+Stop the PactBroker.
+```bash
+docker-compose -f ./docker/pact-broker/docker-compose.yml down
+```
+Stop the services with internal mocks.
+```bash
+docker-compose -f docker-compose-internal-mocked.yml down
+```
+
+Note, if you want to examine the individual PACTs, these are generated in `tests/pact-tests` as JSON files.
 
 ## Running Service Integration Tests
 
@@ -147,7 +150,7 @@ docker-compose -f docker-compose-sub-domain-testing.yml up
 ```
 Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
 ```bash
-sh run-sub-domain-integration-tests.sh
+sh ./scripts/run-sub-domain-integration-tests.sh
 ```
 Take down the services in the other terminal window.
 ```bash
@@ -155,7 +158,23 @@ docker-compose -f docker-compose-sub-domain-testing.yml down
 ```
 
 ### Pairwise Service Integration Testing
-Coming soon...
+To run the pairwise service integration tests you will need to have the appropriately configured environment for the particular tests. 
+Here, we demo pairwise testing of the Account Transactions and Account Cmd pair, with all other domain services mocked, 
+notice that unlike subdomain testing, the domain gateway is not present. This type of testing requires much configuration and thus should 
+be used for complicated interactions between two services, not for every service pair.
+![Sub-Domain Integration Testing](documentation/images/service-integration-pairwise-testing.png)
+
+Use docker to stand up the supporting services, databases, and etc...
+```bash
+docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml up
+```
+Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
+```bash
+sh ./scripts/run-transaction-pairwise-tests-with-cmd.sh
+```
+Take down the services in the other terminal window.
+```bash
+docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml down
 
 # API Documentation:
 
@@ -241,3 +260,13 @@ Check that you are using Mockito the JUnit 5 way, with the `MockitoExtension` an
 
 ### Services are Rehydrated After Restart and Clearing Mongo
 If you have a lot of events then services are going to be rehydrated when you bring everything up. To stop this you can delete the event folders `axonserver-eventstore` and `axonserver-controldb` in the root of the project and then bring the environment up.
+
+### Test Do Not Rerun
+Gradle caches outputs from tasks, if it sees an input (in this case the source code) hasn't changed then it won't rerun the tests. You can add `cleanTest` to the scripts in order to force reruns without changes.
+
+### Incorrect Array Size on GET Requests
+There may be orphaned results in Mongo, try tearing it down and removing the volumes.
+
+### Parallization
+In the root `build.gradle` there is a parallization line for JUnit, but beware, some tests spin up mock servers off their process, this will result in a port conflict if two tests use the same mock server port.
+This is only a consideration for service isolation tests and contract test generation.

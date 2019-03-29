@@ -1,12 +1,12 @@
 version: '2.1'
 services:
   people-details:
-    build: people-details/
+    build: domain-services/people-details/
     mem_limit: 400m
     ports:
       - "8085:8085"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -15,12 +15,12 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   people-cmd:
-    build: people-cmd/
+    build: domain-services/people-cmd/
     mem_limit: 400m
     ports:
       - "8087:8087"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -29,12 +29,12 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   people-authentication:
-    build: people-authentication/
+    build: domain-services/people-authentication/
     mem_limit: 400m
     ports:
       - "8088:8088"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -43,12 +43,12 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   account-cmd:
-    build: account-cmd/
+    build: domain-services/account-cmd/
     mem_limit: 400m
     ports:
       - "8082:8082"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -57,12 +57,12 @@ services:
       - HOST_PORT=8082
 
   account-query:
-    build: account-query/
+    build: domain-services/account-query/
     mem_limit: 400m
     ports:
       - "8084:8084"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -72,7 +72,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   account-transaction:
-    build: account-transactions/
+    build: domain-services/account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"
@@ -84,11 +84,11 @@ services:
       - PEOPLE_DETAILS_HOST=
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
     networks:
-      - banking-microservices-example_bank
+      - banking-microservices-tutorial_bank
     restart: on-failure
 
 networks:
-  banking-microservices-example_bank:
+  banking-microservices-tutorial_bank:
     external: true
 
 volumes:

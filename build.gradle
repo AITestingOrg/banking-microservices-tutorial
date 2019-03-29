@@ -22,218 +22,224 @@ ext {
     lombokVersion = '1.18.6'
 }
 
-subprojects { project ->
+subprojects { parentProject ->
+    subprojects { project ->
+        apply plugin: "java"
+        apply plugin: "io.spring.dependency-management"
+        apply plugin: 'checkstyle'
+        apply plugin: 'jacoco'
+        apply plugin: 'groovy'
+        apply plugin: "com.github.kt3k.coveralls"
 
-    apply plugin: "java"
-    apply plugin: "io.spring.dependency-management"
-    apply plugin: 'checkstyle'
-    apply plugin: 'jacoco'
-    apply plugin: 'groovy'
-    apply plugin: "com.github.kt3k.coveralls"
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+        if(parentProject.name.equals('domain-services')) {
+            apply plugin: "application"
+            apply plugin: 'com.github.johnrengelman.shadow'
+            apply plugin: 'au.com.dius.pact'
 
-    if(project.name != 'api' && project.name != 'test-api' && project.name != 'integration-tests') {
-        apply plugin: "application"
-        apply plugin: 'com.github.johnrengelman.shadow'
-        apply plugin: 'au.com.dius.pact'
+            shadowJar {
+                mergeServiceFiles()
+            }
 
-        shadowJar {
-            mergeServiceFiles()
-        }
+            run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
 
-        run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
-
-        tasks.withType(JavaCompile) {
-            options.encoding = "UTF-8"
-            options.compilerArgs.add('-parameters')
-        }
-    }
-
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom "io.micronaut:micronaut-bom:$projectVersion"
-        }
-    }
-
-    dependencies {
-        compile("org.projectlombok:lombok:${lombokVersion}")
-        annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-        annotationProcessor "io.micronaut:micronaut-inject-java"
-        annotationProcessor "io.micronaut:micronaut-validation"
-        annotationProcessor "io.micronaut.configuration:micronaut-openapi"
-        compile "io.micronaut.configuration:micronaut-openapi"
-        compile "io.micronaut:micronaut-inject"
-        compile "io.micronaut:micronaut-validation"
-        compile "io.micronaut:micronaut-runtime"
-        compile "io.micronaut:micronaut-http-client"
-        compile "javax.annotation:javax.annotation-api"
-        compile "io.micronaut:micronaut-http-server-netty"
-        compileOnly "io.micronaut:micronaut-inject-java"
-        compile "io.micronaut:micronaut-discovery-client"
-        compile "io.swagger.core.v3:swagger-annotations"
-        compile "io.micronaut.configuration:micronaut-hibernate-validator"
-        if(project.name != 'api' && project.name != 'test-api' && project.name != 'integration-tests') {
-            compile "au.com.dius:pact-jvm-consumer-junit5_2.12:3.6.2"
-            runtime "ch.qos.logback:logback-classic:1.2.3"
-        }
-        runtime "io.micronaut:micronaut-management"
-        testCompile "io.micronaut:micronaut-inject-java"
-        testCompile "org.hamcrest:hamcrest-all:1.3"
-        testCompile "org.assertj:assertj-core:3.12.1"
-        testCompile 'io.rest-assured:rest-assured:3.3.0'
-        testCompile "io.micronaut.test:micronaut-test-junit5:1.0.2"
-        testCompile "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
-        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-        testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-        testCompile "org.mockito:mockito-core:${mockitoVersion}"
-        testCompile "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-    }
-
-    checkstyle {
-        configFile = new File(rootDir, "checkstyles.xml")
-    }
-
-    checkstyleTest {
-        source = fileTree('src/test') {
-            excludes =
-                    ['*.yml']
-        }
-    }
-
-    jacoco {
-        toolVersion = "0.8.2"
-    }
-
-    jacocoTestReport {
-        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
-        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories =  files(sourceSets.main.output)
-        executionData = files(jacocoTestReport.executionData)
-        reports {
-            html.enabled = true
-            xml.enabled = true
-            csv.enabled = false
-            html.destination = "./coverage/"
-        }
-        afterEvaluate {
-            classDirectories = files(classDirectories.files.collect {
-                fileTree(dir: it,
-                        exclude: [
-                                '**/configuration/**',
-                                '**/repositories/**',
-                                '**/events/**',
-                                '**/exceptions/**',
-                                '**/commands/**',
-                                '**/models/**',
-                                '**/Application'
-                        ]
-                )
-            })
-        }
-    }
-
-    coveralls {
-        sourceDirs = files(sourceSets.main.allSource.srcDirs).files.absolutePath
-    }
-
-    if(project.name != 'api' && project.name != 'test-api' && project.name != 'integration-tests') {
-
-        task clearPactBroker() {
-            doLast() {
-                def services = ['AccountCmd', 'AccountQuery', 'AccountTransactions', 'PeopleDetails']
-                for (service in services) {
-                    println "http://localhost:8089/pacticipants/" + service
-                    def p = ['curl', '-X', 'DELETE', "http://localhost:8089/pacticipants/" + service].
-                            execute()
-                    println p.text
-                }
+            tasks.withType(JavaCompile) {
+                options.encoding = "UTF-8"
+                options.compilerArgs.add('-parameters')
             }
         }
 
-        pact {
-            serviceProviders {
-                // You can define as many as you need, but each must have a unique name
-                AccountCmd {
-                    // All the provider properties are optional, and have sensible defaults (shown below)
-                    protocol = 'http'
-                    host = 'localhost'
-                    port = 8082
-                    path = '/'
-                    if ('pactVerify' in gradle.startParameter.taskNames) {
-                        hasPactsFromPactBroker('http://localhost:8089')
-                    }
-                }
+        repositories {
+            mavenLocal()
+            jcenter()
+        }
 
-                AccountQuery {
-                    // All the provider properties are optional, and have sensible defaults (shown below)
-                    protocol = 'http'
-                    host = 'localhost'
-                    port = 8084
-                    path = '/'
-                    if ('pactVerify' in gradle.startParameter.taskNames) {
-                        hasPactsFromPactBroker('http://localhost:8089')
-                    }
-                }
+        dependencyManagement {
+            imports {
+                mavenBom "io.micronaut:micronaut-bom:$projectVersion"
+            }
+        }
 
-                PeopleDetails {
-                    // All the provider properties are optional, and have sensible defaults (shown below)
-                    protocol = 'http'
-                    host = 'localhost'
-                    port = 8085
-                    path = '/'
-                    if ('pactVerify' in gradle.startParameter.taskNames) {
-                        hasPactsFromPactBroker('http://localhost:8089')
-                    }
-                }
+        dependencies {
+            compile("org.projectlombok:lombok:${lombokVersion}")
+            annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+            annotationProcessor "io.micronaut:micronaut-inject-java"
+            annotationProcessor "io.micronaut:micronaut-validation"
+            annotationProcessor "io.micronaut.configuration:micronaut-openapi"
+            compile "io.micronaut.configuration:micronaut-openapi"
+            compile "io.micronaut:micronaut-inject"
+            compile "io.micronaut:micronaut-validation"
+            compile "io.micronaut:micronaut-runtime"
+            compile "io.micronaut:micronaut-http-client"
+            compile "javax.annotation:javax.annotation-api"
+            compile "io.micronaut:micronaut-http-server-netty"
+            compileOnly "io.micronaut:micronaut-inject-java"
+            compile "io.micronaut:micronaut-discovery-client"
+            compile "io.swagger.core.v3:swagger-annotations"
+            compile "io.micronaut.configuration:micronaut-hibernate-validator"
+            if(parentProject.name.equals('domain-services')) {
+                compile "au.com.dius:pact-jvm-consumer-junit5_2.12:3.6.2"
+                runtime "ch.qos.logback:logback-classic:1.2.3"
+            }
+            runtime "io.micronaut:micronaut-management"
+            testCompile "io.micronaut:micronaut-inject-java"
+            testCompile "org.hamcrest:hamcrest-all:1.3"
+            testCompile "org.assertj:assertj-core:3.12.1"
+            testCompile 'io.rest-assured:rest-assured:3.3.0'
+            testCompile "io.micronaut.test:micronaut-test-junit5:1.0.2"
+            testCompile "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+            testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+            testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+            testCompile "org.mockito:mockito-core:${mockitoVersion}"
+            testCompile "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+        }
 
-                AccountTransactions {
-                    // All the provider properties are optional, and have sensible defaults (shown below)
-                    protocol = 'http'
-                    host = 'localhost'
-                    port = 8086
-                    path = '/'
-                    if ('pactVerify' in gradle.startParameter.taskNames) {
-                        hasPactsFromPactBroker('http://localhost:8089')
+        tasks.withType(Test) {
+            maxParallelForks = 1 //Runtime.runtime.availableProcessors()
+        }
+
+        checkstyle {
+            configFile = new File(rootDir, "checkstyles.xml")
+        }
+
+        checkstyleTest {
+            source = fileTree('src/test') {
+                excludes =
+                        ['*.yml']
+            }
+        }
+
+        jacoco {
+            toolVersion = "0.8.2"
+        }
+
+        jacocoTestReport {
+            additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+            sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+            classDirectories =  files(sourceSets.main.output)
+            executionData = files(jacocoTestReport.executionData)
+            reports {
+                html.enabled = true
+                xml.enabled = true
+                csv.enabled = false
+                html.destination = "./coverage/"
+            }
+            afterEvaluate {
+                classDirectories = files(classDirectories.files.collect {
+                    fileTree(dir: it,
+                            exclude: [
+                                    '**/configuration/**',
+                                    '**/repositories/**',
+                                    '**/events/**',
+                                    '**/exceptions/**',
+                                    '**/commands/**',
+                                    '**/models/**',
+                                    '**/Application'
+                            ]
+                    )
+                })
+            }
+        }
+
+        coveralls {
+            sourceDirs = files(sourceSets.main.allSource.srcDirs).files.absolutePath
+        }
+
+        if(parentProject.name.equals('domain-services')) {
+            task clearPactBroker() {
+                doLast() {
+                    def services = ['AccountCmd', 'AccountQuery', 'AccountTransactions', 'PeopleDetails']
+                    for (service in services) {
+                        println "http://localhost:8089/pacticipants/" + service
+                        def p = ['curl', '-X', 'DELETE', "http://localhost:8089/pacticipants/" + service].
+                                execute()
+                        println p.text
                     }
                 }
             }
 
-            publish {
-                def folder = new File('./pact-tests')
-                if (folder.exists()) {
-                    pactDirectory = './pact-tests'
-                } else {
-                    pactDirectory = '../pact-tests'
+            pact {
+                serviceProviders {
+                    // You can define as many as you need, but each must have a unique name
+                    AccountCmd {
+                        // All the provider properties are optional, and have sensible defaults (shown below)
+                        protocol = 'http'
+                        host = 'localhost'
+                        port = 8082
+                        path = '/'
+                        if ('pactVerify' in gradle.startParameter.taskNames) {
+                            hasPactsFromPactBroker('http://localhost:8089')
+                        }
+                    }
+
+                    AccountQuery {
+                        // All the provider properties are optional, and have sensible defaults (shown below)
+                        protocol = 'http'
+                        host = 'localhost'
+                        port = 8084
+                        path = '/'
+                        if ('pactVerify' in gradle.startParameter.taskNames) {
+                            hasPactsFromPactBroker('http://localhost:8089')
+                        }
+                    }
+
+                    PeopleDetails {
+                        // All the provider properties are optional, and have sensible defaults (shown below)
+                        protocol = 'http'
+                        host = 'localhost'
+                        port = 8085
+                        path = '/'
+                        if ('pactVerify' in gradle.startParameter.taskNames) {
+                            hasPactsFromPactBroker('http://localhost:8089')
+                        }
+                    }
+
+                    AccountTransactions {
+                        // All the provider properties are optional, and have sensible defaults (shown below)
+                        protocol = 'http'
+                        host = 'localhost'
+                        port = 8086
+                        path = '/'
+                        if ('pactVerify' in gradle.startParameter.taskNames) {
+                            hasPactsFromPactBroker('http://localhost:8089')
+                        }
+                    }
                 }
-                pactBrokerUrl = 'http://localhost:8089'
+
+                publish {
+                    def folder = new File('./tests/pact-tests')
+                    if (folder.exists()) {
+                        pactDirectory = './tests/pact-tests'
+                    } else if ((new File('../tests/pact-tests')).exists()) {
+                        pactDirectory = '../tests/pact-tests'
+                    } else {
+                        pactDirectory = '../../tests/pact-tests'
+                    }
+                    pactBrokerUrl = 'http://localhost:8089'
+                }
             }
         }
-    }
 
-    test {
-        useJUnitPlatform()
-        systemProperties['pact.rootDir'] = "../pact-tests"
-    }
-
-    task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
-        dependsOn = subprojects.test
-        additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
-        sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-        classDirectories =  files(subprojects.sourceSets.main.output)
-        executionData = files(subprojects.jacocoTestReport.executionData)
-        reports {
-            html.enabled = true
-            xml.enabled = true
-            csv.enabled = false
+        test {
+            useJUnitPlatform()
+            systemProperties['pact.rootDir'] = "../../tests/pact-tests"
         }
-    }
 
-    test.finalizedBy(jacocoTestCoverageVerification)
+        task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+            dependsOn = subprojects.test
+            additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
+            sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+            classDirectories =  files(subprojects.sourceSets.main.output)
+            executionData = files(subprojects.jacocoTestReport.executionData)
+            reports {
+                html.enabled = true
+                xml.enabled = true
+                csv.enabled = false
+            }
+        }
+
+        //test.finalizedBy(jacocoTestCoverageVerification)
+    }
 }

@@ -1,4 +1,4 @@
 rootProject.name = 'com.ultimatesoftware.banking'
 
-include ':account-query', ':account-cmd', ':api', ':test-api', ':people-details', ':people-authentication', ':people-cmd', ':account-transactions', ':integration-tests'
+include ':domain-services:account-query', ':domain-services:account-cmd', ':libs:api', ':libs:test-api', ':domain-services:people-details', 'domain-services:people-authentication', ':domain-services:people-cmd', ':domain-services:account-transactions', ':tests:integration-tests'
 

@@ -1,3 +1,3 @@
-#!/bin/sh
+#!/usr/bin/env bash
 export MICRONAUT_ENVIRONMENTS=test,external_mocks
-./gradlew test -x :integration-tests:test -x :account-cmd:test --tests "*.service.isolation.*" --info
+./gradlew test -x :tests:integration-tests:test -x :domain-services:account-cmd:test --tests "*.service.isolation.*" --info

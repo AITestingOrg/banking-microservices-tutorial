@@ -1,3 +1,2 @@
 #!/usr/bin/env bash
-'#!/bin/sh'
-./gradlew cleanTest :integration-tests:test --tests "*.subdomain.*"
+./gradlew :tests:integration-tests:test --tests "*.subdomain.*"

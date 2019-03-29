@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   peopleauthentication:
-    build: people-authentication/
+    build: domain-services/people-authentication/
     mem_limit: 400m
     ports:
       - "8088:8088"
@@ -10,8 +10,9 @@ services:
       - MICRONAUT_ENVIRONMENTS=test,internal_mocks
       - HOST_PORT=8088
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+
   peoplecmd:
-      build: people-cmd/
+      build: domain-services/people-cmd/
       mem_limit: 400m
       ports:
         - "8087:8087"
@@ -20,8 +21,9 @@ services:
         - MICRONAUT_ENVIRONMENTS=test,internal_mocks
         - HOST_PORT=8087
         - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
+
   peopledetails:
-    build: people-details/
+    build: domain-services/people-details/
     mem_limit: 400m
     ports:
       - "8085:8085"
@@ -32,7 +34,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   accountcmd:
-    build: account-cmd/
+    build: domain-services/account-cmd/
     mem_limit: 400m
     ports:
       - "8082:8082"
@@ -42,7 +44,7 @@ services:
       - HOST_PORT=8082
 
   accountquery:
-    build: account-query/
+    build: domain-services/account-query/
     mem_limit: 400m
     ports:
       - "8084:8084"
@@ -53,7 +55,7 @@ services:
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
   accounttransactions:
-    build: account-transactions/
+    build: domain-services/account-transactions/
     mem_limit: 400m
     ports:
       - "8086:8086"
