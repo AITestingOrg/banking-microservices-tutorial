@@ -107,9 +107,9 @@ Tear down the external dependencies.
 docker-compose -f docker-compose-mongo-axon.yml down
 ```
 
-If you modify or add an HTTP stub under `./wiremock` then you will need to restart the instances so they refresh their mappings. You can read more about the WireMock API [here](http://wiremock.org/docs/stubbing/).
+If you modify or add an HTTP stub under `./test/resources/wiremock` then you will need to restart the instances so they refresh their mappings. You can read more about the WireMock API [here](http://wiremock.org/docs/stubbing/).
 
-If you update the WireMock request journal validations under `./transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
+If you update the WireMock request journal validations under `./domain-services/account-transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
 
 ## Running Contract Tests
 Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
@@ -150,7 +150,7 @@ docker-compose -f docker-compose-sub-domain-testing.yml up
 ```
 Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
 ```bash
-sh run-sub-domain-integration-tests.sh
+sh ./scripts/run-sub-domain-integration-tests.sh
 ```
 Take down the services in the other terminal window.
 ```bash
@@ -170,12 +170,12 @@ docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml up
 ```
 Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
 ```bash
-sh run-transaction-pairwise-tests-with-cmd.sh
+sh ./scripts/run-transaction-pairwise-tests-with-cmd.sh
 ```
 Take down the services in the other terminal window.
 ```bash
 docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml down
-
+```
 # API Documentation:
 
 These request can be done using an application like postman or insomnia, directly with curl or using the provided swagger UI.
@@ -260,3 +260,6 @@ Check that you are using Mockito the JUnit 5 way, with the `MockitoExtension` an
 
 ### Services are Rehydrated After Restart and Clearing Mongo
 If you have a lot of events then services are going to be rehydrated when you bring everything up. To stop this you can delete the event folders `axonserver-eventstore` and `axonserver-controldb` in the root of the project and then bring the environment up.
+
+### Test Do Not Rerun
+Gradle caches outputs from tasks, if it sees an input (in this case the source code) hasn't changed then it won't rerun the tests. You can add `cleanTest` to the scripts in order to force reruns without changes.

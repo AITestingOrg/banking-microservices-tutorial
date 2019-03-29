@@ -97,7 +97,7 @@ subprojects { parentProject ->
         }
 
         tasks.withType(Test) {
-            maxParallelForks = Runtime.runtime.availableProcessors()
+            maxParallelForks = 1 //Runtime.runtime.availableProcessors()
         }
 
         checkstyle {
@@ -240,6 +240,6 @@ subprojects { parentProject ->
             }
         }
 
-        test.finalizedBy(jacocoTestCoverageVerification)
+        //test.finalizedBy(jacocoTestCoverageVerification)
     }
 }

@@ -48,9 +48,6 @@ services:
       - discovery-service
       - axonserver
 
-  ubuntu:
-    image: ubuntu
-
   account-query:
     build: domain-services/account-query/
     mem_limit: 400m
