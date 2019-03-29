@@ -175,7 +175,7 @@ sh ./scripts/run-transaction-pairwise-tests-with-cmd.sh
 Take down the services in the other terminal window.
 ```bash
 docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml down
-```
+
 # API Documentation:
 
 These request can be done using an application like postman or insomnia, directly with curl or using the provided swagger UI.
@@ -263,3 +263,10 @@ If you have a lot of events then services are going to be rehydrated when you br
 
 ### Test Do Not Rerun
 Gradle caches outputs from tasks, if it sees an input (in this case the source code) hasn't changed then it won't rerun the tests. You can add `cleanTest` to the scripts in order to force reruns without changes.
+
+### Incorrect Array Size on GET Requests
+There may be orphaned results in Mongo, try tearing it down and removing the volumes.
+
+### Parallization
+In the root `build.gradle` there is a parallization line for JUnit, but beware, some tests spin up mock servers off their process, this will result in a port conflict if two tests use the same mock server port.
+This is only a consideration for service isolation tests and contract test generation.

@@ -4,7 +4,7 @@ import com.ultimatesoftware.banking.account.query.models.Account;
 import integration.tests.utils.RestHelper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -26,8 +26,8 @@ public class AccountEventConsumptionTest {
         restHelper.onlyUseGateway();
     }
 
-    @AfterAll
-    public static void afterEach() {
+    @AfterEach
+    public void afterEach() throws InterruptedException {
         restHelper.clearAccounts();
     }
 
@@ -89,11 +89,12 @@ public class AccountEventConsumptionTest {
             .get("/api/v1/accounts/");
 
         // Assert
-        List list =response.then()
+        List<Account> list = (List<Account>) response.then()
             .statusCode(200)
             .extract()
             .response()
             .as(List.class);
+
         assertEquals(0, list.size());
     }
 
