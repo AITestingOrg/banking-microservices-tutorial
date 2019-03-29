@@ -16,12 +16,17 @@ import static integration.tests.utils.MockHttpConstants.delta;
 import static io.restassured.RestAssured.given;
 
 public class RestHelper {
-    private static final Logger logger = LoggerFactory.getLogger(RestHelper.class);
-    private final List<String> accounts = new ArrayList<>();
     public static final String ACCOUNT_QUERY_PORT = "8084";
     public static final String TRANSACTION_PORT = "8086";
     public static final String ACCOUNT_CMD_PORT = "8082";
     public static final String ACCOUNT_GATEWAY_PORT = "8080";
+
+    private static final Logger logger = LoggerFactory.getLogger(RestHelper.class);
+    private final List<String> accounts = new ArrayList<>();
+    private static final String HOST = "http://localhost:";
+
+    private boolean useGateways = false;
+
 
     public void clearAccounts() {
         for (String id: accounts) {
@@ -31,8 +36,59 @@ public class RestHelper {
         accounts.clear();
     }
 
+    public void onlyUseGateway() {
+        useGateways = true;
+    }
+
+    public String getAccountGatewayUrl() {
+        return HOST + ACCOUNT_GATEWAY_PORT;
+    }
+
+    public String getHost(final String port) {
+        return HOST + port;
+    }
+
+    public String createAccount(String customerId) {
+        return createAccount(customerId, 0.0);
+    }
+
+    public String createAccount(String customerId, double balance) {
+        RestAssured.baseURI = buildHost(ACCOUNT_CMD_PORT);
+        String accountId =  given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .body(String.format("{\"customerId\": \"%s\", \"balance\": %.2f}", customerId, balance))
+            .post("/api/v1/accounts")
+            .then()
+            .statusCode(200)
+            .extract()
+            .response()
+            .body()
+            .asString();
+        logger.info("Created account with ID: " + accountId);
+        accounts.add(accountId);
+        return accountId;
+    }
+
+    public void deleteAccount(String accountId) {
+        RestAssured.baseURI = buildHost(ACCOUNT_CMD_PORT);
+        given().urlEncodingEnabled(true)
+            .delete("/api/v1/accounts/" + accountId)
+            .then()
+            .statusCode(200);
+        logger.info("Deleted account with ID: " + accountId);
+    }
+
+    public void pushMappingToAccountQueryMock(HttpStub mapping) {
+        RestAssured.baseURI = buildHost(ACCOUNT_QUERY_PORT);
+        given().urlEncodingEnabled(true)
+            .contentType(ContentType.JSON)
+            .body(mapping)
+            .post("__admin/mappings");
+        logger.info("Mapping pushed to Account Query Mock Server: " + mapping);
+    }
+
     private void checkAndClearBalance(String id) {
-        RestAssured.baseURI = "http://localhost:" + ACCOUNT_QUERY_PORT;
+        RestAssured.baseURI = buildHost(ACCOUNT_QUERY_PORT);
         Response response = given().urlEncodingEnabled(true)
             .contentType(ContentType.JSON)
             .get("/api/v1/accounts/" + id);
@@ -54,7 +110,7 @@ public class RestHelper {
                 + "\t\"amount\": %.2f\n"
                 + "}";
             String hello = String.format(transaction, id, VALID_PERSON_ID, balance);
-            RestAssured.baseURI = "http://localhost:" + TRANSACTION_PORT;
+            RestAssured.baseURI = buildHost(TRANSACTION_PORT);
             given().urlEncodingEnabled(true)
                 .contentType(ContentType.JSON)
                 .body(String.format(transaction, id, VALID_PERSON_ID, balance))
@@ -65,42 +121,10 @@ public class RestHelper {
         }
     }
 
-    public String createAccount(String customerId) {
-        return createAccount(customerId, 0.0);
-    }
-
-    public String createAccount(String customerId, double balance) {
-        RestAssured.baseURI = "http://localhost:" + ACCOUNT_CMD_PORT;
-        String accountId =  given().urlEncodingEnabled(true)
-            .contentType(ContentType.JSON)
-            .body(String.format("{\"customerId\": \"%s\", \"balance\": %.2f}", customerId, balance))
-            .post("/api/v1/accounts")
-            .then()
-            .statusCode(200)
-            .extract()
-            .response()
-            .body()
-            .asString();
-        logger.info("Created account with ID: " + accountId);
-        accounts.add(accountId);
-        return accountId;
-    }
-
-    public void deleteAccount(String accountId) {
-        RestAssured.baseURI = "http://localhost:" + ACCOUNT_CMD_PORT;
-        given().urlEncodingEnabled(true)
-            .delete("/api/v1/accounts/" + accountId)
-            .then()
-            .statusCode(200);
-        logger.info("Deleted account with ID: " + accountId);
-    }
-
-    public void pushMappingToAccountQueryMock(HttpStub mapping) {
-        RestAssured.baseURI = "http://localhost:" + ACCOUNT_QUERY_PORT;
-        given().urlEncodingEnabled(true)
-            .contentType(ContentType.JSON)
-            .body(mapping)
-            .post("__admin/mappings");
-        logger.info("Mapping pushed to Account Query Mock Server: " + mapping);
+    private String buildHost(String port) {
+        if (useGateways) {
+            return getAccountGatewayUrl();
+        }
+        return HOST + port;
     }
 }

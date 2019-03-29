@@ -1,4 +1,4 @@
-'#!/bin/sh'
+#!/usr/bin/env bash
 
 # Generate the Pact JSON files in the root of the project in 'pact-tests'.
 # To change the target directory see `systemProperties['pact.rootDir'] = "../pact-tests"`

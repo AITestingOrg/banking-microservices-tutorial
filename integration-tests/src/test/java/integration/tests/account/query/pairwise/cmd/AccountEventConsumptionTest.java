@@ -1,16 +1,14 @@
-package integration.tests.account.query.subdomain;
+package integration.tests.account.query.pairwise.cmd;
 
 import com.ultimatesoftware.banking.account.query.models.Account;
 import integration.tests.utils.RestHelper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static integration.tests.utils.MockHttpConstants.VALID_PERSON_ID;
 import static io.restassured.RestAssured.given;
@@ -18,16 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // Requires docker-compose-sub-domain-testing.yml be up.
 public class AccountEventConsumptionTest {
-    private static final Logger logger = LoggerFactory.getLogger(AccountEventConsumptionTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        AccountEventConsumptionTest.class);
     private static final RestHelper restHelper = new RestHelper();
 
-    @BeforeAll
-    public static void beforeAll() {
-        restHelper.onlyUseGateway();
-    }
-
     @AfterAll
-    public static void afterEach() {
+    public static void afterAll() {
         restHelper.clearAccounts();
     }
 
@@ -39,7 +33,7 @@ public class AccountEventConsumptionTest {
         String accountId = restHelper.createAccount(customerId, balance);
 
         // Act
-        RestAssured.baseURI = restHelper.getAccountGatewayUrl();
+        RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
         Response response =  given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/" + accountId);
 
@@ -63,7 +57,7 @@ public class AccountEventConsumptionTest {
         String accountId = restHelper.createAccount(customerId, balance);
 
         // Act
-        RestAssured.baseURI = restHelper.getAccountGatewayUrl();
+        RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
         Response response =  given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/" + accountId);
 
@@ -84,7 +78,7 @@ public class AccountEventConsumptionTest {
         // Arrange
 
         // Act
-        RestAssured.baseURI = restHelper.getAccountGatewayUrl();
+        RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
         Response response =  given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
@@ -102,7 +96,7 @@ public class AccountEventConsumptionTest {
         // Arrange
         restHelper.createAccount(VALID_PERSON_ID, 0.0);
         // Act
-        RestAssured.baseURI = restHelper.getAccountGatewayUrl();
+        RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
         Response response =  given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
@@ -122,7 +116,7 @@ public class AccountEventConsumptionTest {
         restHelper.createAccount(VALID_PERSON_ID, 0.0);
         restHelper.createAccount(VALID_PERSON_ID, 0.0);
         // Act
-        RestAssured.baseURI = restHelper.getAccountGatewayUrl();
+        RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
         Response response =  given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
@@ -142,7 +136,7 @@ public class AccountEventConsumptionTest {
         restHelper.deleteAccount(accountId);
 
         // Act
-        RestAssured.baseURI = restHelper.getAccountGatewayUrl();
+        RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
         given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/" + accountId)
             .then()

@@ -74,31 +74,6 @@ sh run-unit-tests.sh
 JaCoCo is used for code coverage and can be run after the unit and integration tests for each service have been executed.
 You can find a JaCoCo coverage report under the "coverage" in transaction service after running the unit tests.
 
-## Running Contract Tests
-Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
-Start the domain services with internal mocks so that only the endpoints will be tested.
-![Internally Mocked Services](documentation/images/internal-mocks.png)
-```bash
-docker-compose -f docker-compose-internal-mocked.yml up -d
-```
-Start the PactBroker service and check `http://localhost:8089` that it is live.
-```bash
-docker-compose -f ./pact-broker/docker-compose.yml up -d
-```
-Generate the PACTs and execute them. Note, if you have not completed the PACT tests in all the projects then you will see build failures during the first step here, these can be ignored.
-```bash
-sh ./scripts/generate-publish-pact-tests.sh
-sh ./scripts/run-pact-tests.sh
-```
-Stop the PactBroker.
-```bash
-docker-compose -f ./pact-broker/docker-compose.yml down
-```
-Stop the services with internal mocks.
-```bash
-docker-compose -f docker-compose-internal-mocked.yml down
-```
-
 ## Running Service Isolation Tests
 The documentation [here](documentation/http_stubbed_isolation_tests.md) provides a guide on creating new isolation tests with HTTP stubs.
 ### Running Service Isolation Tests with All External Dependencies Mocked
@@ -135,6 +110,31 @@ If you modify or add an HTTP stub under `./wiremock` then you will need to resta
 
 If you update the WireMock request journal validations under `./transactions/src/tests/resources/wiremock` you will not need to restart the instances, only the tests use these. More documentation on WireMock verification can be found [here](http://wiremock.org/docs/verifying/).
 
+## Running Contract Tests
+Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
+Start the domain services with internal mocks so that only the endpoints will be tested.
+![Internally Mocked Services](documentation/images/internal-mocks.png)
+```bash
+docker-compose -f docker-compose-internal-mocked.yml up -d
+```
+Start the PactBroker service and check `http://localhost:8089` that it is live.
+```bash
+docker-compose -f ./pact-broker/docker-compose.yml up -d
+```
+Generate the PACTs and execute them. Note, if you have not completed the PACT tests in all the projects then you will see build failures during the first step here, these can be ignored.
+```bash
+sh ./scripts/generate-publish-pact-tests.sh
+sh ./scripts/run-pact-tests.sh
+```
+Stop the PactBroker.
+```bash
+docker-compose -f ./pact-broker/docker-compose.yml down
+```
+Stop the services with internal mocks.
+```bash
+docker-compose -f docker-compose-internal-mocked.yml down
+```
+
 ## Running Service Integration Tests
 
 ### Sub-Domain Service Integration Testing
@@ -155,7 +155,23 @@ docker-compose -f docker-compose-sub-domain-testing.yml down
 ```
 
 ### Pairwise Service Integration Testing
-Coming soon...
+To run the pairwise service integration tests you will need to have the appropriately configured environment for the particular tests. 
+Here, we demo pairwise testing of the Account Transactions and Account Cmd pair, with all other domain services mocked, 
+notice that unlike subdomain testing, the domain gateway is not present. This type of testing requires much configuration and thus should 
+be used for complicated interactions between two services, not for every service pair.
+![Sub-Domain Integration Testing](documentation/images/service-integration-pairwise-testing.png)
+
+Use docker to stand up the supporting services, databases, and etc...
+```bash
+docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml up
+```
+Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
+```bash
+sh run-transaction-pairwise-tests-with-cmd.sh
+```
+Take down the services in the other terminal window.
+```bash
+docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml down
 
 # API Documentation:
 

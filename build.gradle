@@ -96,6 +96,10 @@ subprojects { project ->
         testCompile "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     }
 
+    tasks.withType(Test) {
+        maxParallelForks = Runtime.runtime.availableProcessors()
+    }
+
     checkstyle {
         configFile = new File(rootDir, "checkstyles.xml")
     }

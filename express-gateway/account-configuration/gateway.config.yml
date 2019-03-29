@@ -6,17 +6,17 @@ admin:
 apiEndpoints:
   account-query-api:
     host: localhost
-    paths: '/api/v1/accounts/*'
+    paths: ['/api/v1/accounts', '/api/v1/accounts/*']
     methods: ["GET", "OPTIONS"]
     scopes: ["localhost:read"]
   account-cmd-api:
     host: localhost
-    paths: '/api/v1/accounts/*'
+    paths: ['/api/v1/accounts', '/api/v1/accounts/*']
     methods: ["PUT", "POST", "PATCH", "DELETE"]
     scopes: ["localhost:write"]
   account-transactions-api:
     host: localhost
-    paths: '/api/v1/transactions/*'
+    paths: ['/api/v1/transactions', '/api/v1/transactions/*']
     methods: ["GET", "POST"]
     scopes: ["localhost:write", "localhost:read"]
 serviceEndpoints:
