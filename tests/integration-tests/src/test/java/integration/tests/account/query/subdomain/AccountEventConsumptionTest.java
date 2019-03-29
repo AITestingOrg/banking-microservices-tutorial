@@ -85,7 +85,7 @@ public class AccountEventConsumptionTest {
 
         // Act
         RestAssured.baseURI = restHelper.getAccountGatewayUrl();
-        Response response =  given().urlEncodingEnabled(true)
+        Response response = given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
         // Assert
@@ -104,11 +104,11 @@ public class AccountEventConsumptionTest {
         restHelper.createAccount(VALID_PERSON_ID, 0.0);
         // Act
         RestAssured.baseURI = restHelper.getAccountGatewayUrl();
-        Response response =  given().urlEncodingEnabled(true)
+        Response response = given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
         // Assert
-        List list =response.then()
+        List list = response.then()
             .statusCode(200)
             .extract()
             .response()
@@ -124,11 +124,11 @@ public class AccountEventConsumptionTest {
         restHelper.createAccount(VALID_PERSON_ID, 0.0);
         // Act
         RestAssured.baseURI = restHelper.getAccountGatewayUrl();
-        Response response =  given().urlEncodingEnabled(true)
+        Response response = given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
         // Assert
-        List list =response.then()
+        List list = response.then()
             .statusCode(200)
             .extract()
             .response()

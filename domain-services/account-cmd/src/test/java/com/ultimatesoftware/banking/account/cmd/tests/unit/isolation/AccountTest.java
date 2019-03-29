@@ -50,7 +50,8 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAccountIsEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
+    public void givenAccountIsEligibleForDelete_WhenDeleting_DeletedEventEmitted()
+        throws Exception {
         // arrange
         doNothing().when(account).applyEvent(any());
 
@@ -69,7 +70,7 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAccountIsNotEligibleForDelete_WhenDeleting_DeletedEventEmitted() throws Exception {
+    public void givenAccountIsNotEligibleForDelete_WhenDeleting_DeletedEventEmitted() {
         // arrange
         account.on(AccountCreatedEvent.builder()
             .id(id.toHexString())
@@ -85,7 +86,8 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAccountEligibleForDebit_WhenDebiting_AccountDebitedEventEmitted() throws Exception {
+    public void givenAccountEligibleForDebit_WhenDebiting_AccountDebitedEventEmitted()
+        throws Exception {
         // arrange
         doNothing().when(account).applyEvent(any());
         account.on(AccountCreatedEvent.builder()
@@ -103,7 +105,7 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAccountInEligibleForDebit_WhenDebiting_TransactionFailedEventEmitted() throws Exception {
+    public void givenAccountInEligibleForDebit_WhenDebiting_TransactionFailedEventEmitted() {
         // arrange
         doNothing().when(account).applyEvent(any());
         account.on(AccountCreatedEvent.builder()
@@ -120,7 +122,7 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAccountInEligibleForCredit_WhenCrediting_TransactionFailedIsEmitted() throws Exception {
+    public void givenAccountInEligibleForCredit_WhenCrediting_TransactionFailedIsEmitted() {
         // arrange
         doNothing().when(account).applyEvent(any());
         account.on(AccountCreatedEvent.builder()
@@ -137,7 +139,8 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAccountEligibleForCredit_WhenCrediting_AccountCreditedIsEmitted() throws Exception {
+    public void givenAccountEligibleForCredit_WhenCrediting_AccountCreditedIsEmitted()
+        throws Exception {
         // arrange
         doNothing().when(account).applyEvent(any());
         account.on(AccountCreatedEvent.builder()
@@ -173,7 +176,7 @@ public class AccountTest {
 
 
     @Test
-    public void givenAcountCreatedEmitted_whenHandling_ThenUpdateIdBalanceCustomerId() throws Exception {
+    public void givenAcountCreatedEmitted_whenHandling_ThenUpdateIdBalanceCustomerId() {
         // arrange
         String customerId = UUID.randomUUID().toString();
 
@@ -191,7 +194,7 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAcountDebitedEmitted_whenHandling_ThenUpdateBalance() throws Exception {
+    public void givenAcountDebitedEmitted_whenHandling_ThenUpdateBalance() {
         // arrange
         String customerId = UUID.randomUUID().toString();
         account.on(AccountCreatedEvent.builder()
@@ -214,7 +217,7 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAcountCreditedEmitted_whenHandling_ThenUpdateBalance() throws Exception {
+    public void givenAcountCreditedEmitted_whenHandling_ThenUpdateBalance() {
         // arrange
         String customerId = UUID.randomUUID().toString();
         account.on(AccountCreatedEvent.builder()
@@ -237,7 +240,7 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAcountDeletedEmitted_whenHandling_ThenMarkDeleted() throws Exception {
+    public void givenAcountDeletedEmitted_whenHandling_ThenMarkDeleted() {
         // arrange
         doNothing().when(account).delete();
         account.on(AccountCreatedEvent.builder()
@@ -256,7 +259,7 @@ public class AccountTest {
     }
 
     @Test
-    public void givenAcountUpdatedEmitted_whenHandling_ThenUpdateCustomerId() throws Exception {
+    public void givenAcountUpdatedEmitted_whenHandling_ThenUpdateCustomerId() {
         // arrange
         String customerId = UUID.randomUUID().toString();
         account.on(AccountCreatedEvent.builder()

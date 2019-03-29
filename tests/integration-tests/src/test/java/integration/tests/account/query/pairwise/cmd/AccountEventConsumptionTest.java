@@ -4,11 +4,12 @@ import com.ultimatesoftware.banking.account.query.models.Account;
 import integration.tests.utils.RestHelper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 import static integration.tests.utils.MockHttpConstants.VALID_PERSON_ID;
 import static io.restassured.RestAssured.given;
@@ -34,7 +35,7 @@ public class AccountEventConsumptionTest {
 
         // Act
         RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
-        Response response =  given().urlEncodingEnabled(true)
+        Response response = given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/" + accountId);
 
 
@@ -79,11 +80,11 @@ public class AccountEventConsumptionTest {
 
         // Act
         RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
-        Response response =  given().urlEncodingEnabled(true)
+        Response response = given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
         // Assert
-        List list =response.then()
+        List list = response.then()
             .statusCode(200)
             .extract()
             .response()
@@ -97,11 +98,11 @@ public class AccountEventConsumptionTest {
         restHelper.createAccount(VALID_PERSON_ID, 0.0);
         // Act
         RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
-        Response response =  given().urlEncodingEnabled(true)
+        Response response = given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
         // Assert
-        List list =response.then()
+        List list = response.then()
             .statusCode(200)
             .extract()
             .response()
@@ -117,11 +118,11 @@ public class AccountEventConsumptionTest {
         restHelper.createAccount(VALID_PERSON_ID, 0.0);
         // Act
         RestAssured.baseURI = restHelper.getHost(RestHelper.ACCOUNT_QUERY_PORT);
-        Response response =  given().urlEncodingEnabled(true)
+        Response response = given().urlEncodingEnabled(true)
             .get("/api/v1/accounts/");
 
         // Assert
-        List list =response.then()
+        List list = response.then()
             .statusCode(200)
             .extract()
             .response()
