@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-@Prototype
-@NoArgsConstructor
 public class TransactionSaga {
     private static final Logger logger = LoggerFactory.getLogger(TransactionSaga.class);
 

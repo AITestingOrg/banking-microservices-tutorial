@@ -32,21 +32,21 @@ services:
       - ./docker/wiremock/people:/home/wiremock
     restart: on-failure
 
-  account-cmd:
-    build: domain-services/account-cmd/
-    mem_limit: 400m
-    ports:
-      - "8082:8082"
-    restart: on-failure
-    environment:
-      - PEOPLE_GATEWAY=people-gateway-mock
-      - CONSUL_HOST=discovery-service
-      - MONGO_HOST=mongo
-      - AXON_HOST=axonserver
-      - HOST_PORT=8082
-    depends_on:
-      - discovery-service
-      - axonserver
+#  account-cmd:
+#    build: domain-services/account-cmd/
+#    mem_limit: 400m
+#    ports:
+#      - "8082:8082"
+#    restart: on-failure
+#    environment:
+#      - PEOPLE_GATEWAY=people-gateway-mock
+#      - CONSUL_HOST=discovery-service
+#      - MONGO_HOST=mongo
+#      - AXON_HOST=axonserver
+#      - HOST_PORT=8082
+#    depends_on:
+#      - discovery-service
+#      - axonserver
 
   account-query:
     build: domain-services/account-query/
