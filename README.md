@@ -57,7 +57,14 @@ To download the Mock images and test running on your machine use the following c
 docker-compose -f docker-compose-sub-domain-testing.yml up
 # After verifying everything spun up correctly tear it down.
 docker-compose -f docker-compose-sub-domain-testing.yml down
+```
 
+## Running the PACT Broker
+Exercise the PACT Broker service.
+```bash
+docker-compose -f ./docker/pact-broker/docker-compose.yml up
+# After verifying everything spun up correctly tear it down.
+docker-compose -f ./docker/pact-broker/docker-compose.yml down
 ```
 
 ## Rebuild Containers
