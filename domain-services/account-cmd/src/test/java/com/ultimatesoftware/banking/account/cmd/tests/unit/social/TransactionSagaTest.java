@@ -1,9 +1,10 @@
 package com.ultimatesoftware.banking.account.cmd.tests.unit.social;
 
-import com.ultimatesoftware.banking.account.cmd.commands.ConcludeTransferDepositCommand;
+import com.ultimatesoftware.banking.account.cmd.commands.CreditAccountCommand;
+import com.ultimatesoftware.banking.account.cmd.commands.DebitAccountCommand;
 import com.ultimatesoftware.banking.account.cmd.commands.ReleaseAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.StartTransferWithdrawCommand;
 import com.ultimatesoftware.banking.account.cmd.sagas.TransactionSaga;
+import com.ultimatesoftware.banking.account.events.AccountCreatedEvent;
 import com.ultimatesoftware.banking.account.events.TransferDepositConcludedEvent;
 import com.ultimatesoftware.banking.account.events.TransferTransactionStartedEvent;
 import com.ultimatesoftware.banking.account.events.TransferWithdrawConcludedEvent;
@@ -30,13 +31,13 @@ public class TransactionSagaTest {
 
     @Test
     public void onTransactionStarted_startTransferDispatched() {
-        sagaFixture.givenAggregate(accountId).published()
+        sagaFixture.givenAggregate(accountId).published(AccountCreatedEvent.builder().id(accountId).balance(0.00).build())
             .whenAggregate(accountId).publishes(TransferTransactionStartedEvent.builder()
                 .id(accountId)
                 .destinationAccountId(destinationId)
                 .amount(amount)
                 .transactionId(transactionId))
-            .expectDispatchedCommands(new StartTransferWithdrawCommand(accountId, amount, transactionId));
+            .expectDispatchedCommands(new DebitAccountCommand(accountId, amount, transactionId, true));
     }
 
 
@@ -51,7 +52,7 @@ public class TransactionSagaTest {
                 .id(accountId)
                 .balance(amount)
                 .transactionId(transactionId))
-            .expectDispatchedCommands(new ConcludeTransferDepositCommand(destinationId, amount, transactionId));
+            .expectDispatchedCommands(new CreditAccountCommand(destinationId, amount, transactionId, true));
     }
 
     @Test

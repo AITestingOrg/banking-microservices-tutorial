@@ -7,8 +7,6 @@ import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleFor
 import com.ultimatesoftware.banking.account.cmd.rules.AccountRules;
 import com.ultimatesoftware.banking.account.cmd.rules.StandardAccountRules;
 import com.ultimatesoftware.banking.account.events.*;
-import com.ultimatesoftware.banking.account.events.factories.AccountEventType;
-import com.ultimatesoftware.banking.account.events.factories.EventFactory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
@@ -31,24 +29,24 @@ public class Account {
     private @Getter ObjectId id;
     private @Getter String customerId;
     private @Getter BigDecimal balance;
-    private @Getter int activeTransfers;
+    private @Getter boolean activeTransfer;
 
     private AccountRules accountRules = new StandardAccountRules();
 
     @CommandHandler
     public Account(CreateAccountCommand createAccountCommand) throws Exception {
-        applyEvent(EventFactory.createEvent(
-                AccountEventType.CREATED,
-                createAccountCommand.getId().toHexString(),
-                createAccountCommand.getCustomerId(),
-                createAccountCommand.getBalance()));
+        applyEvent(AccountCreatedEvent.builder()
+            .id(createAccountCommand.getId().toHexString())
+            .balance(createAccountCommand.getBalance())
+            .customerId(createAccountCommand.getCustomerId())
+            .build());
     }
 
     public Account(ObjectId id, String customerId, BigDecimal balance) {
         this.id = id;
         this.customerId = customerId;
         this.balance = balance;
-        activeTransfers = 0;
+        activeTransfer = false;
     }
 
     public void setAccountRules(AccountRules accountRules) {
@@ -58,31 +56,97 @@ public class Account {
     @CommandHandler
     public void on(DebitAccountCommand debitAccountCommand) throws Exception {
         if (!this.accountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
-            applyEvent(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, debitAccountCommand.getId().toHexString(), debitAccountCommand.getTransactionId(), "Account balance not eligable for withdraw."));
-            throw new AccountNotEligibleForDebitException(id.toHexString(), balance.doubleValue());
+            if (debitAccountCommand.isTransfer()) {
+                applyEvent(TransferFailedEvent.builder()
+                    .id(debitAccountCommand.getId().toHexString())
+                    .msg(String.format("Account %s balance not eligible for withdraw.",
+                        debitAccountCommand.getId().toHexString()))
+                    .transactionId(debitAccountCommand.getTransactionId())
+                    .build());
+            } else {
+                applyEvent(TransactionFailedEvent.builder()
+                    .id(debitAccountCommand.getId().toHexString())
+                    .msg(String.format("Account %s balance not eligible for withdraw.",
+                        debitAccountCommand.getId().toHexString()))
+                    .transactionId(debitAccountCommand.getTransactionId())
+                    .build());
+            }
+            throw new AccountNotEligibleForDebitException(id.toHexString(),
+                    balance.doubleValue());
         }
         BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(debitAccountCommand.getAmount()));
-        applyEvent(EventFactory.createEvent(AccountEventType.DEBITED, debitAccountCommand.getId().toHexString(), customerId, debitAccountCommand.getAmount(), newBalance.doubleValue(),
-                debitAccountCommand.getTransactionId()));
+        if (debitAccountCommand.isTransfer()) {
+            applyEvent(TransferWithdrawConcludedEvent.builder()
+                .id(debitAccountCommand.getId().toHexString())
+                .balance(newBalance.doubleValue())
+                .transactionId(debitAccountCommand.getTransactionId())
+                .build());
+        } else {
+            applyEvent(AccountDebitedEvent.builder()
+                .id(debitAccountCommand.getId().toHexString())
+                .balance(newBalance.doubleValue())
+                .debitAmount(debitAccountCommand.getAmount())
+                .customerId(customerId)
+                .transactionId(debitAccountCommand.getTransactionId())
+                .build());
+        }
     }
 
     @CommandHandler
     public void on(CreditAccountCommand creditAccountCommand) throws Exception {
         if (!this.accountRules.eligibleForCredit(this, creditAccountCommand.getAmount())) {
-            applyEvent(EventFactory.createEvent(AccountEventType.TRANSACTION_FAILED, creditAccountCommand.getId().toHexString(), creditAccountCommand.getTransactionId(), "Account balance not eligable for deposit."));
+            if (creditAccountCommand.isTransfer()) {
+                applyEvent(TransferFailedEvent.builder()
+                    .id(creditAccountCommand.getId().toHexString())
+                    .msg(String.format("Account %s not eligible for deposit.",
+                        creditAccountCommand.getId().toHexString()))
+                    .transactionId(creditAccountCommand.getTransactionId())
+                    .build());
+            } else {
+                applyEvent(TransactionFailedEvent.builder()
+                    .id(creditAccountCommand.getId().toHexString())
+                    .transactionId(creditAccountCommand.getTransactionId())
+                    .msg(String.format("Account %s balance not eligible for deposit.",
+                        id.toHexString()))
+                    .build());
+            }
             throw new AccountNotEligibleForCreditException(id.toHexString(), balance.doubleValue());
         }
 
         BigDecimal newBalance = balance.add(BigDecimal.valueOf(creditAccountCommand.getAmount()));
-        applyEvent(EventFactory.createEvent(AccountEventType.CREDITED, creditAccountCommand.getId().toHexString(), customerId,
-                                       creditAccountCommand.getAmount(), newBalance.doubleValue(),
-                                       creditAccountCommand.getTransactionId().toString()));
+        if (creditAccountCommand.isTransfer()) {
+            applyEvent(TransferDepositConcludedEvent.builder()
+                .id(creditAccountCommand.getId().toHexString())
+                .balance(newBalance.doubleValue())
+                .transactionId(creditAccountCommand.getTransactionId())
+                .build());
+        } else {
+            applyEvent(AccountCreditedEvent.builder()
+                .id(creditAccountCommand.getId().toHexString())
+                .customerId(customerId)
+                .balance(newBalance.doubleValue())
+                .creditAmount(creditAccountCommand.getAmount())
+                .transactionId(creditAccountCommand.getTransactionId())
+                .build());
+        }
+    }
+
+    @CommandHandler
+    public void on(RevertAccountBalanceCommand revertAccountBalanceCommand) {
+        BigDecimal newBalance = balance.add(BigDecimal.valueOf(revertAccountBalanceCommand.getAmount()));
+        applyEvent(BalanceRevertedEvent.builder()
+            .id(revertAccountBalanceCommand.getId())
+            .balance(newBalance)
+            .transactionId(revertAccountBalanceCommand.getTransactionId())
+            .build());
     }
 
     @CommandHandler
     public void on(DeleteAccountCommand deleteAccountCommand) throws Exception {
         if (this.accountRules.eligibleForDelete(this)) {
-            applyEvent(EventFactory.createEvent(AccountEventType.DELETED, deleteAccountCommand.getId().toHexString()));
+            applyEvent(AccountDeletedEvent.builder()
+                .id(deleteAccountCommand.getId().toHexString())
+                .build());
             return;
         }
         logger.warn("Account with ineligible balance requested for delete. Account ID: " + deleteAccountCommand.getId().toHexString());
@@ -91,56 +155,49 @@ public class Account {
 
     @CommandHandler
     public void on(UpdateAccountCommand updateAccountCommand) throws Exception {
-        applyEvent(EventFactory.createEvent(AccountEventType.UPDATED, id.toHexString(), updateAccountCommand.getCustomerId()));
+        applyEvent(AccountUpdatedEvent.builder()
+            .id(updateAccountCommand.getId().toHexString())
+            .customerId(updateAccountCommand.getCustomerId())
+            .build());
     }
 
     @CommandHandler
-    public void on(StartTransferTransactionCommand command) throws Exception {
+    public void on(StartTransferCommand command) throws Exception {
         logger.info("Transfer transaction started from {} successfully", id);
-        applyEvent(EventFactory.createEvent(AccountEventType.TRANSACTION_STARTED, id.toHexString(), command.getTransactionDto().getDestinationAccountId(), command.getTransactionDto().getAmount(),
-                command.getTransactionId()));
-
+        applyEvent(TransferTransactionStartedEvent.builder()
+            .id(command.getId().toHexString())
+            .amount(command.getTransactionDto().getAmount())
+            .destinationAccountId(command.getTransactionDto().getDestinationAccountId())
+            .transactionId(command.getTransactionId())
+            .build());
     }
 
     @CommandHandler
-    public void on(StartTransferWithdrawCommand command) throws Exception {
-        if (!this.accountRules.eligibleForDebit(this, command.getAmount())) {
-            applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, id.toHexString(), "", command.getTransactionId(), ""));
-            throw new AccountNotEligibleForDebitException(id.toHexString(), balance.doubleValue());
-        }
-
-        logger.info("Transfer concluded from {} successfully", id);
-        BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(command.getAmount()));
-        applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_WITHDRAW_CONCLUDED, id.toHexString(), newBalance.doubleValue(),
-                command.getTransactionId()));
-    }
-
-    @CommandHandler
-    public void on(ConcludeTransferDepositCommand concludeTransferDepositCommand) throws Exception {
-        logger.info("Transfer concluded to {} successfully", id);
-        BigDecimal newBalance = balance.add(BigDecimal.valueOf(concludeTransferDepositCommand.getAmount()));
-        applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_CONCLUDED, id.toHexString(), newBalance.doubleValue(),
-                concludeTransferDepositCommand.getTransactionId()));
+    public void on(FailTransactionCommand command) throws Exception {
+        logger.info("Transfer transaction %s failed.", id);
+        applyEvent(TransferFailedEvent.builder()
+            .id(command.getId().toHexString())
+            .msg(command.getMsg())
+            .transactionId(command.getTransactionId())
+            .build());
     }
 
     @CommandHandler
     public void on(ReleaseAccountCommand releaseAccountCommand) throws Exception {
         logger.info("Account Released {}", id);
-        applyEvent(EventFactory.createEvent(AccountEventType.RELEASED, releaseAccountCommand.getId().toHexString(), "", releaseAccountCommand.getTransactionId(), ""));
+        applyEvent(AccountReleasedEvent.builder()
+            .id(releaseAccountCommand.getId().toHexString())
+            .transactionId(releaseAccountCommand.getTransactionId())
+            .build());
     }
 
     @CommandHandler
     public void on(CancelTransferCommand cancelTransferCommand) throws Exception {
         logger.info("Account transfer canceled from {}", id);
-        BigDecimal newBalance = balance.add(BigDecimal.valueOf(cancelTransferCommand.getAmount()));
-        applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_CANCELLED, cancelTransferCommand.getId().toHexString(),
-                newBalance.doubleValue(), cancelTransferCommand.getTransactionId()));
-    }
-
-    @CommandHandler
-    public void on(FailToStartTransferTransactionCommand command) throws Exception {
-        logger.info("Transaction {} failed to start", command.getTransactionId());
-        applyEvent(EventFactory.createEvent(AccountEventType.TRANSFER_FAILED_TO_START, command.getId().toHexString(), "", command.getTransactionId(), ""));
+        applyEvent(TransferCanceledEvent.builder()
+            .id(cancelTransferCommand.getId().toHexString())
+            .transactionId(cancelTransferCommand.getTransactionId())
+            .build());
     }
 
     @EventSourcingHandler
@@ -161,6 +218,12 @@ public class Account {
     }
 
     @EventSourcingHandler
+    public void on(BalanceRevertedEvent balanceRevertedEvent) {
+        balance = BigDecimal.valueOf(balanceRevertedEvent.getBalance());
+        activeTransfer = false;
+    }
+
+    @EventSourcingHandler
     public void on(AccountUpdatedEvent accountUpdatedEvent) {
         customerId = accountUpdatedEvent.getCustomerId();
     }
@@ -172,24 +235,19 @@ public class Account {
 
     @EventSourcingHandler
     public void on(TransferWithdrawConcludedEvent transferWithdrawConcludedEvent) {
-        activeTransfers++;
+        activeTransfer = true;
         balance = BigDecimal.valueOf(transferWithdrawConcludedEvent.getBalance());
     }
 
     @EventSourcingHandler
     public void on(TransferDepositConcludedEvent transferDepositConcludedEvent) {
-        activeTransfers++;
+        activeTransfer = true;
         balance = BigDecimal.valueOf(transferDepositConcludedEvent.getBalance());
-    }
-    @EventSourcingHandler
-    public void on(TransferCanceledEvent transferCanceledEvent) {
-        activeTransfers--;
-        balance = BigDecimal.valueOf(transferCanceledEvent.getBalance());
     }
 
     @EventSourcingHandler
     public void on(AccountReleasedEvent accountReleasedEvent) {
-        activeTransfers--;
+        activeTransfer = false;
     }
 
     public void applyEvent(AccountEvent event) {

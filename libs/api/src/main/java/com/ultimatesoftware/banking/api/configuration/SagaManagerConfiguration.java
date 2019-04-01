@@ -19,6 +19,9 @@ public class SagaManagerConfiguration<T> {
     public SagaManagerConfiguration(AxonServerConfiguration axonServerConfiguration, Class<T> type) {
         this.axonServerConfiguration = axonServerConfiguration;
         this.type = type;
+    }
+
+    public void configure() {
         LOG.info("Configuring Axon server for Saga Manager");
         configurer = DefaultConfigurer.defaultConfiguration()
             .registerComponent(AxonServerConfiguration.class, c -> axonServerConfiguration)

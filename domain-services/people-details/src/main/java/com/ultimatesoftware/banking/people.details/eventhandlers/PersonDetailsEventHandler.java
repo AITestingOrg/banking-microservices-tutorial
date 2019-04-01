@@ -12,15 +12,14 @@ import org.axonframework.axonserver.connector.AxonServerConfiguration;
 import org.axonframework.eventhandling.EventHandler;
 import org.bson.types.ObjectId;
 
-import javax.inject.Singleton;
-
 @Infrastructure
 public class PersonDetailsEventHandler extends AxonEventHandler {
-    private Repository<PersonDetails> mongoRepository;
+    private final Repository<PersonDetails> mongoRepository;
 
     public PersonDetailsEventHandler(Repository<PersonDetails> mongoRepository, AxonServerConfiguration axonServerConfiguration) {
         super(axonServerConfiguration);
         this.mongoRepository = mongoRepository;
+        LOG.info("Event handler on service started");
     }
 
     @EventListener

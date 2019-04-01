@@ -9,11 +9,13 @@ import lombok.Getter;
 @JsonDeserialize(builder = TransferDepositConcludedEvent.TransferDepositConcludedEventBuilder.class)
 public class TransferDepositConcludedEvent extends AccountTransactionEvent {
     private double balance;
+    private String destinationAccountId;
 
     @Builder
-    protected TransferDepositConcludedEvent(String id, double balance, String transactionId) {
+    protected TransferDepositConcludedEvent(String id, double balance, String transactionId, String destinationAccountId) {
         super(id, transactionId);
         this.balance = balance;
+        this.destinationAccountId = destinationAccountId;
     }
 
     @JsonPOJOBuilder(withPrefix = "")

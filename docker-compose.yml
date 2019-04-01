@@ -1,12 +1,64 @@
 version: '2.1'
 services:
+  discovery-service:
+    image: bitnami/consul:latest
+    ports:
+      - '8300:8300'
+      - '8301:8301'
+      - '8301:8301/udp'
+      - '8500:8500'
+      - '8600:8600'
+      - '8600:8600/udp'
+
+  people-gateway:
+    build: docker/express-gateway/
+    ports:
+      - "8081:8080"
+      - "8443:8443"
+      - "9876:9876"
+    volumes:
+      - ./docker/express-gateway/people-configuration/system.config.yml:/usr/src/app/config/system.config.yml
+      - ./docker/express-gateway/people-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
+    depends_on:
+      - redis
+
+  account-gateway:
+    build: docker/express-gateway/
+    ports:
+      - "8080:8080"
+      - "8444:8443"
+      - "9877:9876"
+    volumes:
+      - ./docker/express-gateway/account-configuration/system.config.yml:/usr/src/app/config/system.config.yml
+      - ./docker/express-gateway/account-configuration/gateway.config.yml:/usr/src/app/config/gateway.config.yml
+    depends_on:
+      - redis
+
+  mongo:
+    image: 'mongo:3.4.1'
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/mongo/db'
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - 'redis:/data/redis'
+
+  axonserver:
+    image: 'axoniq/axonserver'
+    ports:
+      - '8124:8124'
+      - '8024:8024'
+
   people-details:
     build: domain-services/people-details/
     mem_limit: 400m
     ports:
       - "8085:8085"
-    networks:
-      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -19,8 +71,6 @@ services:
     mem_limit: 400m
     ports:
       - "8087:8087"
-    networks:
-      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -33,8 +83,6 @@ services:
     mem_limit: 400m
     ports:
       - "8088:8088"
-    networks:
-      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -47,8 +95,6 @@ services:
     mem_limit: 400m
     ports:
       - "8082:8082"
-    networks:
-      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -61,8 +107,6 @@ services:
     mem_limit: 400m
     ports:
       - "8084:8084"
-    networks:
-      - banking-microservices-tutorial_bank
     restart: on-failure
     environment:
       - CONSUL_HOST=discovery-service
@@ -83,13 +127,8 @@ services:
       - HOST_PORT=8086
       - PEOPLE_DETAILS_HOST=
       - ES_JAVA_OPTS= "-Xms150mb -Xmx150mb"
-    networks:
-      - banking-microservices-tutorial_bank
     restart: on-failure
 
-networks:
-  banking-microservices-tutorial_bank:
-    external: true
-
 volumes:
+  redis:
   mongo:

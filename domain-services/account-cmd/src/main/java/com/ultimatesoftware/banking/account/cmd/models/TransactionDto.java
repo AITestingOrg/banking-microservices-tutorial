@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.Getter;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -23,6 +24,7 @@ public class TransactionDto {
     @NotNull
     @NotBlank
     private String customerId;
+    @Min(value = 0)
     private double amount;
     private String destinationAccountId;
 
@@ -31,7 +33,7 @@ public class TransactionDto {
         @JsonProperty("accountId") @NotNull @NotBlank String accountId,
         @JsonProperty("customerId") @NotNull @NotBlank String customerId,
         @JsonProperty("amount") double amount,
-        @JsonProperty("destinationId") String destinationAccountId) {
+        @JsonProperty("destinationAccountId") String destinationAccountId) {
         this.id = id;
         this.accountId = accountId;
         this.customerId = customerId;

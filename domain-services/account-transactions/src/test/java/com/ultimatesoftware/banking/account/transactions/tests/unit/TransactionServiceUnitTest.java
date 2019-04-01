@@ -252,7 +252,7 @@ public class TransactionServiceUnitTest {
         Transaction transaction = transactionCaptor.getValue();
         assertEquals(TestConstants.ACCOUNT_ID.toHexString(), transaction.getAccountId());
         assertEquals(TestConstants.CUSTOMER_ID.toHexString(), transaction.getCustomerId());
-        assertEquals(TestConstants.DESTINATION_ID.toHexString(), transaction.getDestinationAccount());
+        assertEquals(TestConstants.DESTINATION_ID.toHexString(), transaction.getDestinationAccountId());
         assertEquals(5.00, transaction.getAmount(), 0.001);
         assertEquals(TransactionStatus.IN_PROGRESS, transaction.getStatus());
     }
@@ -303,7 +303,7 @@ public class TransactionServiceUnitTest {
         Transaction transaction = transactionCaptor.getValue();
         assertEquals(TestConstants.ACCOUNT_ID.toHexString(), transaction.getAccountId());
         assertEquals(TestConstants.CUSTOMER_ID.toHexString(), transaction.getCustomerId());
-        assertEquals(TestConstants.DESTINATION_ID.toHexString(), transaction.getDestinationAccount());
+        assertEquals(TestConstants.DESTINATION_ID.toHexString(), transaction.getDestinationAccountId());
         assertEquals(5.00, transaction.getAmount(), 0.001);
         assertEquals(TransactionStatus.IN_PROGRESS, transaction.getStatus());
     }
@@ -341,7 +341,7 @@ public class TransactionServiceUnitTest {
         Transaction transaction = transactionCaptor.getValue();
         assertEquals(TestConstants.ACCOUNT_ID.toHexString(), transaction.getAccountId());
         assertEquals(TestConstants.CUSTOMER_ID.toHexString(), transaction.getCustomerId());
-        assertEquals(TestConstants.DESTINATION_ID.toHexString(), transaction.getDestinationAccount());
+        assertEquals(TestConstants.DESTINATION_ID.toHexString(), transaction.getDestinationAccountId());
         assertEquals(4.99, transaction.getAmount(), 0.001);
         assertEquals(TransactionStatus.IN_PROGRESS, transaction.getStatus());
     }

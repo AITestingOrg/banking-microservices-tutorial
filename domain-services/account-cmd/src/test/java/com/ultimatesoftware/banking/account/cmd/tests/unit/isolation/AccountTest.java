@@ -1,15 +1,7 @@
 package com.ultimatesoftware.banking.account.cmd.tests.unit.isolation;
 
 import com.ultimatesoftware.banking.account.cmd.aggregates.Account;
-import com.ultimatesoftware.banking.account.cmd.commands.CancelTransferCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.ConcludeTransferDepositCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.CreditAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.DebitAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.DeleteAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.FailToStartTransferTransactionCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.ReleaseAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.StartTransferTransactionCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.UpdateAccountCommand;
+import com.ultimatesoftware.banking.account.cmd.commands.*;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForCreditException;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForDeleteException;
@@ -37,6 +29,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountTest {
@@ -189,19 +182,19 @@ public class AccountTest {
             .customerId(customerId)
             .balance(0.0)
             .build());
-        TransactionDto transaction = new TransactionDto("", ObjectId.get().toHexString(), "customer", 10.0, "dest");
 
         // act
-        account.on(new StartTransferTransactionCommand(transaction));
+        account.on(new FailTransactionCommand(ObjectId.get().toHexString(), "s", "s"));
 
         // assert
-        verify(account, times(1)).applyEvent(any(TransferTransactionStartedEvent.class));
+        verify(account, times(1)).applyEvent(any(TransferFailedEvent.class));
     }
 
     @Test
     public void givenAccountExists_WhenConcludeTransfer_TransferConcludedEmitted() throws Exception {
         // arrange
         doNothing().when(account).applyEvent(any());
+        doReturn(true).when(accountRules).eligibleForCredit(any(), anyDouble());
         account.on(AccountCreatedEvent.builder()
             .id(id.toHexString())
             .customerId(customerId)
@@ -209,7 +202,7 @@ public class AccountTest {
             .build());
 
         // act
-        account.on(new ConcludeTransferDepositCommand(ObjectId.get().toHexString(), 10.00, "transaction"));
+        account.on(new CreditAccountCommand(ObjectId.get().toHexString(), 10.00, "transaction", true));
 
         // assert
         verify(account, times(1)).applyEvent(any(TransferDepositConcludedEvent.class));
@@ -243,7 +236,7 @@ public class AccountTest {
             .build());
 
         // act
-        account.on(new CancelTransferCommand(ObjectId.get().toHexString(), 10.0, "trans"));
+        account.on(new CancelTransferCommand(ObjectId.get().toHexString(), "trans", "msg"));
 
         // assert
         verify(account, times(1)).applyEvent(any(TransferCanceledEvent.class));
@@ -261,10 +254,10 @@ public class AccountTest {
         TransactionDto transaction = new TransactionDto("", ObjectId.get().toHexString(), "customer", 10.0, "dest");
 
         // act
-        account.on(new FailToStartTransferTransactionCommand(transaction));
+        account.on(new FailTransactionCommand(ObjectId.get().toHexString(), "dest", "trans"));
 
         // assert
-        verify(account, times(1)).applyEvent(any(TransferFailedToStartEvent.class));
+        verify(account, times(1)).applyEvent(any(TransferFailedEvent.class));
     }
 
 
@@ -384,7 +377,7 @@ public class AccountTest {
             .build());
 
         // assert
-        assertEquals(account.getActiveTransfers(), 1);
+        assertEquals(account.isActiveTransfer(), true);
     }
 
     @Test
@@ -400,7 +393,7 @@ public class AccountTest {
             .build());
 
         // assert
-        assertEquals(account.getActiveTransfers(), 1);
+        assertEquals(account.isActiveTransfer(), true);
     }
 
     @Test
@@ -420,7 +413,7 @@ public class AccountTest {
             .build());
 
         // assert
-        assertEquals(account.getActiveTransfers(), 0);
+        assertEquals(account.isActiveTransfer(), false);
     }
 
     @Test
@@ -434,13 +427,14 @@ public class AccountTest {
             .build());
 
         // act
-        account.on(TransferCanceledEvent.builder()
-            .id(id.toHexString())
+        account.on(BalanceRevertedEvent.builder()
+            .id(id)
+            .balance(BigDecimal.valueOf(10.00))
             .transactionId(customerId)
-            .balance(20.0)
             .build());
 
         // assert
-        assertEquals(account.getActiveTransfers(), 0);
+        assertEquals(account.isActiveTransfer(), false);
+        assertEquals(account.getBalance().doubleValue(), 10.00);
     }
 }
