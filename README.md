@@ -44,11 +44,8 @@ See each services readme for detailed requirement information
 ./gradlew assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
 docker-compose up --build
-```
-
-## Stop the Containers
-```bash
-docker-compose down
+# After verifying everything spun up correctly tear it down.
+# Press Control C to shutdown the docker containers
 ```
 
 ## Running with Mocks
@@ -56,7 +53,7 @@ To download the Mock images and test running on your machine use the following c
 ```bash
 docker-compose -f docker-compose-sub-domain-testing.yml up
 # After verifying everything spun up correctly tear it down.
-docker-compose -f docker-compose-sub-domain-testing.yml down
+# Press Control C to shutdown the docker containers
 ```
 
 ## Running the PACT Broker
@@ -64,7 +61,7 @@ Exercise the PACT Broker service.
 ```bash
 docker-compose -f ./docker/pact-broker/docker-compose.yml up
 # After verifying everything spun up correctly tear it down.
-docker-compose -f ./docker/pact-broker/docker-compose.yml down
+# Press Control C to shutdown the docker containers
 ```
 
 ## Rebuild Containers
