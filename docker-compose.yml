@@ -63,6 +63,7 @@ services:
     environment:
       - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
       - HOST_PORT=8085
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
@@ -75,6 +76,7 @@ services:
     environment:
       - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
       - HOST_PORT=8087
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
@@ -87,6 +89,7 @@ services:
     environment:
       - CONSUL_HOST=discovery-service
       - MONGO_HOST=mongo
+      - AXON_HOST=axonserver
       - HOST_PORT=8088
       - ES_JAVA_OPTS= "-Xms450mb -Xmx450mb"
 
