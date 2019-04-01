@@ -4,7 +4,7 @@ import com.ultimatesoftware.banking.account.cmd.clients.PeopleDetailsClient;
 import com.ultimatesoftware.banking.account.cmd.commands.CreateAccountCommand;
 import com.ultimatesoftware.banking.account.cmd.commands.DebitAccountCommand;
 import com.ultimatesoftware.banking.account.cmd.commands.DeleteAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.StartTransferTransactionCommand;
+import com.ultimatesoftware.banking.account.cmd.commands.FailTransactionCommand;
 import com.ultimatesoftware.banking.account.cmd.controllers.AccountsController;
 import com.ultimatesoftware.banking.account.cmd.exceptions.PersonNotFoundException;
 import com.ultimatesoftware.banking.account.cmd.models.AccountDto;
@@ -99,6 +99,6 @@ public class AccountControllerTest {
         accountsController.transfer(transactionDto);
 
         // assert
-        Mockito.verify(commandGateway).send(Matchers.<StartTransferTransactionCommand>any());
+        Mockito.verify(commandGateway).send(Matchers.<FailTransactionCommand>any());
     }
 }

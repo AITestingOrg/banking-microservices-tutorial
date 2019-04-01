@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-tutorial.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-tutorial)
 [![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-tutorial/badge.svg?branch=service-integration-testing)](https://coveralls.io/github/AITestingOrg/banking-microservices-tutorial?branch=service-integration-testing)
 
-The Banking Microservices Example project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
+The Banking Microservices Tutorial project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 
 ![](documentation/images/micronaut.jpg)![](documentation/images/axon.png)![](documentation/images/consul.svg)![](documentation/images/mongo.png)![](documentation/images/express-gateway.png)![](documentation/images/junit5-banner.png)
 ## Architecture
@@ -29,6 +29,9 @@ See each services readme for detailed requirement information
 ### Java 8
 * https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 
+### IntelliJ IDEA
+* The recommended IDE for this project https://www.jetbrains.com/idea/, Community Edition is fine.
+
 ### Lombok
 * IntelliJ IDEA installation: https://projectlombok.org/setup/intellij
 
@@ -40,16 +43,20 @@ See each services readme for detailed requirement information
 # Assemble the binaries
 ./gradlew assemble
 # Start the backing services: service discovery, configuration, authentication, edge service
-docker-compose -f docker-compose-backing.yml up --build
-# After the backing services have succesfully loaded, start the domain services
-docker-compose up
+docker-compose up --build
 ```
 
 ## Stop the Containers
 ```bash
 docker-compose down
-docker-compose -f docker-compose.yml down
-docker-compose -f docker-compose-backing.yml down
+```
+
+## Running with Mocks
+To download the Mock images and test running on your machine use the following commands.
+```bash
+docker-compose -f docker-compose-sub-domain-testing.yml up
+# After verifying everything spun up correctly tear it down.
+docker-compose -f docker-compose-sub-domain-testing.yml down
 
 ```
 
@@ -175,6 +182,7 @@ sh ./scripts/run-transaction-pairwise-tests-with-cmd.sh
 Take down the services in the other terminal window.
 ```bash
 docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml down
+```
 
 # API Documentation:
 

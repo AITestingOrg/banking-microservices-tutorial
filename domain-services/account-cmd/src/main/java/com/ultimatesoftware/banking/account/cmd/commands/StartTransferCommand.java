@@ -6,12 +6,12 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.bson.types.ObjectId;
 
 @Getter
-public class FailToStartTransferTransactionCommand extends TransactionCommand implements ICommand {
+public class StartTransferCommand extends TransactionCommand implements ICommand {
     @TargetAggregateIdentifier
     private ObjectId id;
     private TransactionDto transactionDto;
 
-    public FailToStartTransferTransactionCommand(TransactionDto transactionDto) {
+    public StartTransferCommand(TransactionDto transactionDto) {
         super(transactionDto.getId());
         this.id =  new ObjectId(transactionDto.getAccountId());
         this.transactionDto = transactionDto;

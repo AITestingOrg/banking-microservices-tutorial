@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 public class StandardAccountRules implements AccountRules {
 
     public boolean eligibleForDelete(Account account) {
-        if (account.getActiveTransfers() == 0 && account.getBalance().compareTo(BigDecimal.ZERO) == 0) {
+        if (!account.isActiveTransfer() && account.getBalance().compareTo(BigDecimal.ZERO) == 0) {
             return true;
         }
         return false;
@@ -15,7 +15,7 @@ public class StandardAccountRules implements AccountRules {
 
     public boolean eligibleForDebit(Account account, double debitAmount) {
         BigDecimal difference = account.getBalance().subtract(BigDecimal.valueOf(debitAmount));
-        if (difference.compareTo(BigDecimal.ZERO) >= 0) {
+        if (!account.isActiveTransfer() && difference.compareTo(BigDecimal.ZERO) >= 0) {
             return true;
         }
         return false;

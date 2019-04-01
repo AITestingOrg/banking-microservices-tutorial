@@ -13,59 +13,78 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-@Prototype
-@NoArgsConstructor
 public class TransactionSaga {
     private static final Logger logger = LoggerFactory.getLogger(TransactionSaga.class);
 
+    private boolean withdrawCompleted = false;
+    private boolean depositCompleted = false;
     private String transactionId;
+    private double amount;
     private String sourceAccountId;
     private String destinationAccountId;
-    private double amount;
 
     @Inject
-    private CommandGateway commandGateway;
+    private transient CommandGateway commandGateway;
 
     @StartSaga
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferTransactionStartedEvent event) {
-        transactionId = event.getTransactionId();
-        sourceAccountId = event.getId();
-        destinationAccountId = event.getDestinationAccountId();
-        amount = event.getAmount();
-
         logger.info("A new transfer transaction is started with id {}, from account {} to account {} and amount {}",
-                    transactionId, sourceAccountId, destinationAccountId, amount);
-        StartTransferWithdrawCommand command = new StartTransferWithdrawCommand(sourceAccountId, amount, transactionId);
-        commandGateway.send(command);
+            event.getTransactionId(), event.getId(), event.getDestinationAccountId(), event.getAmount());
+        try {
+            sourceAccountId = event.getId();
+            destinationAccountId = event.getDestinationAccountId();
+            amount = event.getAmount();
+            transactionId = event.getTransactionId();
+            DebitAccountCommand command =
+                new DebitAccountCommand(event.getId(), event.getAmount(), event.getTransactionId(),
+                    true);
+            commandGateway.send(command);
+        } catch (Exception e) {
+            commandGateway.send(new FailTransactionCommand(sourceAccountId, destinationAccountId, transactionId));
+        }
     }
 
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferWithdrawConcludedEvent event) {
         logger.info("Transfer transaction with id {}, did transfer from {} successfully",
-                    transactionId, sourceAccountId);
-        ConcludeTransferDepositCommand command
-                = new ConcludeTransferDepositCommand(destinationAccountId, amount, transactionId);
-        commandGateway.send(command);
+            event.getTransactionId(), event.getId());
+        withdrawCompleted = true;
+        try {
+            CreditAccountCommand command
+                    = new CreditAccountCommand(destinationAccountId, event.getBalance(), event.getTransactionId(), true);
+            commandGateway.send(command);
+        } catch (Exception e) {
+            commandGateway.send(new FailTransactionCommand(sourceAccountId, destinationAccountId, transactionId, e.getMessage()));
+        }
     }
 
-    @EndSaga
     @SagaEventHandler(associationProperty = "transactionId")
-    public void handle(TransferFailedToStartEvent event) {
-        logger.info("Transfer transaction {} failed to start", transactionId);
+    public void handle(TransferFailedEvent event) {
+        // change this name and kick of cancel
+        logger.info("Transfer transaction {} failed to start", event.getTransactionId());
+        commandGateway.send(new CancelTransferCommand(sourceAccountId, transactionId, event.getMsg()));
     }
 
     @EndSaga
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferCanceledEvent event) {
-        logger.info("Transaction {} was canceled.", transactionId);
+        logger.info("Transaction {} was canceled.", event.getTransactionId());
+        if (withdrawCompleted) {
+            commandGateway.send(new RevertAccountBalanceCommand(sourceAccountId, amount, transactionId));
+        }
+
+        if (depositCompleted) {
+            commandGateway.send(new RevertAccountBalanceCommand(destinationAccountId, amount, transactionId));
+        }
     }
 
     @EndSaga
     @SagaEventHandler(associationProperty = "transactionId")
     public void handle(TransferDepositConcludedEvent event) {
-        logger.info("Transaction {} concluded", transactionId);
-        commandGateway.send(new ReleaseAccountCommand(sourceAccountId, transactionId));
-        commandGateway.send(new ReleaseAccountCommand(destinationAccountId, transactionId));
+        logger.info("Transaction {} concluded", event.getTransactionId());
+        depositCompleted = true;
+        commandGateway.send(new ReleaseAccountCommand(sourceAccountId, event.getTransactionId()));
+        commandGateway.send(new ReleaseAccountCommand(destinationAccountId, event.getTransactionId()));
     }
 }

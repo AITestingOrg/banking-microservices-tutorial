@@ -11,7 +11,6 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
-import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.annotation.Put;
@@ -58,7 +57,7 @@ public class AccountsController {
 
     @Put("/transfer")
     public HttpResponse<MessageDto> transfer(@Valid TransactionDto transaction) {
-        StartTransferTransactionCommand command = new StartTransferTransactionCommand(transaction);
+        StartTransferCommand command = new StartTransferCommand(transaction);
         this.commandGateway.send(command);
         return HttpResponse.ok(new MessageDto(SUCCESS));
     }

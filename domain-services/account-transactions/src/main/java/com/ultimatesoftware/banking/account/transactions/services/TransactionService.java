@@ -45,7 +45,7 @@ public class TransactionService {
             .type(TransactionType.TRANSFER)
             .amount(amount)
             .customerId(customerId)
-            .destinationAccount(destAccountId)
+            .destinationAccountId(destAccountId)
             .build();
 
         transactionRepository.add(transaction).blockingGet();

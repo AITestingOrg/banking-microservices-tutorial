@@ -20,7 +20,7 @@ public class Transaction extends Entity {
     private String accountId;
     private String customerId;
     private double amount;
-    private String destinationAccount;
+    private String destinationAccountId;
     private @Setter TransactionStatus status = TransactionStatus.IN_PROGRESS;
 
     @BsonCreator
@@ -31,14 +31,14 @@ public class Transaction extends Entity {
         @BsonProperty("accountId") String accountId,
         @BsonProperty("customerId") String customerId,
         @BsonProperty("amount") double amount,
-        @BsonProperty("destinationAccount") String destinationAccount,
+        @BsonProperty("destinationAccount") String destinationAccountId,
         @BsonProperty("status") TransactionStatus status) {
         super(id);
         this.type = type;
         this.accountId = accountId;
         this.customerId = customerId;
         this.amount = amount;
-        this.destinationAccount = destinationAccount;
+        this.destinationAccountId = destinationAccountId;
         if (status != null) {
             this.status = status;
         }

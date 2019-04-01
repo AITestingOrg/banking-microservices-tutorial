@@ -1,13 +1,11 @@
 package com.ultimatesoftware.banking.account.cmd.tests.unit.isolation;
 
 import com.ultimatesoftware.banking.account.cmd.aggregates.Account;
-import com.ultimatesoftware.banking.account.cmd.commands.CreditAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.DebitAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.DeleteAccountCommand;
-import com.ultimatesoftware.banking.account.cmd.commands.UpdateAccountCommand;
+import com.ultimatesoftware.banking.account.cmd.commands.*;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForCreditException;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForDebitException;
 import com.ultimatesoftware.banking.account.cmd.exceptions.AccountNotEligibleForDeleteException;
+import com.ultimatesoftware.banking.account.cmd.models.TransactionDto;
 import com.ultimatesoftware.banking.account.cmd.rules.AccountRules;
 import com.ultimatesoftware.banking.account.events.*;
 import org.bson.types.ObjectId;
@@ -31,6 +29,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountTest {
@@ -174,6 +173,93 @@ public class AccountTest {
         verify(account, times(1)).applyEvent(any());
     }
 
+    @Test
+    public void givenAccountExists_WhenConcludeTransferDeposit_TransactionStratedEmitted() throws Exception {
+        // arrange
+        doNothing().when(account).applyEvent(any());
+        account.on(AccountCreatedEvent.builder()
+            .id(id.toHexString())
+            .customerId(customerId)
+            .balance(0.0)
+            .build());
+
+        // act
+        account.on(new FailTransactionCommand(ObjectId.get().toHexString(), "s", "s"));
+
+        // assert
+        verify(account, times(1)).applyEvent(any(TransferFailedEvent.class));
+    }
+
+    @Test
+    public void givenAccountExists_WhenConcludeTransfer_TransferConcludedEmitted() throws Exception {
+        // arrange
+        doNothing().when(account).applyEvent(any());
+        doReturn(true).when(accountRules).eligibleForCredit(any(), anyDouble());
+        account.on(AccountCreatedEvent.builder()
+            .id(id.toHexString())
+            .customerId(customerId)
+            .balance(0.0)
+            .build());
+
+        // act
+        account.on(new CreditAccountCommand(ObjectId.get().toHexString(), 10.00, "transaction", true));
+
+        // assert
+        verify(account, times(1)).applyEvent(any(TransferDepositConcludedEvent.class));
+    }
+
+    @Test
+    public void givenAccountExists_WhenReleaseAccountCommmand_AccountReleasedEmitted() throws Exception {
+        // arrange
+        doNothing().when(account).applyEvent(any());
+        account.on(AccountCreatedEvent.builder()
+            .id(id.toHexString())
+            .customerId(customerId)
+            .balance(0.0)
+            .build());
+
+        // act
+        account.on(new ReleaseAccountCommand(ObjectId.get().toHexString(), "transaction"));
+
+        // assert
+        verify(account, times(1)).applyEvent(any(AccountReleasedEvent.class));
+    }
+
+    @Test
+    public void givenAccountExists_WhenCancelTransferCommmand_CancelTransferEmitted() throws Exception {
+        // arrange
+        doNothing().when(account).applyEvent(any());
+        account.on(AccountCreatedEvent.builder()
+            .id(id.toHexString())
+            .customerId(customerId)
+            .balance(0.0)
+            .build());
+
+        // act
+        account.on(new CancelTransferCommand(ObjectId.get().toHexString(), "trans", "msg"));
+
+        // assert
+        verify(account, times(1)).applyEvent(any(TransferCanceledEvent.class));
+    }
+
+    @Test
+    public void givenAccountExists_WhenFailedToStartTransaction_FailedToStartEmitted() throws Exception {
+        // arrange
+        doNothing().when(account).applyEvent(any());
+        account.on(AccountCreatedEvent.builder()
+            .id(id.toHexString())
+            .customerId(customerId)
+            .balance(0.0)
+            .build());
+        TransactionDto transaction = new TransactionDto("", ObjectId.get().toHexString(), "customer", 10.0, "dest");
+
+        // act
+        account.on(new FailTransactionCommand(ObjectId.get().toHexString(), "dest", "trans"));
+
+        // assert
+        verify(account, times(1)).applyEvent(any(TransferFailedEvent.class));
+    }
+
 
     @Test
     public void givenAcountCreatedEmitted_whenHandling_ThenUpdateIdBalanceCustomerId() {
@@ -276,5 +362,79 @@ public class AccountTest {
 
         // assert
         assertEquals(customerId, account.getCustomerId());
+    }
+
+    @Test
+    public void givenTransferWithdrawConcludedEmitted_whenHandling_ThenIncrementTransfers() {
+        // arrange
+        String customerId = UUID.randomUUID().toString();
+
+        // act
+        account.on(TransferWithdrawConcludedEvent.builder()
+            .id(id.toHexString())
+            .transactionId(customerId)
+            .balance(20.0)
+            .build());
+
+        // assert
+        assertEquals(account.isActiveTransfer(), true);
+    }
+
+    @Test
+    public void givenTransferDepositConcludedEmitted_whenHandling_ThenIncrementTransfers() {
+        // arrange
+        String customerId = UUID.randomUUID().toString();
+
+        // act
+        account.on(TransferDepositConcludedEvent.builder()
+            .id(id.toHexString())
+            .transactionId(customerId)
+            .balance(20.0)
+            .build());
+
+        // assert
+        assertEquals(account.isActiveTransfer(), true);
+    }
+
+    @Test
+    public void givenAccountReleasedEmitted_whenHandling_ThenDecrementTransfers() {
+        // arrange
+        String customerId = UUID.randomUUID().toString();
+        account.on(TransferDepositConcludedEvent.builder()
+            .id(id.toHexString())
+            .transactionId(customerId)
+            .balance(20.0)
+            .build());
+
+        // act
+        account.on(AccountReleasedEvent.builder()
+            .id(id.toHexString())
+            .transactionId(customerId)
+            .build());
+
+        // assert
+        assertEquals(account.isActiveTransfer(), false);
+    }
+
+    @Test
+    public void givenTransferCanceledEmitted_whenHandling_ThenDecrementTransfers() {
+        // arrange
+        String customerId = UUID.randomUUID().toString();
+        account.on(TransferDepositConcludedEvent.builder()
+            .id(id.toHexString())
+            .transactionId(customerId)
+            .balance(20.0)
+            .build());
+
+        // act
+        account.on(BalanceRevertedEvent.builder()
+            .id(id)
+            .balance(BigDecimal.valueOf(10.00))
+            .transactionId(customerId)
+            .build());
+
+        // assert
+        assertEquals(account.isActiveTransfer(), false);
+        assertEquals(account.getBalance().doubleValue(), 10.00);
     }
 }
