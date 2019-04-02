@@ -52,12 +52,32 @@ public class DepositServiceIsolationTest extends MockedHttpDependencies {
 }
 ```
 The above example performs simple setup and tear down operations, but this injection allows for more complicated, internal logic to be actuated from tests that may be otherwise difficult to instrument.
+However, for this test we will not need these before or after methods, nor the repository.
 
 #### Import Note about Service Isolation Tests and Communication with Other Services
 Note the class that this test fixture extends from, since this is a microservices ecosystem and this service depends on other services, we cannot simply execute actions on this service without its dependencies. Instead, we provide its dependencies as mocks using [WireMock](http://wiremock.org/).
 The `MockedHttpDependencies` takes care of the logic here providing the test with Mock services running on their default ports off of the test process. However, this does not mock Consul, the discovery service, under the `application-test.yml` we manually disable Consul registry from the service under test and provide configurations to inject the urls which the dependencies are running on.
 
 These mocked services do not have endpoints out of the box, so HTTP stubs are provided via ./resources/wiremock directory as JSON files. There are 200 and 404 status code cases available, but these can be extended by simply providing additional JSON files under each service within this directory.
+
+For all of the tests we are about to create, the service under tests need to verify if a customer exists within another service. Thereforce, the expected endpoint is stubbed witht eh following JSON configuration for WireMock.
+```json
+/* file: .resources/wiremock/people/mappings/get-success-stub.json */
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/v1/people/5c8ffe2b7c0bec3538855a0a"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"id\": \"5c8ffe2b7c0bec3538855a0a\",\"firstName\": \"Rodney\",\"lastName\": \"Mckay\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
+```
+Now, all we need to do is use the `5c8ffe2b7c0bec3538855a0a` ID from our mock. We do the same for the accounts service, you can find the mocks for that service under `./resources/wiremock/accountquery/mappings`.
 
 ## Triggering the Action Under Test
 The service isolation tests differ from the unit and integration tests at the class level as the service isolation test triggers the action to be tested via its external interface. In this case, 
