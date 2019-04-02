@@ -9,8 +9,7 @@ public class DepositServiceIsolationTest {
 ```
 In order for the test to have access to the injection service as well as run and bind the service under test before the test executes we will need to use a [Micronaut](https://micronaut.io/) annotation.
 The [MicronautTest](https://micronaut-projects.github.io/micronaut-test/latest/guide/index.html) annotation, when applied to the test fixture, 
-will run and bind the default port configured for service under test before the tests execute. If you are familiar 
-with [SpringBootTest](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html), this is very similar.
+will run and bind the default port configured for service under test before the tests execute. If you are familiar with [SpringBootTest](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html), this is very similar.
 ```java
 @MicronautTest
 public class DepositServiceIsolationTest {
@@ -55,13 +54,13 @@ public class DepositServiceIsolationTest extends MockedHttpDependencies {
 The above example performs simple setup and tear down operations, but this injection allows for more complicated, internal logic to be actuated from tests that may be otherwise difficult to instrument.
 
 #### Import Note about Service Isolation Tests and Communication with Other Services
-Note the class that this test fixture extends from, since this is a microservices ecosystem and this service depends on other services, we cannot simply execute actions on this service without it's dependencies. Instead, we provide it's dependencies as mocks using [WireMock](http://wiremock.org/).
+Note the class that this test fixture extends from, since this is a microservices ecosystem and this service depends on other services, we cannot simply execute actions on this service without its dependencies. Instead, we provide its dependencies as mocks using [WireMock](http://wiremock.org/).
 The `MockedHttpDependencies` takes care of the logic here providing the test with Mock services running on their default ports off of the test process. However, this does not mock Consul, the discovery service, under the `application-test.yml` we manually disable Consul registry from the service under test and provide configurations to inject the urls which the dependencies are running on.
 
-These mocked services do not having endpoints out of the box, so HTTP stubs are provided via ./resources/wiremock directory as JSON files. There are 200 and 404 status code cases available, but these can be extended by simply providing additional JSON files under each service within this directory.
+These mocked services do not have endpoints out of the box, so HTTP stubs are provided via ./resources/wiremock directory as JSON files. There are 200 and 404 status code cases available, but these can be extended by simply providing additional JSON files under each service within this directory.
 
 ## Triggering the Action Under Test
-The service isolation tests differ from the unit and integraton tests at the class level as the service isolation test triggers the action to be tested via it's external interface. In this case, 
+The service isolation tests differ from the unit and integration tests at the class level as the service isolation test triggers the action to be tested via its external interface. In this case, 
 that interface is the Account Transaction service REST API. To make calls against this API we have provided a helper object called `HttpClient`, the following code snippet demonstrates it's initialization.
 ```java
 ...
@@ -79,7 +78,7 @@ public static void beforeAll() {
 ```
 Here, we use the builder pattern to create an HTTP Client that submits HTTP requests to localhost, on port 8086 (which the Account Transactions services uses) and establish the base HTTP path. Note, it is usually a better practice to provide these hardcodeed values through some configuration, but they are provided here as literals for simplicity.
 
-Now, we can write a tests that makes calls to the service under test, which returns our helpers Response object. Below, the code demonstrates
+Now, we can write a test that makes calls to the service under test, which returns our helpers Response object. Below, the code demonstrates
 how to make a RESTful call to the service's `/api/v1/transactions/deposit` endpoint which should result in a 201 status code (Created) and return a transaction ID.
 ```java
 @Test
@@ -96,8 +95,8 @@ public void givenValidAccount_whenDepositing_thenTransactionIdReturned() {
 }
 ```
 
-## Asserting against Mock Services
-Next, we will test if the Account Command service received the deposit request, in this case we verify if the mock received exactly one request to the credit endpoint.
+## Asserting Against Mocked Services
+Next, we will test if the Account Command service received the deposit request, in this case, we verify if the mock received precisely one request to the credit endpoint.
 Note, the HTTP client on the service under test is fully exercised here as the Mock is running on another thread, so an HTTP call is actually made.
 
 ```java
@@ -114,6 +113,5 @@ public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() 
 ```
 
 ## Summary
-In this guide we learned how to use the Micronaut framework to create a service isolation tests with Mocked service dependencies. We also learned about the 
-different environments required to put the system into a configuration which we are able to run the service in a stand alone manner. One of the primary
-benefits of this test is that it runs quickly and without many infrastructure requirements, such as completed dependencies or a cloud infrastructure.
+In this guide, we learned how to use the Micronaut framework to create a service isolation test with Mocked service dependencies. We also learned about the different environments required to put the system into a configuration which we can run the service in a stand-alone manner. One of the primary
+benefits of this test is that it runs quickly and without many infrastructure requirements, such as completed dependencies or cloud infrastructure.
