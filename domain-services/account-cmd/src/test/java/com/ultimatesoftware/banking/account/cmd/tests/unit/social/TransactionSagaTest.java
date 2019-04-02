@@ -8,14 +8,12 @@ import com.ultimatesoftware.banking.account.events.AccountCreatedEvent;
 import com.ultimatesoftware.banking.account.events.TransferDepositConcludedEvent;
 import com.ultimatesoftware.banking.account.events.TransferTransactionStartedEvent;
 import com.ultimatesoftware.banking.account.events.TransferWithdrawConcludedEvent;
-import io.micronaut.test.annotation.MicronautTest;
 import org.axonframework.test.saga.SagaTestFixture;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@MicronautTest
 @Disabled
 public class TransactionSagaTest {
     private static final String accountId = ObjectId.get().toHexString();
