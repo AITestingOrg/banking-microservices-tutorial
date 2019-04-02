@@ -102,9 +102,9 @@ Now, we can write a test that makes calls to the service under test, which retur
 how to make a RESTful call to the service's `/api/v1/transactions/deposit` endpoint which should result in a 201 status code (Created) and return a transaction ID.
 ```java
 @Test
-public void givenValidAccount_whenDepositing_thenTransactionIdReturned() {
+public void givenValidAccount_whenDepositing_thenTransactionIdReturned() throws IOException {
     // Arrange
-    TransactionDto transactionDto = new TransactionDto(customerId.toHexString(), accountId.toHexString(), 15.00);
+    TransactionDto transactionDto = new TransactionDto(customerId, accountId, 15.00);
     
     // Act
     ResponseDto response = client.post(transactionDto, "/deposit");
@@ -120,9 +120,9 @@ Next, we will test if the Account Command service received the deposit request, 
 Note, the HTTP client on the service under test is fully exercised here as the Mock is running on another thread, so an HTTP call is actually made.
 
 ```java
-public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() {
+public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() throws IOException {
     // Arrange
-    TransactionDto transactionDto = new TransactionDto(customerId.toHexString(), accountId.toHexString(), 15.00);
+    TransactionDto transactionDto = new TransactionDto(customerId, accountId, 15.00);
     
     // Act
     ResponseDto response = client.post(transactionDto, "/deposit");
@@ -134,46 +134,65 @@ public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() 
 
 ## Final Code
 ```java
+package com.ultimatesoftware.banking.account.transactions.tests.service.isolation;
+
+import com.ultimatesoftware.banking.account.transactions.models.TransactionDto;
+import com.ultimatesoftware.banking.test.utils.HttpClient;
+import com.ultimatesoftware.banking.test.utils.MockedHttpDependencies;
+import com.ultimatesoftware.banking.test.utils.ResponseDto;
+import io.micronaut.test.annotation.MicronautTest;
+import org.bson.types.ObjectId;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @MicronautTest(environments = {"external_mocks"})
 public class DepositServiceIsolationTest extends MockedHttpDependencies {
-    private String accountId = "5c8ffe2b7c0bec3538855a06";
-    private String customerId = "5c8ffe2b7c0bec3538855a0a";
+    private static final String accountId = "5c8ffe2b7c0bec3538855a06";
+    private static final String customerId = "5c8ffe2b7c0bec3538855a0a";
     private static HttpClient client;
-    
-      @BeforeAll
-      public static void beforeAll() {
-          client = HttpClient.getBuilder()
-              .setHost("localhost")
-              .setPort(8086)
-              .setPath("/api/v1/transactions")
-              .build();
-      }
-        
+
+    @BeforeAll
+    public static void beforeAll() {
+        client = HttpClient.getBuilder()
+            .setHost("localhost")
+            .setPort(8086)
+            .setPath("/api/v1/transactions")
+            .build();
+    }
+
     @Test
-    public void givenValidAccount_whenDepositing_thenTransactionIdReturned() {
+    public void givenValidAccount_whenDepositing_thenTransactionIdReturned() throws IOException {
         // Arrange
-        TransactionDto transactionDto = new TransactionDto(customerId.toHexString(), accountId.toHexString(), 15.00);
-        
+        TransactionDto transactionDto = new TransactionDto(customerId, accountId, 15.00);
+
         // Act
         ResponseDto response = client.post(transactionDto, "/deposit");
-        
+
         // Assert
         assertEquals(201, response.getStatusCode());
         assertTrue(ObjectId.isValid(response.getBody().replace("\n", "")));
     }
-    
+
     @Test
-    public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() {
+    public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() throws IOException {
         // Arrange
-        TransactionDto transactionDto = new TransactionDto(customerId.toHexString(), accountId.toHexString(), 15.00);
-        
+        TransactionDto transactionDto = new TransactionDto(customerId, accountId, 15.00);
+
         // Act
         ResponseDto response = client.post(transactionDto, "/deposit");
-        
+
         // Assert
         accountCmdService.verify(1, putRequestedFor(urlEqualTo("/api/v1/accounts/credit")));
     }
 }
+
 ```
 
 ## Summary
