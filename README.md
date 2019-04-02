@@ -227,7 +227,6 @@ Check your imports for JUnit, if you don't see juniper for your `Test` annotatio
 ### Mocks are Null
 Check that you are using Mockito the JUnit 5 way, with the `MockitoExtension` and `ExtendWith` annotations.
 
-
 ### Services are Rehydrated After Restart and Clearing Mongo
 If you have a lot of events then services are going to be rehydrated when you bring everything up. To stop this you can delete the event folders `axonserver-eventstore` and `axonserver-controldb` in the root of the project and then bring the environment up.
 
