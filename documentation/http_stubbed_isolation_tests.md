@@ -1,7 +1,7 @@
 # Create a Service Isolation Tests
 This page documents how to create service isolation tests. Since the service runs in isolation, no Docker configuration is needed for this guide.
 ## Create a Test Fixture
-We use [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) for this project, so there is nothing JUnit related that you will need to do in order to create a test fixture other than creating a new Java class.
+We use [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) for this project (Account Transactions), so there is nothing JUnit related that you will need to do in order to create a test fixture other than creating a new Java class.
 ```java
 public class DepositServiceIsolationTest {
     ...
@@ -129,6 +129,50 @@ public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() 
     
     // Assert
     accountCmdService.verify(1, putRequestedFor(urlEqualTo("/api/v1/accounts/credit")));
+}
+```
+
+## Final Code
+```java
+@MicronautTest(environments = {"external_mocks"})
+public class DepositServiceIsolationTest extends MockedHttpDependencies {
+    private String accountId = "5c8ffe2b7c0bec3538855a06";
+    private String customerId = "5c8ffe2b7c0bec3538855a0a";
+    private static HttpClient client;
+    
+      @BeforeAll
+      public static void beforeAll() {
+          client = HttpClient.getBuilder()
+              .setHost("localhost")
+              .setPort(8086)
+              .setPath("/api/v1/transactions")
+              .build();
+      }
+        
+    @Test
+    public void givenValidAccount_whenDepositing_thenTransactionIdReturned() {
+        // Arrange
+        TransactionDto transactionDto = new TransactionDto(customerId.toHexString(), accountId.toHexString(), 15.00);
+        
+        // Act
+        ResponseDto response = client.post(transactionDto, "/deposit");
+        
+        // Assert
+        assertEquals(201, response.getStatusCode());
+        assertTrue(ObjectId.isValid(response.getBody().replace("\n", "")));
+    }
+    
+    @Test
+    public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() {
+        // Arrange
+        TransactionDto transactionDto = new TransactionDto(customerId.toHexString(), accountId.toHexString(), 15.00);
+        
+        // Act
+        ResponseDto response = client.post(transactionDto, "/deposit");
+        
+        // Assert
+        accountCmdService.verify(1, putRequestedFor(urlEqualTo("/api/v1/accounts/credit")));
+    }
 }
 ```
 
