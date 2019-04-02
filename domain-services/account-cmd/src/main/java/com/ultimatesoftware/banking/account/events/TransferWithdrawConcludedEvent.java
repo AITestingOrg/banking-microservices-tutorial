@@ -8,11 +8,13 @@ import lombok.Getter;
 @Getter
 @JsonDeserialize(builder = TransferTransactionStartedEvent.TransferTransactionStartedEventBuilder.class)
 public class TransferWithdrawConcludedEvent extends AccountTransactionEvent {
+    private double amount;
     private double balance;
 
     @Builder
-    protected TransferWithdrawConcludedEvent(String id, double balance, String transactionId) {
+    protected TransferWithdrawConcludedEvent(String id, double amount, double balance, String transactionId) {
         super(id, transactionId);
+        this.amount = amount;
         this.balance = balance;
     }
 

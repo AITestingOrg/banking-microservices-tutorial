@@ -79,6 +79,7 @@ public class Account {
             applyEvent(TransferWithdrawConcludedEvent.builder()
                 .id(debitAccountCommand.getId().toHexString())
                 .balance(newBalance.doubleValue())
+                .amount(debitAccountCommand.getAmount())
                 .transactionId(debitAccountCommand.getTransactionId())
                 .build());
         } else {
