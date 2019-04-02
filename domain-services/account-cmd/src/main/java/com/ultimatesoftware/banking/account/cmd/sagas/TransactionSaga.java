@@ -52,7 +52,7 @@ public class TransactionSaga {
         withdrawCompleted = true;
         try {
             CreditAccountCommand command
-                    = new CreditAccountCommand(destinationAccountId, event.getBalance(), event.getTransactionId(), true);
+                    = new CreditAccountCommand(destinationAccountId, event.getAmount(), event.getTransactionId(), true);
             commandGateway.send(command);
         } catch (Exception e) {
             commandGateway.send(new FailTransactionCommand(sourceAccountId, destinationAccountId, transactionId, e.getMessage()));
