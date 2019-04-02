@@ -1,6 +1,6 @@
 # Banking Microservices Tutorial
 [![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-tutorial.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-tutorial)
-[![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-tutorial/badge.svg?branch=service-integration-testing)](https://coveralls.io/github/AITestingOrg/banking-microservices-tutorial?branch=service-integration-testing)
+[![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-tutorial/badge.svg?branch=master)](https://coveralls.io/github/AITestingOrg/banking-microservices-tutorial?branch=master)
 
 The Banking Microservices Tutorial project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 
