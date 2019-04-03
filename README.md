@@ -16,7 +16,7 @@ The Banking Microservices Tutorial project is a small system used to show how mi
 <p style="text-align: center;">Routing configuration of gateways.</p> 
 
 ## Configuration
-The services can be configured in three ways, a local default configuration under each project resources/application.yml, a development coniguration under
+The services can be configured in three ways, a local default configuration under each project resources/application.yml, a development configuration under
 resources/application-dev.yml, and the centralized configuration service. 
 
 ## Requirements
@@ -45,15 +45,15 @@ See each services readme for detailed requirement information
 # Start the backing services: service discovery, configuration, authentication, edge service
 docker-compose up --build
 # After verifying everything spun up correctly tear it down.
-# Press Control C to shutdown the docker containers
+# Press Control C to shut down the docker containers
 ```
 
 ## Running with Mocks
 To download the Mock images and test running on your machine use the following commands.
 ```bash
-docker-compose -f docker-compose-sub-domain-testing.yml up
+docker-compose -f docker-compose-subdomain-testing.yml up
 # After verifying everything spun up correctly tear it down.
-# Press Control C to shutdown the docker containers
+# Press Control C to shut down the docker containers
 ```
 
 ## Running the PACT Broker
@@ -61,7 +61,7 @@ Exercise the PACT Broker service.
 ```bash
 docker-compose -f ./docker/pact-broker/docker-compose.yml up
 # After verifying everything spun up correctly tear it down.
-# Press Control C to shutdown the docker containers
+# Press Control C to shut down the docker containers
 ```
 
 ## Rebuild Containers
@@ -73,8 +73,8 @@ docker-compose build
 The following guides are meant to get your environment up and running tests, not necessarily a guide to the most effective way to execute the tests while you are developing them.
 
 ## Windows Users
-The following examples use shell scripts, simply replace the `.sh` extentions in the examples with 
-`.bat` in order to execute them in Command Prompt or PowerShell.
+The following examples use shell scripts, just replace the `.sh` extensions in the examples with 
+`.bat` to execute them in Command Prompt or PowerShell.
 
 ## Running Unit and Integration Tests
 The Gradle task 'test' executes the JUnit tests for each project.
@@ -89,10 +89,8 @@ You can find a JaCoCo coverage report under the "coverage" in transaction servic
 ## Running Service Isolation Tests
 The documentation [here](documentation/http_stubbed_isolation_tests.md) provides a guide on creating new isolation tests with HTTP stubs.
 ### Running Service Isolation Tests with All External Dependencies Mocked
-Mocking all external dependencies to the services allows for very rapid execution of tests and 
-alleviates the need for configuring or utilizing resources for the external dependencies. 
-In memory databases are used in the place of Mongo, though the the same Mongo code dependencies 
-are used to connect to these in-memory databases. HTTP mock server stubs are used to provide stubbed responses for external services.
+Mocking all external dependencies to the services allows for very rapid execution of tests and alleviates the need for configuring or utilizing resources for the external dependencies. 
+In memory databases are used in the place of Mongo, though the same Mongo code dependencies are used to connect to these in-memory databases. HTTP mock server stubs are used to provide stubbed responses for external services.
 ![Externally Mocked Services](documentation/images/external-mocks.png)
 Docker is not required to run these tests as all external dependencies are mocked.
 ```bash
@@ -101,9 +99,9 @@ sh ./scripts/run-isolation-tests-mocked.sh
 
 ### Running Service Isolation Tests with External Databases, Caches, and Etc...
 Here only the calls to other services are mocked, but external dependencies like databases, caches, 
-and discovery services are deployed. For this guide we will run the Transaction service isolation tests. 
+and discovery services are deployed. For this guide, we will run the Transaction service isolation tests. 
 We use Docker Compose to stand up Mongo. Transactions is the only service demoed here because in an actual product you will most likely have a cloud
-deployment infrastructure where you can dynamically configure the HTTP stubs, here we simply use a Docker Compose configuration.
+deployment infrastructure where you can dynamically configure the HTTP stubs, here we use a Docker Compose configuration.
 ![Externally Mocked Services](documentation/images/isolation-mocks.png)
 Start the services database using the backing services.
 ```bash
@@ -152,12 +150,12 @@ Note, if you want to examine the individual PACTs, these are generated in `tests
 ## Running Service Integration Tests
 
 ### Sub-Domain Service Integration Testing
-To run the sub-domain service integration tests, all of the dependencies must be available for the given service under test. For this case we will be running integration tests for the Account sub-domain, which means that the gateway for the People domain will be mocked, but all Account related services should be up.
+To run the sub-domain service integration tests, all of the dependencies must be available for the given service under test. For this case, we will be running integration tests for the Account sub-domain, which means that the gateway for the People domain will be mocked, but all Account related services should be up.
 ![Sub-Domain Integration Testing](documentation/images/subdomain-integration-testing.png)
 
 Use docker to stand up the supporting services, databases, and etc...
 ```bash
-docker-compose -f docker-compose-sub-domain-testing.yml up
+docker-compose -f docker-compose-subdomain-testing.yml up
 ```
 Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
 ```bash
@@ -165,19 +163,18 @@ sh ./scripts/run-sub-domain-integration-tests.sh
 ```
 Take down the services in the other terminal window.
 ```bash
-docker-compose -f docker-compose-sub-domain-testing.yml down
+docker-compose -f docker-compose-subdomain-testing.yml down
 ```
 
 ### Pairwise Service Integration Testing
 To run the pairwise service integration tests you will need to have the appropriately configured environment for the particular tests. 
 Here, we demo pairwise testing of the Account Transactions and Account Cmd pair, with all other domain services mocked, 
-notice that unlike subdomain testing, the domain gateway is not present. This type of testing requires much configuration and thus should 
-be used for complicated interactions between two services, not for every service pair.
+notice that unlike subdomain testing, the domain gateway is not present. This type of testing requires many configurations and thus should be used for complicated interactions between two services, not for every service pair.
 ![Sub-Domain Integration Testing](documentation/images/service-integration-pairwise-testing.png)
 
-Use docker to stand up the supporting services, databases, and etc...
+Use docker to stand up the supporting services, databases, etc...
 ```bash
-docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml up
+docker-compose -f docker-compose-pairwise-account-cmd-transaction.yml up
 ```
 Once the services stabilize, you should see a message like `o.a.a.c.AxonServerConnectionManager - Re-subscribing commands and queries`, at this point you can open a new terminal and run the tests.
 ```bash
@@ -185,7 +182,7 @@ sh ./scripts/run-transaction-pairwise-tests-with-cmd.sh
 ```
 Take down the services in the other terminal window.
 ```bash
-docker-compose -f docker-compose-pair-wise-account-cmd-transaction.yml down
+docker-compose -f docker-compose-pairwise-account-cmd-transaction.yml down
 ```
 
 # API Documentation:
