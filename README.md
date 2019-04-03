@@ -38,7 +38,7 @@ See each services readme for detailed requirement information
 # Running the Project
 
 ## Start the Microservices
-** Build JARs for each project (You will need to build a JAR anytime changes are made to a project, then rebuild either the container or all containers)
+Build JARs for each project (You will need to build a JAR anytime changes are made to a project, then rebuild either the container or all containers)
 ```bash
 # Assemble the binaries
 ./gradlew assemble
