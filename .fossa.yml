@@ -1,6 +1,0 @@
-path: build.gradle
-  type: gradle
-  options:
-    gradle:
-      task: "assemble"
-      configuration: ""
