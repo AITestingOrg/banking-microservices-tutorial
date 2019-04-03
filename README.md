@@ -1,6 +1,7 @@
 # Banking Microservices Tutorial
 [![Build Status](https://travis-ci.org/AITestingOrg/banking-microservices-tutorial.svg?branch=master)](https://travis-ci.org/AITestingOrg/banking-microservices-tutorial)
 [![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-tutorial/badge.svg?branch=master)](https://coveralls.io/github/AITestingOrg/banking-microservices-tutorial?branch=master)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FAITestingOrg%2Fbanking-microservices-tutorial.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FAITestingOrg%2Fbanking-microservices-tutorial?ref=badge_shield)
 
 The Banking Microservices Tutorial project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 
@@ -236,3 +237,7 @@ There may be orphaned results in Mongo, try tearing it down and removing the vol
 ### Parallization
 In the root `build.gradle` there is a parallization line for JUnit, but beware, some tests spin up mock servers off their process, this will result in a port conflict if two tests use the same mock server port.
 This is only a consideration for service isolation tests and contract test generation.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FAITestingOrg%2Fbanking-microservices-tutorial.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FAITestingOrg%2Fbanking-microservices-tutorial?ref=badge_large)
