@@ -71,7 +71,7 @@ docker-compose build
 
 # Executing Tests
 The following guides are meant to get your environment up and running tests, not necessarily a guide to the most effective way to execute the tests while you are developing them.
-
+To see detailed logs for any of these tests, you may execute them from IntelliJ or view the test reports from the terminal execution within `<PROJECT>/build/reports/tests/test/index.html`
 ## Windows Users
 The following examples use shell scripts, just replace the `.sh` extensions in the examples with 
 `.bat` to execute them in Command Prompt or PowerShell.
