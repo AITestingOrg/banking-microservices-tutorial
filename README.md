@@ -185,6 +185,10 @@ Take down the services in the other terminal window.
 docker-compose -f docker-compose-pairwise-account-cmd-transaction.yml down
 ```
 
+#### Note on Event Sourcing and Hydration
+If Axon Server is running it will automatically attempt to rehydrate event listeners, if you have run tests before this means you will see accounts created, transactions go through, and then accounts get deleted. Your tests should not be affected by this but it can create noise or potentially cause side effects when creating new tests.
+To remove these events you will need to delete the `axon-server-controldb` and `axonserver-eventstore` folders in the root of this project.
+
 # API Documentation:
 Each service publishes a Swagger YAML configuration, if you are familiar with Swagger UI you can consume the following configurations:
 * http://localhost:8082/swagger/Account-Cmd-0.1.yml

@@ -23,36 +23,11 @@ It should be noted, with or without the in-memory DB all of the code, including 
 You can force profiles with the `MicronautTest` annotation.
 ```java
 @MicronautTest(environments = {"external_mocks"})
-public class DepositServiceIsolationTest {
+public class DepositServiceIsolationTest extends MockedHttpDependencies {
     ...
 }
 ```
 For now, it will be more convenient to execute the tests without a live Mongo instance so we will leave the `external_mocks` environment in place.
-
-## Injecting Components into the Tests
-Micronaut provides a rich dependency injection framework that carries over to testing. This allows for spying on internals or instrumenting complex conditions before tests execute.
-The following example shows how the Mongo adapter is injected into the test fixture to perform data setup in the test.
-```java
-@MicronautTest(environments = {"external_mocks"})
-public class DepositServiceIsolationTest extends MockedHttpDependencies {
-    @Inject
-    private Repository<Transaction> mongoRepository;
-    private String accountId = "5c8ffe2b7c0bec3538855a06";
-    private String customerId = "5c8ffe2b7c0bec3538855a0a";
-    
-    @BeforeEach
-    private void beforeEach() {
-        mongoRepository.add(new Transaction(accountId, customerId, 20.00));
-    }
-    
-    @AfterEach
-    private void afterEach() {
-        mongoRepository.dropCollection();
-    }
-}
-```
-The above example performs simple setup and tear down operations, but this injection allows for more complicated, internal logic to be actuated from tests that may be otherwise difficult to instrument.
-However, for this test we will not need these before or after methods, nor the repository.
 
 #### Import Note about Service Isolation Tests and Communication with Other Services
 Note the class that this test fixture extends from, since this is a microservices ecosystem and this service depends on other services, we cannot simply execute actions on this service without its dependencies. Instead, we provide its dependencies as mocks using [WireMock](http://wiremock.org/).
@@ -131,6 +106,32 @@ public void givenValidAccount_whenDepositing_thenTheAccountCmdServiceIsCalled() 
     accountCmdService.verify(1, putRequestedFor(urlEqualTo("/api/v1/accounts/credit")));
 }
 ```
+
+## Injecting Components into the Tests
+Micronaut provides a rich dependency injection framework that carries over to testing. This allows for spying on internals or instrumenting complex conditions before tests execute.
+The following example shows how the Mongo adapter is injected into the test fixture to perform data setup in the test.
+```java
+@MicronautTest(environments = {"external_mocks"})
+public class DepositServiceIsolationTest extends MockedHttpDependencies {
+    @Inject
+    private Repository<Transaction> mongoRepository;
+    private String accountId = "5c8ffe2b7c0bec3538855a06";
+    private String customerId = "5c8ffe2b7c0bec3538855a0a";
+    
+    @BeforeEach
+    private void beforeEach() {
+        mongoRepository.add(new Transaction(accountId, customerId, 20.00));
+    }
+    
+    @AfterEach
+    private void afterEach() {
+        mongoRepository.dropCollection();
+    }
+}
+```
+The above example performs simple setup and tear down operations, but this injection allows for more complicated, internal logic to be actuated from tests that may be otherwise difficult to instrument.
+However, for this test we will not need these before or after methods, nor the repository.
+
 
 ## Final Code
 ```java

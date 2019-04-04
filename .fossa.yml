@@ -7,10 +7,6 @@ cli:
   fetcher: custom
 analyze:
   modules:
-  - name: domain-services
-    type: gradle
-    target: 'domain-services:'
-    path: .
   - name: domain-services:account-cmd
     type: gradle
     target: 'domain-services:account-cmd:'
@@ -35,10 +31,6 @@ analyze:
     type: gradle
     target: 'domain-services:people-details:'
     path: .
-  - name: libs
-    type: gradle
-    target: 'libs:'
-    path: .
   - name: libs:api
     type: gradle
     target: 'libs:api:'
@@ -46,10 +38,6 @@ analyze:
   - name: libs:test-api
     type: gradle
     target: 'libs:test-api:'
-    path: .
-  - name: tests
-    type: gradle
-    target: 'tests:'
     path: .
   - name: tests:integration-tests
     type: gradle
