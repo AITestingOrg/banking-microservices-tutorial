@@ -125,6 +125,7 @@ If you update the WireMock request journal validations under `./domain-services/
 Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
 Start the domain services with internal mocks so that only the endpoints will be tested.
 ![Internally Mocked Services](documentation/images/internal-mocks.png)
+To read more on implementing PACT contract tests we have provided a guide [here](./documentation/contract_testing_with_PACT.md).
 ```bash
 docker-compose -f docker-compose-internal-mocked.yml up -d
 ```
