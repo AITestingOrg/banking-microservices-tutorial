@@ -73,6 +73,7 @@ docker-compose build
 # Executing Tests
 The following guides are meant to get your environment up and running tests, not necessarily a guide to the most effective way to execute the tests while you are developing them.
 
+To see detailed logs for any of these tests, you may execute them from IntelliJ or view the test reports from the terminal execution within `<PROJECT>/build/reports/tests/test/index.html`
 ## Windows Users
 The following examples use shell scripts, just replace the `.sh` extensions in the examples with 
 `.bat` to execute them in Command Prompt or PowerShell.
@@ -125,6 +126,7 @@ If you update the WireMock request journal validations under `./domain-services/
 Ideally, these tests would run in a continuous integration system and not require the Docker Compose steps provided.
 Start the domain services with internal mocks so that only the endpoints will be tested.
 ![Internally Mocked Services](documentation/images/internal-mocks.png)
+To read more on implementing PACT contract tests we have provided a guide [here](./documentation/contract_testing_with_PACT.md).
 ```bash
 docker-compose -f docker-compose-internal-mocked.yml up -d
 ```
@@ -185,6 +187,10 @@ Take down the services in the other terminal window.
 ```bash
 docker-compose -f docker-compose-pairwise-account-cmd-transaction.yml down
 ```
+
+#### Note on Event Sourcing and Hydration
+If Axon Server is running it will automatically attempt to rehydrate event listeners, if you have run tests before this means you will see accounts created, transactions go through, and then accounts get deleted. Your tests should not be affected by this but it can create noise or potentially cause side effects when creating new tests.
+To remove these events you will need to delete the `axon-server-controldb` and `axonserver-eventstore` folders in the root of this project.
 
 # API Documentation:
 Each service publishes a Swagger YAML configuration, if you are familiar with Swagger UI you can consume the following configurations:

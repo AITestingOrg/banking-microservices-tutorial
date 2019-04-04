@@ -55,6 +55,7 @@ public class Account {
 
     @CommandHandler
     public void on(DebitAccountCommand debitAccountCommand) throws Exception {
+        logger.info("Handling Debit Command for " + debitAccountCommand.getTransactionId());
         if (!this.accountRules.eligibleForDebit(this, debitAccountCommand.getAmount())) {
             if (debitAccountCommand.isTransfer()) {
                 applyEvent(TransferFailedEvent.builder()
@@ -95,6 +96,7 @@ public class Account {
 
     @CommandHandler
     public void on(CreditAccountCommand creditAccountCommand) throws Exception {
+        logger.info("Handling Credit Command for " + creditAccountCommand.getTransactionId());
         if (!this.accountRules.eligibleForCredit(this, creditAccountCommand.getAmount())) {
             if (creditAccountCommand.isTransfer()) {
                 applyEvent(TransferFailedEvent.builder()
@@ -134,6 +136,7 @@ public class Account {
 
     @CommandHandler
     public void on(RevertAccountBalanceCommand revertAccountBalanceCommand) {
+        logger.info("Handling Revert Account Balance Command for " + revertAccountBalanceCommand.getTransactionId());
         BigDecimal newBalance = balance.add(BigDecimal.valueOf(revertAccountBalanceCommand.getAmount()));
         applyEvent(BalanceRevertedEvent.builder()
             .id(revertAccountBalanceCommand.getId())
@@ -144,6 +147,7 @@ public class Account {
 
     @CommandHandler
     public void on(DeleteAccountCommand deleteAccountCommand) throws Exception {
+        logger.info("Handling Delete Command for " + deleteAccountCommand.getId());
         if (this.accountRules.eligibleForDelete(this)) {
             applyEvent(AccountDeletedEvent.builder()
                 .id(deleteAccountCommand.getId().toHexString())
@@ -156,6 +160,7 @@ public class Account {
 
     @CommandHandler
     public void on(UpdateAccountCommand updateAccountCommand) throws Exception {
+        logger.info("Handling Update Command for " + updateAccountCommand.getId());
         applyEvent(AccountUpdatedEvent.builder()
             .id(updateAccountCommand.getId().toHexString())
             .customerId(updateAccountCommand.getCustomerId())

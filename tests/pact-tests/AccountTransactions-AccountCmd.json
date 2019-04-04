@@ -7,32 +7,6 @@
     },
     "interactions": [
         {
-            "description": "Request to credit account.",
-            "request": {
-                "method": "PUT",
-                "path": "/api/v1/accounts/credit",
-                "headers": {
-                    "Content-Type": "application/json"
-                },
-                "body": {
-                    "customerId": "5c892dbef72465ad7e7dde42",
-                    "accountId": "5c892dbef72465ad7e7dde42",
-                    "amount": 10.0
-                }
-            },
-            "response": {
-                "status": 200,
-                "body": {
-                    "message": "SENT COMMAND"
-                }
-            },
-            "providerStates": [
-                {
-                    "name": "An account exists."
-                }
-            ]
-        },
-        {
             "description": "Request to debit account.",
             "request": {
                 "method": "PUT",
