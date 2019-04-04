@@ -10,17 +10,17 @@ Transactions consumer with the Account Command provider for a deposit action. Th
 ### Example of a PACT Contract
 ```json
 {
-   state: 'I have a picture that can be downloaded',
-   uponReceiving: 'a request to download some-file',
-   withRequest: {
-       method: 'GET',
-       path: '/download/somefile'
+   "state": "I have a picture that can be downloaded",
+   "uponReceiving": "a request to download some-file",
+   "withRequest": {
+       "method": "GET",
+       "path": "/download/somefile"
    },
-   willRespondWith: {
-       status: 200,
-       headers:
+   "willRespondWith": {
+       "status": 200,
+       "headers":
        {
-           'Content-disposition': 'attachment; filename=some-file.jpg'
+           "Content-disposition": "attachment; filename=some-file.jpg"
        }
    }
 }
