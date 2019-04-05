@@ -1,11 +1,10 @@
 # Contract Testing with PACT
 Given all the moving parts and communication between these parts in microservices, contract tests provide valuable, fast feedback.
-Ideally, not only are all API methods covered, but also different rejection cases, 
+Ideally, not only are all API methods covered, but also different rejection cases,
 such as bad requests or server errors. For this project, [PACT](https://docs.pact.io/) is used as the contract testing framework. PACT is one of the most popular and mature contract testing frameworks which provides plug-ins and libraries for a range of languages.
 
 ## Consumers Create Contracts
-Each consumer creates a contract with a provider, in this example, we are going to develop a contract for the Account
-Transactions consumer with the Account Command provider for a deposit action. The end result of these contracts are JSON files, like the one below:
+Each consumer creates a contract with a provider. In this example, we are going to develop a contract for the deposit action between the Account Transactions consumer and the Account Command. The contract are stored as JSON files like the one below:
 
 ### Example of a PACT Contract
 ```json
@@ -34,14 +33,14 @@ library allows you to extend the test with the `PactConsumerTestExt` extension a
 ```java
 @ExtendWith(PactConsumerTestExt.class)
 @PactTestFor(providerName = "AccountCmd", port = "8082")
-public class ConsumeDepositAccount { 
+public class ConsumeDepositAccount {
     ...
 }
 ```
 
 ### Deposit PACT
 To define the contract, we create a method annotated as a PACT, which provides the consumer and provider names.
-The contents of the method consist of aa builder that clearly defines each property of the contract broken into two areas.
+The contents of the method includes the use of a builder that helps to clearly define each property of the contract. The builder supports defining two major components. First, the input to send to the provider, and second, the results expected from the provider's response.
 The first, the input to send to the provider, and the second is the expected results.
 ```java
 @Pact(provider = "AccountCmd", consumer = "AccountTransactions")
@@ -69,10 +68,9 @@ private Map<String, String> getHeaders() {
 Now that we have defined the PACT, we need to generate the JSON for publishing to the broker.
 
 ### Generating the PACT and Validating the Contract
-To generate the JSON contract, we need to define a test which provides a mock provider that is called and the results are asserted.
-To be clear, this does not test the validity of the contract against the actual provider. The PACT library
-creates a mock server that is defined by the contract provided, then we may use an HTTP client (here we use [RestAssured](http://rest-assured.io/)) to test that we have correctly created the contract.
-Once these tests successfully executes, the PACT library will generate the JSON contract. If this execution is performed by Gradle, then these contracts will be published to the `./test/pact` directory, if you run it through IntelliJ then it will be in the `target` directory of the consumer service.
+To generate the JSON contract, we need to define a test in our PACT fixture. The PACT test harness invokes the test, providing a mock service that behaves according to the defined contract. The test may communicate with the mock service and assert on expected behavior.
+To be clear, this does not test the validity of the contract against the actual provider. The PACT library creates a mock server that is defined by the provided contract. Then we may use an HTTP client (here we use [RestAssured](http://rest-assured.io/)) to test that we have correctly created the contract.
+Once these tests successfully execute, the PACT library will generate the JSON contract. If this execution is performed by Gradle, then these contracts will be published to the `./test/pact directory`. If run through IntelliJ, then the contracts will be placed in the target directory of the consumer service.
 ```java
 @Test
 void testGetOne(MockServer mockServer) throws IOException {
@@ -199,11 +197,11 @@ public class ConsumeDepositAccount {
 ```
 
 ## Contracts are Published to the Broker
-The PACT Broker provides a repository for contracts and test results. Here, 
-we will demo the contract repository functionality using the [PACT JVM Provider](https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-provider-gradle) Gradle plug-in. 
+The PACT Broker provides a repository for contracts and test results. Here,
+we will demo the contract repository functionality using the [PACT JVM Provider](https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-provider-gradle) Gradle plug-in.
 
 ### Publish PACT Contracts
-Since we have already generated the JSON contracts, all we need to do now is submit them to the PACT Broker. We can do this using a simple HTTP POST. However, we will use the plug-in's `pactPublish` task which has already been configured for use with the provider PACT Broker. Note, you will need to use Gradle to generate the PACTs since the publish step is configured for the `./tests/pact` directory, use `./gradlew test --tests "*.contracts.consumer.*"`.
+Since we have already generated the JSON contracts, all we need to do now is submit them to the PACT Broker. We can do this using a simple HTTP POST. However, we will use the plug-in's `pactPublish` task which has already been configured for use with the provided PACT Broker. Note, you will need to use Gradle to generate the PACTs since the publish step is configured to look for contracts within the `./tests/pact` directory. Use `./gradlew test --tests "*.contracts.consumer.*"` to generate the contracts using Gradle.
 ```bash
 # Start the PACT Broker
 docker-compose -f ./docker/pact-broker/docker-compose.yml up
@@ -225,8 +223,7 @@ If you click on either a provider or consumer, you should also see a nice depend
 ![PACT Broker Map](./images/pact-map.png)
 
 ## Contracts are Executed Against Endpoints with Mocked Logic
-Now, we need to execute the published contracts against the real providers, 
-in order to run these tests efficiently, the providers are heavily stubbed or mocked. 
+Now, we need to execute the published contracts against the real providers. In order to run these tests efficiently, the providers are heavily stubbed or mocked.
 This works since we are not looking for state and logic around the state as much as we are looking to validate or map input to output status codes and structure; in other words, the contract.
 
 ### Defined Providers
@@ -249,7 +246,7 @@ pact {
 Here the path to the PACT broker is provided as well as the location and port of the provider AccountCmd.
 
 ### Running The Contract Tests
-First, we need the providers APIs to be up, the Docker Compose configuration below will provide heavily stubbed/mocked APIs, allowing us to run the contract tests with minimal infrastructure.
+First, we need all provider APIs to be up. The Docker Compose configuration below will provide heavily stubbed/mocked APIs, allowing us to run the contract tests with minimal infrastructure.
 ```bash
 docker-compose -f docker-compose-internal-mocked.yml up -d
 ```
