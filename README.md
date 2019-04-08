@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/AITestingOrg/banking-microservices-tutorial/badge.svg?branch=master)](https://coveralls.io/github/AITestingOrg/banking-microservices-tutorial?branch=master)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FAITestingOrg%2Fbanking-microservices-tutorial.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FAITestingOrg%2Fbanking-microservices-tutorial?ref=badge_shield)
 
-The Banking Microservices Tutorial project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Tyk, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
+The Banking Microservices Tutorial project is a small system used to show how microservices can be implemented and tested with Micronaut, Consul, Express Gateway, and Axon's Event Sourcing framework. The system can be run in multiple configurations using Docker.
 
 ![](documentation/images/micronaut.jpg)![](documentation/images/axon.png)![](documentation/images/consul.svg)![](documentation/images/mongo.png)![](documentation/images/express-gateway.png)![](documentation/images/junit5-banner.png)
 ## Architecture
